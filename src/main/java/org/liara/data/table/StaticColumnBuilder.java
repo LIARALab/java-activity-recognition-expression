@@ -3,6 +3,7 @@ package org.liara.data.table;
 import org.checkerframework.checker.index.qual.NonNegative;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
+import org.liara.data.table.descriptor.ColumnDescriptor;
 
 public class StaticColumnBuilder {
   @Nullable

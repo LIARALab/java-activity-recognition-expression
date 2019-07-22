@@ -1,4 +1,4 @@
-package org.liara.data.table;
+package org.liara.data.table.descriptor;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.liara.data.primitive.Primitive;
