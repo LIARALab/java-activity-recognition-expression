@@ -1,15 +1,16 @@
 package org.liara.expression;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
-import org.liara.data.type.Type;
+import org.liara.data.primitive.Primitive;
+import org.liara.support.tree.TreeElement;
 import org.liara.support.view.View;
 
 /**
  * A mathematical expression.
  *
- * @param <Result> Type of value to expect from an evaluation of this expression.
+ * @param <Result> Primitive type to expect from an evaluation of this expression.
  */
-public interface Expression<Result>
+public interface Expression<Result> extends TreeElement
 {
   @NonNull
   View<@NonNull Expression> EMPTY_VIEW = View.readonly(Expression.class, new Expression[0]);
@@ -17,7 +18,7 @@ public interface Expression<Result>
   /**
    * @return The type of result to expect from an evaluation of this expression.
    */
-  @NonNull Type<Result> getResultType();
+  @NonNull Primitive<Result> getResultType();
 
   /**
    * @return A view over each child expression of this expression.

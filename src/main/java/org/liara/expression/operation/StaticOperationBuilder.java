@@ -3,7 +3,8 @@ package org.liara.expression.operation;
 import org.checkerframework.checker.index.qual.NonNegative;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
-import org.liara.data.type.Type;
+import org.liara.data.primitive.Primitive;
+import org.liara.data.type.DataType;
 import org.liara.expression.Expression;
 
 import java.util.Collection;
@@ -28,9 +29,9 @@ public class StaticOperationBuilder
     _operator = toCopy.getOperator();
   }
 
-  public <Result> @NonNull StaticOperation<Result> build (@NonNull final Type<Result> resultType) {
-    return new StaticOperation<>(resultType, this);
-  }
+  public <Result> @NonNull StaticOperation<Result> build (
+    @NonNull final Primitive<Result> resultType
+  ) { return new StaticOperation<>(resultType, this); }
 
   public @NonNull List<@NonNull Expression> getOperands () {
     return _operands;

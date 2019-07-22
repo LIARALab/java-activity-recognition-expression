@@ -1,7 +1,7 @@
 package org.liara.expression.operation;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
-import org.liara.data.type.Type;
+import org.liara.data.primitive.Primitive;
 import org.liara.support.view.View;
 import org.liara.expression.Expression;
 import java.util.Objects;
@@ -15,16 +15,16 @@ public class StaticOperation<Result> implements Operation<Result>
   private final Operator _operator;
 
   @NonNull
-  private final Type<Result> _type;
+  private final Primitive<Result> _type;
 
   /**
    * Create a new static operation from a builder.
    *
-   * @param type Type of result to expect from an evaluation of this expression.
+   * @param type Primitive to expect from an evaluation of this expression.
    * @param builder A builder to use in order to instantiate this operation.
    */
   public StaticOperation (
-    @NonNull final Type<Result> type,
+    @NonNull final Primitive<Result> type,
     @NonNull final StaticOperationBuilder builder
   ) {
     _operands = View.readonly(Expression.class, builder.getOperands().toArray(new Expression[0]));
@@ -47,7 +47,7 @@ public class StaticOperation<Result> implements Operation<Result>
    * @see Operation#getResultType()
    */
   @Override
-  public @NonNull Type<Result> getResultType () {
+  public @NonNull Primitive<Result> getResultType () {
     return _type;
   }
 

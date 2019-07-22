@@ -3,10 +3,11 @@ package org.liara.support.view;
 import org.checkerframework.checker.index.qual.NonNegative;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
+import java.util.Iterator;
 import java.util.ListIterator;
 import java.util.NoSuchElementException;
 
-public class ViewIterator<T> implements ListIterator<T>
+public class ViewIterator<T> implements Iterator<T>
 {
   @NonNegative
   private int _next;
@@ -33,12 +34,10 @@ public class ViewIterator<T> implements ListIterator<T>
     }
   }
 
-  @Override
   public boolean hasPrevious () {
     return _next > 0;
   }
 
-  @Override
   public T previous () {
     if (_next > 0) {
       return _view.get(--_next);
@@ -47,7 +46,6 @@ public class ViewIterator<T> implements ListIterator<T>
     }
   }
 
-  @Override
   public int nextIndex () {
     if (_next < _view.getSize()) {
       return _next;
@@ -56,7 +54,6 @@ public class ViewIterator<T> implements ListIterator<T>
     }
   }
 
-  @Override
   public int previousIndex () {
     if (_next > 0) {
       return _next - 1;
@@ -67,16 +64,6 @@ public class ViewIterator<T> implements ListIterator<T>
 
   @Override
   public void remove () {
-    throw new UnsupportedOperationException();
-  }
-
-  @Override
-  public void set (final T value) {
-    throw new UnsupportedOperationException();
-  }
-
-  @Override
-  public void add (final T value) {
     throw new UnsupportedOperationException();
   }
 

@@ -1,24 +1,25 @@
 package org.liara.expression;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
-import org.liara.data.type.Type;
+import org.liara.data.primitive.Primitive;
+import org.liara.data.type.DataType;
 
 /**
  * A value to define at the evaluation of the given expression.
  *
- * @param <T> Type of this placeholder.
+ * @param <Result> Primitive to expect from an evaluation of this expression.
  */
-public class Placeholder<T> implements Expression<T>
+public class Placeholder<Result> implements Expression<Result>
 {
   @NonNull
-  private final Type<T> _type;
+  private final Primitive<Result> _type;
 
   /**
    * Instantiate a new placeholder of a given type.
    *
-   * @param type Type of the placeholder to instantiate.
+   * @param type Primitive to expect from an evaluation of this expression.
    */
-  public Placeholder (@NonNull final Type<T> type) {
+  public Placeholder (@NonNull final Primitive<Result> type) {
     _type = type;
   }
 
@@ -26,7 +27,7 @@ public class Placeholder<T> implements Expression<T>
    * @see Expression#getResultType()
    */
   @Override
-  public @NonNull Type<T> getResultType () {
+  public @NonNull Primitive<Result> getResultType () {
     return _type;
   }
 }

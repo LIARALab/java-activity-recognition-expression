@@ -4,7 +4,9 @@ import org.apache.commons.text.StringEscapeUtils;
 import org.checkerframework.checker.index.qual.NonNegative;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
-import org.liara.data.type.Type;
+import org.liara.data.primitive.Primitives;
+import org.liara.data.type.DataType;
+import org.liara.data.type.DataTypes;
 import org.liara.expression.Constant;
 import org.liara.expression.Expression;
 import org.liara.expression.ExpressionWalker;
@@ -17,7 +19,7 @@ import java.util.*;
 public class SQLExpressionTranspiler
 {
   @NonNull
-  private static final Expression<?> DEFAULT_EXPRESSION = new Constant<>(Type.nonNullInteger(), 0);
+  private static final Expression<?> DEFAULT_EXPRESSION = new Constant<>(Primitives.INTEGER, 0);
 
   static {
     CommonOperator.load();
@@ -105,7 +107,7 @@ public class SQLExpressionTranspiler
 
   public @NonNull String transpile (@NonNull final Expression<?> expression) {
     _walker.movesForward();
-    _walker.setExpression(expression);
+    _walker.setRoot(expression);
 
     while (!_walker.isAtEnd()) {
       while (_walker.canEnter()) {
@@ -159,20 +161,20 @@ public class SQLExpressionTranspiler
    *
    * @param expression The exited expression.
    *
-   * @param <T> Type of the constant expression.
+   * @param <T> DataType of the constant expression.
    */
   private <T> void exitConstant (@NonNull final Constant<T> expression) {
-    if (Boolean.class.isAssignableFrom(expression.getResultType().getJavaClass())) {
+    /*if (Boolean.class.isAssignableFrom(expression.getResultType().getGeneric().getType())) {
       output((Boolean) expression.getValue());
-    } else if (Number.class.isAssignableFrom(expression.getResultType().getJavaClass())) {
+    } else if (Number.class.isAssignableFrom(expression.getResultType().getGeneric())) {
       output((Number) expression.getValue());
-    } else if (Character.class.isAssignableFrom(expression.getResultType().getJavaClass())) {
+    } else if (Character.class.isAssignableFrom(expression.getResultType().getGeneric())) {
       output((Character) expression.getValue());
-    } else if (String.class.isAssignableFrom(expression.getResultType().getJavaClass())) {
+    } else if (String.class.isAssignableFrom(expression.getResultType().getGeneric())) {
       output((String) expression.getValue());
-    } else {
+    } else {*/
       throw new Error("Unhandled constant type " + expression.getResultType().toString());
-    }
+    //}
   }
 
   private void output (@Nullable final Number number) {
@@ -209,7 +211,7 @@ public class SQLExpressionTranspiler
 
     visit(expression.getChildren().get(0));
 
-    for (int index = 1, size = expression.getChildren().getSize(); index < size; ++index) {
+    for (int index = 1, size = expression.getChildren().getBytes(); index < size; ++index) {
       _result.append(' ');
       _result.append(symbol);
       _result.append(' ');

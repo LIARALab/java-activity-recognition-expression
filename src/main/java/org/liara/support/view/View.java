@@ -4,6 +4,7 @@ import org.checkerframework.checker.index.qual.LessThan;
 import org.checkerframework.checker.index.qual.NonNegative;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
+import java.lang.reflect.Array;
 import java.util.*;
 
 public interface View<T> extends Iterable<T>
@@ -12,7 +13,7 @@ public interface View<T> extends Iterable<T>
    * Wrap a view into a readonly instance.
    *
    * @param view A view to wrap.
-   * @param <T> Type of value stored into the view to wrap.
+   * @param <T> DataType of value stored into the view to wrap.
    * @return A readonly view instance.
    */
   static <T> @NonNull View<T> readonly (@NonNull final View<T> view) {
@@ -22,10 +23,10 @@ public interface View<T> extends Iterable<T>
   /**
    * Wrap an array into a readonly instance.
    *
-   * @param valueClass Type of value stored into the given array.
+   * @param valueClass DataType of value stored into the given array.
    * @param array An array to wrap.
    *
-   * @param <T> Type of value stored into the array to wrap.
+   * @param <T> DataType of value stored into the array to wrap.
    *
    * @return A readonly view instance.
    */
@@ -34,6 +35,23 @@ public interface View<T> extends Iterable<T>
     @NonNull final T[] array
   ) {
     return new ArrayView<>(valueClass, array);
+  }
+
+  /**
+   * Wrap an array into a readonly instance.
+   *
+   * @param valueClass DataType of value stored into the given list.
+   * @param list A list to wrap.
+   *
+   * @param <T> DataType of value stored into the array to wrap.
+   *
+   * @return A readonly view instance.
+   */
+  static <T> @NonNull View<T> readonly (
+    @NonNull final Class<T> valueClass,
+    @NonNull final List<T> list
+  ) {
+    return new ListView<>(valueClass, list);
   }
 
   /**
@@ -60,7 +78,7 @@ public interface View<T> extends Iterable<T>
    *
    * @throws IndexOutOfBoundsException If the given index is not between 0 and the size of the view.
    */
-  T get (@NonNegative @LessThan("getSize()") final int index)
+  T get (@NonNegative @LessThan("getBytes()") final int index)
   throws IndexOutOfBoundsException;
 
   /**
@@ -86,6 +104,17 @@ public interface View<T> extends Iterable<T>
     }
 
     return list;
+  }
+
+  default @NonNull T[] toArray () {
+    @SuppressWarnings("unchecked")
+    @NonNull final T[] result = (T[]) Array.newInstance(getValueClass(), getSize());
+
+    for (int index = 0, size = getSize(); index < size; ++index) {
+      result[index] = get(index);
+    }
+
+    return result;
   }
 
   @Override

@@ -6,10 +6,9 @@ import org.liara.expression.Expression;
 /**
  * An expression that is an operator applied to a list of operands.
  *
- * @param <Result> Type of value to expect from an evaluation of this expression.
+ * @param <Result> Primitive to expect from an evaluation of this expression.
  */
-public interface Operation<Result>
-  extends Expression<Result>
+public interface Operation<Result> extends Expression<Result>
 {
   /**
    * @return The operator used in this expression.

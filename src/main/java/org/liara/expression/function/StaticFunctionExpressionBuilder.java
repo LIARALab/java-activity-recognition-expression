@@ -3,7 +3,8 @@ package org.liara.expression.function;
 import org.checkerframework.checker.index.qual.NonNegative;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
-import org.liara.data.type.Type;
+import org.liara.data.primitive.Primitive;
+import org.liara.data.type.DataType;
 import org.liara.expression.Expression;
 
 import java.util.Collection;
@@ -31,7 +32,7 @@ public class StaticFunctionExpressionBuilder
   }
 
   public <Result> @NonNull FunctionExpression<Result> build (
-    @NonNull final Type<Result> resultType
+    @NonNull final Primitive<Result> resultType
   ) {
     return new StaticFunctionExpression<>(resultType, this);
   }

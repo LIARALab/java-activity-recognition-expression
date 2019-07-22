@@ -1,7 +1,8 @@
 package org.liara.expression.function;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
-import org.liara.data.type.Type;
+import org.liara.data.primitive.Primitive;
+import org.liara.data.type.DataType;
 import org.liara.support.view.View;
 import org.liara.expression.Expression;
 
@@ -16,7 +17,7 @@ public class StaticFunctionExpression<Result> implements FunctionExpression<Resu
   private final FunctionOperator _operator;
 
   @NonNull
-  private final Type<Result> _type;
+  private final Primitive<Result> _type;
 
   public StaticFunctionExpression (@NonNull final StaticFunctionExpression<Result> expression) {
     _parameters = expression.getChildren();
@@ -25,7 +26,7 @@ public class StaticFunctionExpression<Result> implements FunctionExpression<Resu
   }
 
   public StaticFunctionExpression (
-    @NonNull final Type<Result> type,
+    @NonNull final Primitive<Result> type,
     @NonNull final StaticFunctionExpressionBuilder builder
   ) {
     _parameters = View.readonly(Expression.class, builder.getOperands().toArray(new Expression[0]));
@@ -44,7 +45,7 @@ public class StaticFunctionExpression<Result> implements FunctionExpression<Resu
   }
 
   @Override
-  public @NonNull Type<Result> getResultType () {
+  public @NonNull Primitive<Result> getResultType () {
     return _type;
   }
 }

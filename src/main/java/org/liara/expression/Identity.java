@@ -1,7 +1,7 @@
 package org.liara.expression;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
-import org.liara.data.type.Type;
+import org.liara.data.primitive.Primitive;
 import org.liara.support.view.View;
 
 public final class Identity<Result> implements Expression<Result>
@@ -28,7 +28,7 @@ public final class Identity<Result> implements Expression<Result>
   }
 
   @Override
-  public @NonNull Type<Result> getResultType () {
+  public @NonNull Primitive<Result> getResultType () {
     return _child.getResultType();
   }
 }

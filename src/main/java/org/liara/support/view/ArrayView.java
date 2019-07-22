@@ -30,7 +30,7 @@ public class ArrayView<T> implements View<T>
 
   @Override
   public @Nullable T get (
-    @NonNegative @LessThan("getSize()") final int index
+    @NonNegative @LessThan("getBytes()") final int index
   )
   throws IndexOutOfBoundsException {
     return _wrapped[index];

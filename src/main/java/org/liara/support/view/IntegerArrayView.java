@@ -24,7 +24,7 @@ public class IntegerArrayView implements View<Integer>
 
   @Override
   public @Nullable Integer get (
-    @NonNegative @LessThan("getSize()") final int index
+    @NonNegative @LessThan("getBytes()") final int index
   )
   throws IndexOutOfBoundsException {
     return _wrapped[index];

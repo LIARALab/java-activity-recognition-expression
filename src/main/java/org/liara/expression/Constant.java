@@ -1,30 +1,27 @@
 package org.liara.expression;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
-import org.liara.data.type.Type;
-
-import java.util.Objects;
+import org.liara.data.primitive.Primitive;
 
 /**
  * A value that never mutate.
  *
- * @param <T> Type of the constant expression.
+ * @param <Result> Primitive to expect from an evaluation of this expression.
  */
-public class Constant<T> implements Expression<T>
+public class Constant<Result> implements Expression<Result>
 {
-  private final T _value;
+  private final Result _value;
 
   @NonNull
-  private final Type<T> _type;
+  private final Primitive<Result> _type;
 
   /**
    * Create a new constant with a given value.
    *
-   * @param type Type of this constant.
+   * @param type DataType of this constant.
    * @param value Value of this constant.
    */
-  public Constant (@NonNull final Type<T> type, final T value) {
+  public Constant (@NonNull final Primitive<Result> type, final Result value) {
     _value = value;
     _type = type;
   }
@@ -34,7 +31,7 @@ public class Constant<T> implements Expression<T>
    *
    * @param toCopy An existing constant to copy.
    */
-  public Constant (@NonNull final Constant<T> toCopy) {
+  public Constant (@NonNull final Constant<Result> toCopy) {
     _value = toCopy.getValue();
     _type = toCopy.getResultType();
   }
@@ -42,7 +39,7 @@ public class Constant<T> implements Expression<T>
   /**
    * @return The value of this constant.
    */
-  public T getValue () {
+  public Result getValue () {
     return _value;
   }
 
@@ -50,7 +47,7 @@ public class Constant<T> implements Expression<T>
    * @see Expression#getResultType()
    */
   @Override
-  public @NonNull Type<T> getResultType () {
+  public Primitive<Result> getResultType () {
     return _type;
   }
 }
