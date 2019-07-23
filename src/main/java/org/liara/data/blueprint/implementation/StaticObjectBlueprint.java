@@ -88,6 +88,8 @@ public class StaticObjectBlueprint
   }
 
   private @NonNegative int[] computeChildrenBoundaries () {
+    if (_children.length == 0) return new int[] {0, 0};
+
     @NonNegative final int[] result = new int[] { Integer.MAX_VALUE, Integer.MIN_VALUE};
 
     for (@NonNegative int index = 0, size = _children.length; index < size; ++index) {

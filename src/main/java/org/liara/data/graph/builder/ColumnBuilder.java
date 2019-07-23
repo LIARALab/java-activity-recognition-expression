@@ -20,12 +20,9 @@ public interface ColumnBuilder extends GraphElementBuilder
   @NonNull Column build (@NonNull final GraphBuildingContext context);
 
   /**
-   * @return The name of this column.
-   */
-  @Nullable String getName();
-
-  /**
    * @return Primitive type of value stored into this column.
    */
   @Nullable Primitive<?> getType();
+
+  void setType (@Nullable final Primitive<?> primitive);
 }

@@ -39,6 +39,15 @@ public interface Graph
   @NonNull Table getTable (@NonNull final String name);
 
   /**
+   * Return the name of the given table instance.
+   *
+   * @param table A table instance of this graph.
+   *
+   * @return The name of the given table instance.
+   */
+  @NonNull String getNameOf (@NonNull final Table table);
+
+  /**
    * Return true if a table with the given name exists.
    *
    * @param name Name of the table to search.

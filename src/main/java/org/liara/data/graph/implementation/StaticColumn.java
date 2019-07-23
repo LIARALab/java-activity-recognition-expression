@@ -24,9 +24,6 @@ public class StaticColumn implements Column
   private final int _tableIdentifier;
 
   @NonNull
-  private final String _name;
-
-  @NonNull
   private final Primitive<?> _type;
 
   public StaticColumn (
@@ -36,8 +33,6 @@ public class StaticColumn implements Column
     _graph = Objects.requireNonNull(context.getGraph());
     _identifier = context.getIdentifier(builder);
     _tableIdentifier = context.getTableIdentifier(builder);
-
-    _name = Objects.requireNonNull(builder.getName());
     _type = Objects.requireNonNull(builder.getType());
   }
 
@@ -70,7 +65,7 @@ public class StaticColumn implements Column
    */
   @Override
   public @NonNull String getName () {
-    return _name;
+    return getTable().getNameOf(this);
   }
 
   /**

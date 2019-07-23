@@ -6,7 +6,6 @@ import org.liara.data.blueprint.BlueprintElement;
 import org.liara.data.blueprint.TupleBlueprint;
 import org.liara.data.blueprint.builder.BlueprintBuildingContext;
 import org.liara.data.blueprint.builder.BlueprintElementBuilder;
-import org.liara.data.blueprint.builder.StaticTupleBlueprintBuilder;
 import org.liara.support.view.View;
 
 import java.util.Arrays;
@@ -46,7 +45,7 @@ public class StaticTupleBlueprint
       _children[index] = context.getIdentifier(builder.getChildren().get(index));
     }
 
-    @NonNegative final int[] boundaries = getChildIdentifierBoundaries();
+    @NonNegative final int[] boundaries = computeChildrenBoundaries();
 
     _offset = boundaries[0];
     _indexes = new int[boundaries[1] - boundaries[0] + 1];
@@ -61,7 +60,9 @@ public class StaticTupleBlueprint
   /**
    * @return The boundaries of all identifiers of all children element of this tuple.
    */
-  private @NonNegative int[] getChildIdentifierBoundaries () {
+  private @NonNegative int[] computeChildrenBoundaries () {
+    if (_children.length == 0) return new int[] {0, 0};
+
     @NonNegative int[] result = new int[] {Integer.MAX_VALUE, Integer.MIN_VALUE};
 
     for (int index = 0, size = _children.length; index < size; ++index) {
