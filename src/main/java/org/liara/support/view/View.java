@@ -6,6 +6,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.lang.reflect.Array;
 import java.util.*;
+import java.util.function.Function;
 
 public interface View<T> extends Iterable<T>
 {
@@ -78,7 +79,7 @@ public interface View<T> extends Iterable<T>
    *
    * @throws IndexOutOfBoundsException If the given index is not between 0 and the size of the view.
    */
-  T get (@NonNegative @LessThan("getBytes()") final int index)
+  T get (@NonNegative @LessThan("getSize()") final int index)
   throws IndexOutOfBoundsException;
 
   /**
@@ -120,5 +121,12 @@ public interface View<T> extends Iterable<T>
   @Override
   default @NonNull Iterator<T> iterator () {
     return new ViewIterator<>(this);
+  }
+
+  default <To> @NonNull View<To> map (
+    @NonNull final Class<To> valueClass,
+    @NonNull final Function<T, To> mapper
+  ) {
+    return new MappedView<>(valueClass, this, mapper);
   }
 }

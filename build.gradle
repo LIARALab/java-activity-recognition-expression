@@ -23,7 +23,7 @@ publishing {
     publications {
         library(MavenPublication) {
             groupId = 'org.liara'
-            artifactId = 'expression'
+            artifactId = 'data'
             version = '0.1-SNAPSHOT'
 
             from components.java
