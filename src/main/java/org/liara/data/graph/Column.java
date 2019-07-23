@@ -1,22 +1,16 @@
-package org.liara.data.table;
+package org.liara.data.graph;
 
-import org.checkerframework.checker.index.qual.NonNegative;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.liara.data.primitive.Primitive;
 
 /**
  * A table column.
  */
-public interface Column {
-  /**
-   * @return The identifier of this column into the parent table.
-   */
-  @NonNegative int getIdentifier();
-
+public interface Column extends GraphElement {
   /**
    * @return The table that contains this column.
    */
-  @NonNull DataTable getDataTable();
+  @NonNull Table getTable ();
 
   /**
    * @return The name of this column.

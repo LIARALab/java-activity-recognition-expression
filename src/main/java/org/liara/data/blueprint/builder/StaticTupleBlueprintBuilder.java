@@ -19,15 +19,26 @@ public class StaticTupleBlueprintBuilder implements BlueprintElementBuilder
   @NonNull
   private final View<@NonNull BlueprintElementBuilder> _view;
 
+  /**
+   * Create a new instance of tuple builder.
+   */
   public StaticTupleBlueprintBuilder () {
     this(4);
   }
 
+  /**
+   * Create a new instance of tuple builder with an initial capacity.
+   *
+   * @param capacity Initial number of tuple elements expected.
+   */
   public StaticTupleBlueprintBuilder (@NonNegative final int capacity) {
     _children = new ArrayList<>(capacity);
     _view = View.readonly(BlueprintElementBuilder.class, _children);
   }
 
+  /**
+   * @see BlueprintElementBuilder#build(BlueprintBuildingContext)
+   */
   @Override
   public @NonNull StaticTupleBlueprint build (@NonNull final BlueprintBuildingContext context) {
     return new StaticTupleBlueprint(context, this);

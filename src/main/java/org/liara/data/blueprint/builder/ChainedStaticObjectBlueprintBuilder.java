@@ -25,12 +25,88 @@ public class ChainedStaticObjectBlueprintBuilder<Parent>
     return new StaticObjectBlueprint(context, this);
   }
 
-  public @NonNull ChainedStaticObjectBlueprintBuilder<Parent> append (
-    @NonNull final String name,
-    @NonNull final BlueprintElementBuilder builder
+  public @NonNull ChainedStaticObjectBlueprintBuilder<Parent> put (
+    final @NonNull String name,
+    final @NonNull BlueprintElementBuilder builder
   ) {
-    _builder.append(name, builder);
+    _builder.put(name, builder);
     return this;
+  }
+
+  public @NonNull ChainedStaticObjectBlueprintBuilder<Parent> setValue (
+    final int index,
+    final @NonNull BlueprintElementBuilder builder
+  ) {
+    _builder.setValue(index, builder);
+    return this;
+  }
+
+  public @NonNull ChainedStaticObjectBlueprintBuilder<Parent> setValue (
+    final @NonNull String name,
+    final @NonNull BlueprintElementBuilder builder
+  ) {
+    _builder.setValue(name, builder);
+    return this;
+  }
+
+  public @NonNull ChainedStaticObjectBlueprintBuilder<Parent> setKey (
+    final @NonNull String from,
+    final @NonNull String to
+  ) {
+    _builder.setKey(from, to);
+    return this;
+  }
+
+  public @NonNull ChainedStaticObjectBlueprintBuilder<Parent> setKey (
+    final int index,
+    final @NonNull String target
+  ) {
+    _builder.setKey(index, target);
+    return this;
+  }
+
+  public @NonNull ChainedStaticObjectBlueprintBuilder<Parent> remove (final @NonNull String name) {
+    _builder.remove(name);
+    return this;
+  }
+
+  public @NonNull ChainedStaticObjectBlueprintBuilder<Parent> remove (final int keyIndex) {
+    _builder.remove(keyIndex);
+    return this;
+  }
+
+  public @NonNull ChainedStaticObjectBlueprintBuilder<Parent> clear () {
+    _builder.clear();
+    return this;
+  }
+
+  public @NonNegative int getIndexOfKey (final @NonNull String name) {
+    return _builder.getIndexOfKey(name);
+  }
+
+  public boolean containsKey (final @NonNull String name) {
+    return _builder.containsKey(name);
+  }
+
+  @NonNull
+  public String getKey (@NonNegative final int index) {
+    return _builder.getKey(index);
+  }
+
+  @NonNull
+  public BlueprintElementBuilder getValue (
+    @NonNegative final int index
+  ) {
+    return _builder.getValue(index);
+  }
+
+  @NonNull
+  public BlueprintElementBuilder getValue (final @NonNull String name) {
+    return _builder.getValue(name);
+  }
+
+  public int getSize () {
+    return _builder.getSize();
   }
 
   public @NonNull ChainedStaticObjectBlueprintBuilder<Parent> appendValue (
@@ -40,11 +116,11 @@ public class ChainedStaticObjectBlueprintBuilder<Parent>
     @NonNull final StaticValueBlueprintBuilder builder = new StaticValueBlueprintBuilder();
     builder.setType(type);
 
-    return append(name, builder);
+    return put(name, builder);
   }
 
   public @NonNull ChainedStaticObjectBlueprintBuilder<Parent> appendNull (@NonNull final String name) {
-    return append(name, new StaticNullBlueprintBuilder());
+    return put(name, new StaticNullBlueprintBuilder());
   }
 
   public
@@ -55,7 +131,7 @@ public class ChainedStaticObjectBlueprintBuilder<Parent>
       new ChainedStaticTupleBlueprintBuilder<>(this)
     );
 
-    append(name, builder);
+    put(name, builder);
 
     return builder;
   }
@@ -68,56 +144,9 @@ public class ChainedStaticObjectBlueprintBuilder<Parent>
       new ChainedStaticObjectBlueprintBuilder<>(this)
     );
 
-    append(name, builder);
+    put(name, builder);
 
     return builder;
-  }
-
-  public @NonNull ChainedStaticObjectBlueprintBuilder<Parent> set (
-    @NonNull final String name,
-    @NonNull final BlueprintElementBuilder builder
-  ) {
-    _builder.set(name, builder);
-    return this;
-  }
-
-  public @NonNull ChainedStaticObjectBlueprintBuilder<Parent> rename (
-    @NonNull final String oldName,
-    @NonNull final String newName
-  ) {
-    _builder.rename(oldName, newName);
-    return this;
-  }
-
-  public @NonNull ChainedStaticObjectBlueprintBuilder<Parent> rename (
-    @NonNegative final int field,
-    @NonNull final String name
-  ) {
-    _builder.rename(field, name);
-    return this;
-  }
-
-  public @NonNull ChainedStaticObjectBlueprintBuilder<Parent> remove (@NonNull final String key) {
-    _builder.remove(key);
-    return this;
-  }
-
-  public @NonNull ChainedStaticObjectBlueprintBuilder<Parent> remove (@NonNegative final int index) {
-    _builder.remove(index);
-    return this;
-  }
-
-  public @NonNull ChainedStaticObjectBlueprintBuilder<Parent> clear () {
-    _builder.clear();
-    return this;
-  }
-
-  public boolean containsKey (@NonNull final String key) {
-    return _builder.containsKey(key);
-  }
-
-  public @NonNegative int getFieldOf (@NonNull final String key) {
-    return _builder.getFieldOf(key);
   }
 
   @Override
@@ -129,6 +158,7 @@ public class ChainedStaticObjectBlueprintBuilder<Parent>
   public @NonNull View<@NonNull BlueprintElementBuilder> getChildren () {
     return _builder.getChildren();
   }
+
   public @NonNull Parent endObject () {
     return _parent;
   }

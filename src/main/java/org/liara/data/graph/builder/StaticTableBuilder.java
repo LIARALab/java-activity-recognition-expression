@@ -1,4 +1,4 @@
-package org.liara.data.table.descriptor;
+package org.liara.data.graph.builder;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -7,21 +7,21 @@ import org.liara.support.view.View;
 import java.util.LinkedList;
 import java.util.List;
 
-public class StaticDataTableDescriptor
+public class StaticTableBuilder
   implements DataTableDescriptor
 {
   @NonNull
-  private final List<@NonNull ColumnDescriptor> _columns;
+  private final List<@NonNull ColumnBuilder> _columns;
 
   @NonNull
-  private final View<@NonNull ColumnDescriptor> _columnsView;
+  private final View<@NonNull ColumnBuilder> _columnsView;
 
   @Nullable
   private String _name;
 
-  public StaticDataTableDescriptor () {
+  public StaticTableBuilder () {
     _columns = new LinkedList<>();
-    _columnsView = View.readonly(ColumnDescriptor.class, _columns);
+    _columnsView = View.readonly(ColumnBuilder.class, _columns);
     _name = null;
   }
 
@@ -34,12 +34,12 @@ public class StaticDataTableDescriptor
     _name = name;
   }
 
-  public @NonNull List<@NonNull ColumnDescriptor> updateColumns () {
+  public @NonNull List<@NonNull ColumnBuilder> updateColumns () {
     return _columns;
   }
 
   @Override
-  public @NonNull View<@NonNull ColumnDescriptor> getColumns () {
+  public @NonNull View<@NonNull ColumnBuilder> getColumns () {
     return _columnsView;
   }
 }

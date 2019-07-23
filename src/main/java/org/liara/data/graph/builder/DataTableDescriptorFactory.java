@@ -1,4 +1,4 @@
-package org.liara.data.table.descriptor;
+package org.liara.data.graph.builder;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.liara.data.primitive.Primitive;
@@ -7,11 +7,11 @@ import java.util.Arrays;
 
 public class DataTableDescriptorFactory
 {
-  public @NonNull ColumnDescriptor column (
+  public @NonNull ColumnBuilder column (
     @NonNull final String name,
     @NonNull final Primitive<?> type
   ) {
-    @NonNull final StaticColumnDescriptor descriptor = new StaticColumnDescriptor();
+    @NonNull final StaticColumnBuilder descriptor = new StaticColumnBuilder();
 
     descriptor.setName(name);
     descriptor.setType(type);
@@ -21,9 +21,9 @@ public class DataTableDescriptorFactory
 
   public @NonNull DataTableDescriptor table (
     @NonNull final String name,
-    @NonNull final ColumnDescriptor ...columns
+    @NonNull final ColumnBuilder...columns
   ) {
-    @NonNull final StaticDataTableDescriptor descriptor = new StaticDataTableDescriptor();
+    @NonNull final StaticTableBuilder descriptor = new StaticTableBuilder();
 
     descriptor.setName(name);
     descriptor.updateColumns().addAll(Arrays.asList(columns));

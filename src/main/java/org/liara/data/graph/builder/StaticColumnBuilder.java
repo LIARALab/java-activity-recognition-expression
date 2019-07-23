@@ -1,10 +1,11 @@
-package org.liara.data.table.descriptor;
+package org.liara.data.graph.builder;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
+import org.liara.data.graph.Column;
 import org.liara.data.primitive.Primitive;
 
-public class StaticColumnDescriptor implements ColumnDescriptor
+public class StaticColumnBuilder implements ColumnBuilder
 {
   @Nullable
   private String _name;
@@ -12,14 +13,19 @@ public class StaticColumnDescriptor implements ColumnDescriptor
   @Nullable
   private Primitive<?> _type;
 
-  public StaticColumnDescriptor () {
+  public StaticColumnBuilder () {
     _name = null;
     _type = null;
   }
 
-  public StaticColumnDescriptor (@NonNull final StaticColumnDescriptor toCopy) {
+  public StaticColumnBuilder (@NonNull final StaticColumnBuilder toCopy) {
     _name = toCopy.getName();
     _type = toCopy.getType();
+  }
+
+  @Override
+  public @NonNull Column build (final @NonNull GraphBuildingContext context) {
+    return null;
   }
 
   @Override

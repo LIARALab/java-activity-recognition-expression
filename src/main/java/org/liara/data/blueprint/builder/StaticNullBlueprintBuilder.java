@@ -14,6 +14,9 @@ public class StaticNullBlueprintBuilder implements BlueprintElementBuilder
     BlueprintElementBuilder.class, new BlueprintElementBuilder[0]
   );
 
+  /**
+   * @see BlueprintElementBuilder#build(BlueprintBuildingContext)
+   */
   @Override
   public @NonNull StaticNullBlueprint build (@NonNull final BlueprintBuildingContext context) {
     return new StaticNullBlueprint(context, this);
