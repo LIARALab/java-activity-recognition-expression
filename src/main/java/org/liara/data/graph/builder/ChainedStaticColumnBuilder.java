@@ -26,7 +26,7 @@ public class ChainedStaticColumnBuilder<Parent> implements ColumnBuilder
 
   @Override
   public @NonNull StaticColumn build (@NonNull final GraphBuildingContext context) {
-    return _builder.build(context);
+    return new StaticColumn(context, this);
   }
 
   @Override

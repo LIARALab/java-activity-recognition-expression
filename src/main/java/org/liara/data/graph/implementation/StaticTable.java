@@ -15,15 +15,9 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Objects;
 
-public class StaticTable
+public class StaticTable extends StaticGraphElement
   implements Table
 {
-  @NonNull
-  private final Graph _graph;
-
-  @NonNegative
-  private final int _identifier;
-
   @NonNull
   private final ListIndex<@NonNull String, @NonNull Integer> _index;
 
@@ -41,14 +35,13 @@ public class StaticTable
     @NonNull final GraphBuildingContext context,
     @NonNull final TableBuilder builder
   ) {
-    _graph = Objects.requireNonNull(context.getGraph());
-    _identifier = context.getIdentifier(builder);
+    super(context, builder);
     _index = new ListIndex<>(builder.getColumns().getSize(), BaseComparators.STRING_COMPARATOR);
 
     fillIndex(context, builder);
 
     _columns = View.readonly(Integer.class, _index.getValues()).map(
-      Column.class, _graph.getColumns()::get
+      Column.class, getGraph().getColumns()::get
     );
     _columnNames = View.readonly(String.class, _index.getKeys());
 
@@ -115,7 +108,7 @@ public class StaticTable
 
   @Override
   public @NonNull Column getColumn (@NonNull final String name) {
-    return _graph.getColumns().get(_index.getValue(name));
+    return getGraph().getColumns().get(_index.getValue(name));
   }
 
   @Override
@@ -125,16 +118,6 @@ public class StaticTable
 
   @Override
   public @NonNull String getName () {
-    return _graph.getNameOf(this);
-  }
-
-  @Override
-  public @NonNegative int getIdentifier () {
-    return _identifier;
-  }
-
-  @Override
-  public @NonNull Graph getGraph () {
-    return _graph;
+    return getGraph().getNameOf(this);
   }
 }

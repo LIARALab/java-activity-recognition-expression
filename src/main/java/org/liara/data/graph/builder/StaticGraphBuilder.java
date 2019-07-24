@@ -80,6 +80,7 @@ public class StaticGraphBuilder implements GraphBuilder
 
       for (int column = 0, columns = columnBuilders.getSize(); column < columns; ++column) {
         _context.setIdentifier(columnBuilders.get(column), nextColumnIdentifier);
+        _context.setTableIdentifier(columnBuilders.get(column), table);
         nextColumnIdentifier += 1;
       }
     }

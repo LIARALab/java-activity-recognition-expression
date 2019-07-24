@@ -12,14 +12,8 @@ import org.liara.data.primitive.Primitive;
 
 import java.util.Objects;
 
-public class StaticColumn implements Column
+public class StaticColumn extends StaticGraphElement implements Column
 {
-  @NonNull
-  private final Graph _graph;
-
-  @NonNegative
-  private final int _identifier;
-
   @NonNegative
   private final int _tableIdentifier;
 
@@ -30,26 +24,9 @@ public class StaticColumn implements Column
     @NonNull final GraphBuildingContext context,
     @NonNull final ColumnBuilder builder
   ) {
-    _graph = Objects.requireNonNull(context.getGraph());
-    _identifier = context.getIdentifier(builder);
+    super(context, builder);
     _tableIdentifier = context.getTableIdentifier(builder);
     _type = Objects.requireNonNull(builder.getType());
-  }
-
-  /**
-   * @see GraphElement#getIdentifier()
-   */
-  @Override
-  public @NonNegative int getIdentifier () {
-    return _identifier;
-  }
-
-  /**
-   * @see GraphElement#getGraph()
-   */
-  @Override
-  public @NonNull Graph getGraph () {
-    return _graph;
   }
 
   /**
@@ -57,7 +34,7 @@ public class StaticColumn implements Column
    */
   @Override
   public @NonNull Table getTable () {
-    return _graph.getTables().get(_tableIdentifier);
+    return getGraph().getTables().get(_tableIdentifier);
   }
 
   /**
