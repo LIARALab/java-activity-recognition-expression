@@ -4,23 +4,17 @@ import org.apache.commons.text.StringEscapeUtils;
 import org.checkerframework.checker.index.qual.NonNegative;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
-import org.liara.data.primitive.Primitives;
-import org.liara.data.type.DataType;
-import org.liara.data.type.DataTypes;
 import org.liara.expression.Constant;
 import org.liara.expression.Expression;
-import org.liara.expression.ExpressionWalker;
 import org.liara.expression.operation.Operation;
 import org.liara.expression.operation.Operator;
 import org.liara.expression.operation.CommonOperator;
+import org.liara.support.tree.TreeWalker;
 
 import java.util.*;
 
 public class SQLExpressionTranspiler
 {
-  @NonNull
-  private static final Expression<?> DEFAULT_EXPRESSION = new Constant<>(Primitives.INTEGER, 0);
-
   static {
     CommonOperator.load();
   }
@@ -97,63 +91,136 @@ public class SQLExpressionTranspiler
   private final StringBuilder _result;
 
   @NonNull
-  private final ExpressionWalker _walker;
+  private final TreeWalker<Expression> _walker;
 
+  /**
+   * Instantiate a new expression to SQL transpiler.
+   */
   public SQLExpressionTranspiler () {
     _operators = new LinkedList<>();
     _result = new StringBuilder();
-    _walker = new ExpressionWalker(DEFAULT_EXPRESSION);
+    _walker = new TreeWalker<>(Expression.class);
   }
 
+  /**
+   * Transpile the given expression into an SQL string.
+   *
+   * @param expression An expression to transpile.
+   *
+   * @return An SQL string equivalent to the given expression.
+   */
   public @NonNull String transpile (@NonNull final Expression<?> expression) {
-    _walker.movesForward();
     _walker.setRoot(expression);
+    _walker.movesForward();
 
     while (!_walker.isAtEnd()) {
       while (_walker.canEnter()) {
-        enter(_walker.enter());
+        enter((Expression<?>) _walker.enter());
       }
 
-      while (!_walker.canEnter()) {
-        exit(_walker.exit());
+      if (_walker.canExit()) {
+        exit((Expression<?>) _walker.exit());
+        if (_walker.hasCurrent()) { back((Expression<?>) _walker.current()); }
       }
     }
 
     @NonNull final String result = _result.toString();
 
     _result.setLength(0);
+    _walker.setRoot(null);
 
     return result;
   }
 
-  private void enter (@NonNull final Expression<?> expression) {
+  /**
+   * Called when the transpiler goes back to the given expression.
+   *
+   * @param expression The expression that was entered.
+   */
+  private <T> void back (@NonNull final Expression<T> expression) {
     if (expression instanceof Operation) {
-      enterOperation((Operation<?>) expression);
+      backOperation((Operation<T>) expression);
     }
   }
 
-  private <T> void enterOperation (final Operation<T> expression) {
-    _operators.add(expression.getOperator());
+  /**
+   * Called when the transpiler goes back to the given operation.
+   *
+   * @param operation The operation that was entered.
+   */
+  private <T> void backOperation (@NonNull final Operation<T> operation) {
+    if (_walker.canEnter()) {
+      _result.append(' ');
+      _result.append(SYMBOLS.get(operation.getOperator().getIdentifier()));
+      _result.append(' ');
+    }
+  }
+
+  /**
+   * Called after the transpiler enter for the first time into the given expression.
+   *
+   * @param expression The visited expression.
+   */
+  private <T> void enter (@NonNull final Expression<T> expression) {
+    if (expression instanceof Operation) {
+      enterOperation((Operation<T>) expression);
+    }
+  }
+
+  /**
+   * Called when the transpiler enter for the first time into the given operation.
+   *
+   * @param operation The visited operation.
+   *
+   * @param <T> The expected result type of the given operation.
+   */
+  private <T> void enterOperation (@NonNull final Operation<T> operation) {
+    _operators.add(operation.getOperator());
+
     if (doViolatePrecedence()) _result.append('(');
 
     if (
-      expression.getOperator() == CommonOperator.PLUS ||
-      expression.getOperator() == CommonOperator.MINUS ||
-      expression.getOperator() == CommonOperator.BITWISE_NOT ||
-      expression.getOperator() == CommonOperator.NOT
+      operation.getOperator() == CommonOperator.PLUS ||
+      operation.getOperator() == CommonOperator.MINUS ||
+      operation.getOperator() == CommonOperator.BITWISE_NOT ||
+      operation.getOperator() == CommonOperator.NOT
     ) {
-      enterUnitaryOperation(expression);
+      enterUnitaryOperation(operation);
     }
   }
 
-  private <T> void enterUnitaryOperation (@NonNull final Operation<T> expression) {
-    _result.append(SYMBOLS.get(expression.getOperator().getIdentifier()));
+  /**
+   * Called when the transpiler enter for the first time into the given unitary operation.
+   *
+   * @param operation The visited unitary operation.
+   * @param <T> The expected result type of the given operation.
+   */
+  private <T> void enterUnitaryOperation (@NonNull final Operation<T> operation) {
+    _result.append(SYMBOLS.get(operation.getOperator().getIdentifier()));
+    _result.append(' ');
   }
 
-  private void exit (@NonNull final Expression<?> expression) {
+  /**
+   * Called after the transpiler quit the given expression.
+   *
+   * @param expression The expression that was exited.
+   */
+  private <T> void exit (@NonNull final Expression<T> expression) {
     if (expression instanceof Constant) {
-      exitConstant((Constant<?>) expression);
+      exitConstant((Constant<T>) expression);
+    } else if (expression instanceof Operation) {
+      exitOperation((Operation<T>) expression);
     }
+  }
+
+  /**
+   * Called after the transpiler quit the given operation.
+   *
+   * @param operation The operation that was exited.
+   */
+  private <T> void exitOperation (@NonNull final Operation<T> operation) {
+    if (doViolatePrecedence()) _result.append(')');
+    _operators.remove(_operators.size() - 1);
   }
 
   /**
@@ -164,27 +231,42 @@ public class SQLExpressionTranspiler
    * @param <T> DataType of the constant expression.
    */
   private <T> void exitConstant (@NonNull final Constant<T> expression) {
-    /*if (Boolean.class.isAssignableFrom(expression.getResultType().getGeneric().getType())) {
+    if (Boolean.class.isAssignableFrom(expression.getResultType().getJavaClass())) {
       output((Boolean) expression.getValue());
-    } else if (Number.class.isAssignableFrom(expression.getResultType().getGeneric())) {
+    } else if (Number.class.isAssignableFrom(expression.getResultType().getJavaClass())) {
       output((Number) expression.getValue());
-    } else if (Character.class.isAssignableFrom(expression.getResultType().getGeneric())) {
+    } else if (Character.class.isAssignableFrom(expression.getResultType().getJavaClass())) {
       output((Character) expression.getValue());
-    } else if (String.class.isAssignableFrom(expression.getResultType().getGeneric())) {
+    } else if (String.class.isAssignableFrom(expression.getResultType().getJavaClass())) {
       output((String) expression.getValue());
-    } else {*/
+    } else {
       throw new Error("Unhandled constant type " + expression.getResultType().toString());
-    //}
+    }
   }
 
-  private void output (@Nullable final Number number) {
-    _result.append(number == null ? "NULL" : number.toString());
+  /**
+   * Output a numeric value.
+   *
+   * @param value A numeric value to output.
+   */
+  private void output (@Nullable final Number value) {
+    _result.append(value == null ? "NULL" : value.toString());
   }
 
+  /**
+   * Output a boolean value.
+   *
+   * @param value A boolean value to output.
+   */
   private void output (@Nullable final Boolean value) {
     _result.append(value == null ? "NULL" : (value ? "1" : "0"));
   }
 
+  /**
+   * Output a string value.
+   *
+   * @param value A string value to output.
+   */
   private void output (@Nullable final String value) {
     if (value == null) {
       _result.append("NULL");
@@ -195,55 +277,24 @@ public class SQLExpressionTranspiler
     }
   }
 
+  /**
+   * Output a character value.
+   *
+   * @param value A character value to output.
+   */
   private void output (@Nullable final Character value) {
     if (value == null) {
       _result.append("NULL");
     } else {
-      _result.append('\'');
-      _result.append(value.toString());
-      _result.append('\'');
+      _result.append('\"');
+      _result.append(StringEscapeUtils.escapeJava(value.toString()));
+      _result.append('\"');
     }
   }
 
-  /*
-  protected void visit (@NonNull final Operation<?> expression) {
-
-
-    visit(expression.getChildren().get(0));
-
-    for (int index = 1, size = expression.getChildren().getBytes(); index < size; ++index) {
-      _result.append(' ');
-      _result.append(symbol);
-      _result.append(' ');
-      visit(expression.getChildren().get(index));
-    }
-
-    if (violatePrecedence) _result.append(')');
-
-    _operators.remove(_operators.size() - 1);
-  }
-  */
-
-  /*
-  @Override
-  protected void visit (@NonNull final UnaryExpression<?> expression) {
-    _operators.add(expression.getOperator());
-
-    final boolean violatePrecedence = doViolatePrecedence();
-    @NonNull final String symbol = SYMBOLS.get(expression.getOperator().getIdentifier());
-
-    if (violatePrecedence) _result.append('(');
-
-    _result.append(symbol);
-    _result.append(' ');
-    visit(expression.getChild(0));
-
-    if (violatePrecedence) _result.append(')');
-
-    _operators.remove(_operators.size() - 1);
-  }
-  */
-
+  /**
+   * @return True if the current operation violates the operator precedence.
+   */
   private boolean doViolatePrecedence () {
     return _operators.size() > 1 && (
       PRECEDENCE.get(_operators.get(_operators.size() - 2).getIdentifier())

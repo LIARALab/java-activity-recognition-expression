@@ -10,6 +10,10 @@ import java.util.function.Function;
 
 public interface View<T> extends Iterable<T>
 {
+  @SuppressWarnings("unchecked")
+  static <T> @NonNull View<T> readonly (@NonNull final Class<T> valueClass) {
+    return readonly(valueClass, (T[]) Array.newInstance(valueClass, 0));
+  }
   /**
    * Wrap a view into a readonly instance.
    *

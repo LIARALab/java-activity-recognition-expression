@@ -29,9 +29,21 @@ public class StaticTableBuilder
     _columnsView = View.readonly(ColumnBuilder.class, _columns.getValues());
   }
 
+  public @NonNull ChainedStaticColumnBuilder<StaticTableBuilder> column (
+    @NonNull final String name
+  ) {
+    @NonNull final ChainedStaticColumnBuilder<StaticTableBuilder> builder = (
+      new ChainedStaticColumnBuilder<>(this)
+    );
+
+    putColumn(name, builder);
+
+    return builder;
+  }
+
   @Override
   public @NonNull StaticTable build (@NonNull final GraphBuildingContext context) {
-    return null;
+    return new StaticTable(context, this);
   }
 
   @Override

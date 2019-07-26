@@ -13,14 +13,18 @@ public class Primitive<Type> {
   @NonNull
   private final Class<Type> _javaClass;
 
+  @NonNull
+  private final String _name;
+
   /**
    * Instantiate a new primitive type and assign an identifier to it.
    *
    * @param javaClass A Java type used to store values of this primitive type.
    */
-  public Primitive (@NonNull final Class<Type> javaClass) {
+  public Primitive (@NonNull final Class<Type> javaClass, @NonNull final String name) {
     _javaClass = javaClass;
     _identifier = Primitives.register(this);
+    _name = name;
   }
 
   /**
@@ -31,6 +35,7 @@ public class Primitive<Type> {
   public Primitive (@NonNull final Primitive<Type> toCopy) {
     _javaClass = toCopy.getJavaClass();
     _identifier = toCopy.getIdentifier();
+    _name = toCopy.getName();
   }
 
   /**
@@ -45,6 +50,10 @@ public class Primitive<Type> {
    */
   public @NonNegative int getIdentifier () {
     return _identifier;
+  }
+
+  public @NonNull String getName () {
+    return _name;
   }
 
   /**
@@ -68,5 +77,10 @@ public class Primitive<Type> {
   @Override
   public int hashCode () {
     return _identifier;
+  }
+
+  @Override
+  public @NonNull String toString () {
+    return _name;
   }
 }

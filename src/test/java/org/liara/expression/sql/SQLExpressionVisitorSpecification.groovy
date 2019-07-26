@@ -4,325 +4,318 @@ import org.liara.expression.Expression
 import org.liara.expression.ExpressionFactory
 import spock.lang.Specification
 
-class QLExpressionVisitorSpecification extends Specification {
-  /*
-  def "#SQLExpressionVisitor create a new empty visitor" () {
-    expect: "#SQLExpressionTranspiler to create a new empty visitor"
-    new SQLExpressionTranspiler().resultingSQL == ""
-  }
-
-  def "#visit successfully render booleans constants" () {
+class SQLExpressionVisitorSpecification extends Specification {
+  def "#transpile successfully render booleans constants" () {
     given: "an SQL expression visitor"
-    final SQLExpressionTranspiler visitor = new SQLExpressionTranspiler()
+    final SQLExpressionTranspiler transpiler = new SQLExpressionTranspiler()
 
     and: "an expression factory"
-    final ExpressionFactory expression = new ExpressionFactory()
+    final ExpressionFactory factory = new ExpressionFactory()
 
-    when: "we visit boolean constants"
-    final List<String> results = []
+    and: "a selection of expression"
     final List<Expression> expressions = [
-      expression.constant(true),
-      expression.constant((Boolean)true),
-      expression.constant(false),
-      expression.constant((Boolean) false),
-      expression.constant((Boolean) null)
+      factory.nonNullConstant(true),
+      factory.nullableConstant(true),
+      factory.nonNullConstant(false),
+      factory.nullableConstant(false),
+      factory.nullableConstant((Boolean) null)
     ]
 
-    for (final Expression visitable : expressions) {
-      visitor.visit(visitable)
-      results.add(visitor.resultingSQL)
-      visitor.clear()
+    when: "we visit the given expressions"
+    final List<String> results = []
+
+    for (final Expression expression : expressions) {
+      results.add(transpiler.transpile(expression))
     }
 
-    then: "we expect that the visitor successfully rendered the visited expressions"
+    then: "we expect that the visitor successfully render the given expressions"
     results == ["1", "1", "0", "0", "NULL"]
   }
 
-  def "#visit successfully render byte constants" () {
+  def "#transpile successfully render byte constants" () {
     given: "an SQL expression visitor"
-    final SQLExpressionTranspiler visitor = new SQLExpressionTranspiler()
+    final SQLExpressionTranspiler transpiler = new SQLExpressionTranspiler()
 
     and: "an expression factory"
-    final ExpressionFactory expression = new ExpressionFactory()
+    final ExpressionFactory factory = new ExpressionFactory()
 
-    when: "we visit byte constants"
-    final List<String> results = []
+    and: "a selection of expression"
     final List<Expression> expressions = [
-      expression.constant((byte) 10),
-      expression.constant((byte) 32),
-      expression.constant((byte) -24),
-      expression.constant((Byte) 26),
-      expression.constant((Byte) null)
+      factory.nonNullConstant((byte) 10),
+      factory.nonNullConstant((byte) 32),
+      factory.nonNullConstant((byte) -24),
+      factory.nullableConstant((Byte) 26),
+      factory.nullableConstant((Byte) null)
     ]
 
-    for (final Expression visitable : expressions) {
-      visitor.visit(visitable)
-      results.add(visitor.resultingSQL)
-      visitor.clear()
+    when: "we visit the given expressions"
+    final List<String> results = []
+
+    for (final Expression expression : expressions) {
+      results.add(transpiler.transpile(expression))
     }
 
-    then: "we expect that the visitor successfully rendered the visited expressions"
+    then: "we expect that the visitor successfully render the given expressions"
     results == ["10", "32", "-24", "26", "NULL"]
   }
 
-  def "#visit successfully render short constants" () {
+  def "#transpile successfully render short constants" () {
     given: "an SQL expression visitor"
-    final SQLExpressionTranspiler visitor = new SQLExpressionTranspiler()
+    final SQLExpressionTranspiler transpiler = new SQLExpressionTranspiler()
 
     and: "an expression factory"
-    final ExpressionFactory expression = new ExpressionFactory()
+    final ExpressionFactory factory = new ExpressionFactory()
 
-    when: "we visit short constants"
-    final List<String> results = []
+    and: "a selection of expression"
     final List<Expression> expressions = [
-      expression.constant((short) 10),
-      expression.constant((short) 32),
-      expression.constant((short) -24),
-      expression.constant((Short) 26),
-      expression.constant((Short) null)
+      factory.nonNullConstant((short) 10),
+      factory.nonNullConstant((short) 32),
+      factory.nonNullConstant((short) -24),
+      factory.nullableConstant((Short) 26),
+      factory.nullableConstant((Short) null)
     ]
 
-    for (final Expression visitable : expressions) {
-      visitor.visit(visitable)
-      results.add(visitor.resultingSQL)
-      visitor.clear()
+    when: "we visit the given expressions"
+    final List<String> results = []
+
+    for (final Expression expression : expressions) {
+      results.add(transpiler.transpile(expression))
     }
 
-    then: "we expect that the visitor successfully rendered the visited expressions"
+    then: "we expect that the visitor successfully render the given expressions"
     results == ["10", "32", "-24", "26", "NULL"]
   }
 
-  def "#visit successfully render int constants" () {
+  def "#transpile successfully render int constants" () {
     given: "an SQL expression visitor"
-    final SQLExpressionTranspiler visitor = new SQLExpressionTranspiler()
+    final SQLExpressionTranspiler transpiler = new SQLExpressionTranspiler()
 
     and: "an expression factory"
-    final ExpressionFactory expression = new ExpressionFactory()
+    final ExpressionFactory factory = new ExpressionFactory()
 
-    when: "we visit int constants"
-    final List<String> results = []
+    and: "a selection of expression"
     final List<Expression> expressions = [
-      expression.constant((int) 10),
-      expression.constant((int) 32),
-      expression.constant((int) -24),
-      expression.constant((Integer) 26),
-      expression.constant((Integer) null)
+      factory.nonNullConstant((int) 10),
+      factory.nonNullConstant((int) 32),
+      factory.nonNullConstant((int) -24),
+      factory.nullableConstant((Integer) 26),
+      factory.nullableConstant((Integer) null)
     ]
 
-    for (final Expression visitable : expressions) {
-      visitor.visit(visitable)
-      results.add(visitor.resultingSQL)
-      visitor.clear()
+    when: "we visit the given expressions"
+    final List<String> results = []
+
+    for (final Expression expression : expressions) {
+      results.add(transpiler.transpile(expression))
     }
 
-    then: "we expect that the visitor successfully rendered the visited expressions"
+    then: "we expect that the visitor successfully render the given expressions"
     results == ["10", "32", "-24", "26", "NULL"]
   }
 
-  def "#visit successfully render long constants" () {
+  def "#transpile successfully render long constants" () {
     given: "an SQL expression visitor"
-    final SQLExpressionTranspiler visitor = new SQLExpressionTranspiler()
+    final SQLExpressionTranspiler transpiler = new SQLExpressionTranspiler()
 
     and: "an expression factory"
-    final ExpressionFactory expression = new ExpressionFactory()
+    final ExpressionFactory factory = new ExpressionFactory()
 
-    when: "we visit long constants"
-    final List<String> results = []
+    and: "a selection of expression"
     final List<Expression> expressions = [
-      expression.constant((long) 10),
-      expression.constant((long) 32),
-      expression.constant((long) -24),
-      expression.constant((Long) 26),
-      expression.constant((Long) null)
+      factory.nonNullConstant((long) 10),
+      factory.nonNullConstant((long) 32),
+      factory.nonNullConstant((long) -24),
+      factory.nullableConstant((Long) 26),
+      factory.nullableConstant((Long) null)
     ]
 
-    for (final Expression visitable : expressions) {
-      visitor.visit(visitable)
-      results.add(visitor.resultingSQL)
-      visitor.clear()
+    when: "we visit the given expressions"
+    final List<String> results = []
+
+    for (final Expression expression : expressions) {
+      results.add(transpiler.transpile(expression))
     }
 
-    then: "we expect that the visitor successfully rendered the visited expressions"
+    then: "we expect that the visitor successfully render the given expressions"
     results == ["10", "32", "-24", "26", "NULL"]
   }
 
-  def "#visit successfully render float constants" () {
+  def "#transpile successfully render float constants" () {
     given: "an SQL expression visitor"
-    final SQLExpressionTranspiler visitor = new SQLExpressionTranspiler()
+    final SQLExpressionTranspiler transpiler = new SQLExpressionTranspiler()
 
     and: "an expression factory"
-    final ExpressionFactory expression = new ExpressionFactory()
+    final ExpressionFactory factory = new ExpressionFactory()
 
-    when: "we visit float constants"
-    final List<String> results = []
+    and: "a selection of expression"
     final List<Expression> expressions = [
-      expression.constant((float) 10.36),
-      expression.constant((float) 32.18),
-      expression.constant((float) -24.231),
-      expression.constant((Float) 26.14),
-      expression.constant((Float) null)
+      factory.nonNullConstant((float) 10.36),
+      factory.nonNullConstant((float) 32.18),
+      factory.nonNullConstant((float) -24.231),
+      factory.nullableConstant((Float) 26.14),
+      factory.nullableConstant((Float) null)
     ]
 
-    for (final Expression visitable : expressions) {
-      visitor.visit(visitable)
-      results.add(visitor.resultingSQL)
-      visitor.clear()
+    when: "we visit the given expressions"
+    final List<String> results = []
+
+    for (final Expression expression : expressions) {
+      results.add(transpiler.transpile(expression))
     }
 
-    then: "we expect that the visitor successfully rendered the visited expressions"
+    then: "we expect that the visitor successfully render the given expressions"
     results == ["10.36", "32.18", "-24.231", "26.14", "NULL"]
   }
 
-  def "#visit successfully render double constants" () {
+  def "#transpile successfully render double constants" () {
     given: "an SQL expression visitor"
-    final SQLExpressionTranspiler visitor = new SQLExpressionTranspiler()
+    final SQLExpressionTranspiler transpiler = new SQLExpressionTranspiler()
 
     and: "an expression factory"
-    final ExpressionFactory expression = new ExpressionFactory()
+    final ExpressionFactory factory = new ExpressionFactory()
 
-    when: "we visit double constants"
-    final List<String> results = []
+    and: "a selection of expression"
     final List<Expression> expressions = [
-      expression.constant((double) 10.36),
-      expression.constant((double) 32.18),
-      expression.constant((double) -24.231),
-      expression.constant((Double) 26.14),
-      expression.constant((Double) null)
+      factory.nonNullConstant((double) 10.36),
+      factory.nonNullConstant((double) 32.18),
+      factory.nonNullConstant((double) -24.231),
+      factory.nullableConstant((Double) 26.14),
+      factory.nullableConstant((Double) null)
     ]
 
-    for (final Expression visitable : expressions) {
-      visitor.visit(visitable)
-      results.add(visitor.resultingSQL)
-      visitor.clear()
+    when: "we visit the given expressions"
+    final List<String> results = []
+
+    for (final Expression expression : expressions) {
+      results.add(transpiler.transpile(expression))
     }
 
-    then: "we expect that the visitor successfully rendered the visited expressions"
+    then: "we expect that the visitor successfully render the given expressions"
     results == ["10.36", "32.18", "-24.231", "26.14", "NULL"]
   }
 
-  def "#visit successfully render char constants" () {
+  def "#transpile successfully render char constants" () {
     given: "an SQL expression visitor"
-    final SQLExpressionTranspiler visitor = new SQLExpressionTranspiler()
+    final SQLExpressionTranspiler transpiler = new SQLExpressionTranspiler()
 
     and: "an expression factory"
-    final ExpressionFactory expression = new ExpressionFactory()
+    final ExpressionFactory factory = new ExpressionFactory()
 
-    when: "we visit char constants"
-    final List<String> results = []
+    and: "a selection of expression"
     final List<Expression> expressions = [
-      expression.constant((char) 'a'),
-      expression.constant((char) 'b'),
-      expression.constant((char) '\''),
-      expression.constant(new Character((char) 'à')),
-      expression.constant((Character) null)
+      factory.nonNullConstant((char) 'a'),
+      factory.nonNullConstant((char) 'b'),
+      factory.nonNullConstant((char) '\''),
+      factory.nullableConstant(new Character((char) '"')),
+      factory.nullableConstant((Character) null)
     ]
 
-    for (final Expression visitable : expressions) {
-      visitor.visit(visitable)
-      results.add(visitor.resultingSQL)
-      visitor.clear()
+    when: "we visit the given expressions"
+    final List<String> results = []
+
+    for (final Expression expression : expressions) {
+      results.add(transpiler.transpile(expression))
     }
 
-    then: "we expect that the visitor successfully rendered the visited expressions"
-    results == ["'a'", "'b'", "'\''", "'à'", "NULL"]
+    then: "we expect that the visitor successfully render the given expressions"
+    results == ["\"a\"", "\"b\"", "\"'\"", "\"\\\"\"", "NULL"]
   }
 
-  def "#visit successfully render algebraic operations" () {
+  def "#transpile successfully render algebraic operations" () {
     given: "an SQL expression visitor"
-    final SQLExpressionTranspiler visitor = new SQLExpressionTranspiler()
+    final SQLExpressionTranspiler transpiler = new SQLExpressionTranspiler()
 
     and: "an expression factory"
-    final ExpressionFactory expression = new ExpressionFactory()
+    final ExpressionFactory factory = new ExpressionFactory()
 
-    when: "we visit a complex algebraic operation"
-    visitor.visit(
-      expression.add(
-        expression.multiply(Arrays.asList(
-          expression.constant(5),
-          expression.add(
-            expression.constant(6),
-            expression.subtract(
-              expression.constant(8),
-              expression.constant(3)
+    when: "we transpile a complex algebraic operation"
+    final String result = transpiler.transpile(
+      factory.add(
+        factory.multiply(Arrays.asList(
+          factory.nonNullConstant(5),
+          factory.add(
+            factory.nonNullConstant(6),
+            factory.subtract(
+              factory.nonNullConstant(8),
+              factory.nonNullConstant(3)
             )
           ),
-          expression.divide(
-            expression.constant(1),
-            expression.constant(6)
+          factory.divide(
+            factory.nonNullConstant(1),
+            factory.nonNullConstant(6)
           )
         )),
-        expression.constant(3)
+        factory.nonNullConstant(3)
       )
     )
 
     then: "we expect that the visitor successfully rendered the visited expressions"
-    visitor.resultingSQL == "5 * (6 + 8 - 3) * 1 / 6 + 3"
+    result == "5 * (6 + 8 - 3) * 1 / 6 + 3"
   }
 
-  def "#visit successfully render bitwise operations" () {
+  def "#transpile successfully render bitwise operations" () {
     given: "an SQL expression visitor"
-    final SQLExpressionTranspiler visitor = new SQLExpressionTranspiler()
+    final SQLExpressionTranspiler transpiler = new SQLExpressionTranspiler()
 
     and: "an expression factory"
-    final ExpressionFactory expression = new ExpressionFactory()
+    final ExpressionFactory factory = new ExpressionFactory()
 
-    when: "we visit a complex bitwise operation"
-    visitor.visit(
-      expression.add(
-        expression.bitwiseOr(Arrays.asList(
-          expression.constant(5),
-          expression.bitwiseXor(
-            expression.constant(6),
-            expression.bitwiseOr(
-              expression.constant(8),
-              expression.bitwiseNot(expression.constant(3))
+    when: "we transpile a complex bitwise operation"
+    final String result = transpiler.transpile(
+      factory.add(
+        factory.bitwiseOr(Arrays.asList(
+          factory.nonNullConstant(5),
+          factory.bitwiseXor(
+            factory.nonNullConstant(6),
+            factory.bitwiseOr(
+              factory.nonNullConstant(8),
+              factory.bitwiseNot(factory.nonNullConstant(3))
             )
           ),
-          expression.bitwiseAnd(
-            expression.constant(1),
-            expression.constant(6)
+          factory.bitwiseAnd(
+            factory.nonNullConstant(1),
+            factory.nonNullConstant(6)
           )
         )),
-        expression.constant(3)
+        factory.nonNullConstant(3)
       )
     )
 
     then: "we expect that the visitor successfully rendered the visited expressions"
-    visitor.resultingSQL == "(5 | 6 ^ (8 | ~ 3) | 1 & 6) + 3"
+    result == "(5 | 6 ^ (8 | ~ 3) | 1 & 6) + 3"
   }
 
-  def "#visit successfully render logic operations" () {
+  def "#transpile successfully render logic operations" () {
     given: "an SQL expression visitor"
-    final SQLExpressionTranspiler visitor = new SQLExpressionTranspiler()
+    final SQLExpressionTranspiler transpiler = new SQLExpressionTranspiler()
 
     and: "an expression factory"
-    final ExpressionFactory expression = new ExpressionFactory()
+    final ExpressionFactory factory = new ExpressionFactory()
 
     when: "we visit a complex logic operation"
-    visitor.visit(
-      expression.or(
-        expression.not(
-          expression.and(Arrays.asList(
-            expression.constant(true),
-            expression.xor(
-              expression.constant(false),
-              expression.and(
-                expression.constant(true),
-                expression.not(expression.constant(false))
+    final String result = transpiler.transpile(
+      factory.or(
+        factory.not(
+          factory.and(Arrays.asList(
+            factory.nonNullConstant(true),
+            factory.xor(
+              factory.nonNullConstant(false),
+              factory.and(
+                factory.nonNullConstant(true),
+                factory.not(factory.nonNullConstant(false))
               )
             ),
-            expression.or(
-              expression.constant(true),
-              expression.not(expression.not(expression.constant(true)))
+            factory.or(
+              factory.nonNullConstant(true),
+              factory.not(factory.not(factory.nonNullConstant(true)))
             )
           ))
         ),
-        expression.constant(false)
+        factory.nonNullConstant(false)
       )
     )
 
     then: "we expect that the visitor successfully rendered the visited expressions"
-    visitor.resultingSQL == "NOT (1 AND (0 XOR 1 AND NOT 0) AND (1 OR NOT NOT 1)) OR 0"
+    result == "NOT (1 AND (0 XOR 1 AND NOT 0) AND (1 OR NOT NOT 1)) OR 0"
   }
-  */
 }

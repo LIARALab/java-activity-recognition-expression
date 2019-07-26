@@ -9,7 +9,7 @@ public class NullablePrimitive<Type> extends Primitive<@Nullable Type>
   private final Primitive<@NonNull Type> _nonNullType;
 
   public NullablePrimitive (@NonNull final Primitive<@NonNull Type> primitive) {
-    super(primitive.getJavaClass());
+    super(primitive.getJavaClass(), "@Nullable " + primitive.getName());
     _nonNullType = primitive;
   }
 

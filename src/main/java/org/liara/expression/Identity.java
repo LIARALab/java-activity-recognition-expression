@@ -22,11 +22,17 @@ public final class Identity<Result> implements Expression<Result>
     _children = View.readonly(Expression.class, new Expression[] { _child });
   }
 
+  /**
+   * @see Expression#getChildren()
+   */
   @Override
   public @NonNull View<@NonNull Expression> getChildren () {
     return _children;
   }
 
+  /**
+   * @see Expression#getResultType()
+   */
   @Override
   public @NonNull Primitive<Result> getResultType () {
     return _child.getResultType();

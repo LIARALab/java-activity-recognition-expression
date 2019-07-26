@@ -1,7 +1,6 @@
 package org.liara.data.blueprint.implementation;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
-import org.liara.data.blueprint.ModelElementBuildingContext;
 import org.liara.data.blueprint.NullBlueprint;
 import org.liara.data.blueprint.builder.BlueprintBuildingContext;
 import org.liara.data.blueprint.builder.BlueprintElementBuilder;

@@ -2,14 +2,18 @@ package org.liara.expression;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.liara.data.primitive.Primitive;
+import org.liara.support.view.View;
 
 /**
  * A value that never mutate.
  *
  * @param <Result> Primitive to expect from an evaluation of this expression.
  */
-public class Constant<Result> implements Expression<Result>
+public final class Constant<Result> implements Expression<Result>
 {
+  @NonNull
+  private final static View<@NonNull Expression> CHILDREN = View.readonly(Expression.class);
+
   private final Result _value;
 
   @NonNull
@@ -47,7 +51,15 @@ public class Constant<Result> implements Expression<Result>
    * @see Expression#getResultType()
    */
   @Override
-  public Primitive<Result> getResultType () {
+  public @NonNull Primitive<Result> getResultType () {
     return _type;
+  }
+
+  /**
+   * @see Expression#getChildren()
+   */
+  @Override
+  public @NonNull View<@NonNull Expression> getChildren () {
+    return CHILDREN;
   }
 }

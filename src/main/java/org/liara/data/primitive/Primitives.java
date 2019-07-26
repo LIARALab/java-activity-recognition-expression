@@ -17,7 +17,8 @@ public final class Primitives {
   private final static View<@NonNull Primitive> VIEW = View.readonly(Primitive.class, PRIMITIVES);
 
   @NonNull
-  public final static Primitive<@NonNull Boolean>  BOOLEAN = new Primitive<>(Boolean.class);
+  public final static Primitive<@NonNull Boolean>  BOOLEAN = new Primitive<>(Boolean.class,
+    "boolean");
 
   @NonNull
   public final static Primitive<@Nullable Boolean> NULLABLE_BOOLEAN = (
@@ -25,19 +26,20 @@ public final class Primitives {
   );
 
   @NonNull
-  public final static Primitive<@NonNull Byte> BYTE = new Primitive<>(Byte.class);
+  public final static Primitive<@NonNull Byte> BYTE = new Primitive<>(Byte.class, "byte");
 
   @NonNull
   public final static Primitive<@Nullable Byte> NULLABLE_BYTE = new NullablePrimitive<>(BYTE);
 
   @NonNull
-  public final static Primitive<@NonNull Short> SHORT = new Primitive<>(Short.class);
+  public final static Primitive<@NonNull Short> SHORT = new Primitive<>(Short.class, "short");
 
   @NonNull
   public final static Primitive<@Nullable Short> NULLABLE_SHORT = new NullablePrimitive<>(SHORT);
 
   @NonNull
-  public final static Primitive<@NonNull Integer> INTEGER = new Primitive<>(Integer.class);
+  public final static Primitive<@NonNull Integer> INTEGER = new Primitive<>(Integer.class,
+    "integer");
 
   @NonNull
   public final static Primitive<@Nullable Integer> NULLABLE_INTEGER = (
@@ -45,25 +47,26 @@ public final class Primitives {
   );
 
   @NonNull
-  public final static Primitive<@NonNull Long> LONG = new Primitive<>(Long.class);
+  public final static Primitive<@NonNull Long> LONG = new Primitive<>(Long.class, "long");
 
   @NonNull
   public final static Primitive<@Nullable Long> NULLABLE_LONG = new NullablePrimitive<>(LONG);
 
   @NonNull
-  public final static Primitive<@NonNull Float> FLOAT = new Primitive<>(Float.class);
+  public final static Primitive<@NonNull Float> FLOAT = new Primitive<>(Float.class, "float");
 
   @NonNull
   public final static Primitive<@Nullable Float> NULLABLE_FLOAT = new NullablePrimitive<>(FLOAT);
 
   @NonNull
-  public final static Primitive<@NonNull Double> DOUBLE = new Primitive<>(Double.class);
+  public final static Primitive<@NonNull Double> DOUBLE = new Primitive<>(Double.class, "double");
 
   @NonNull
   public final static Primitive<@Nullable Double> NULLABLE_DOUBLE = new NullablePrimitive<>(DOUBLE);
 
   @NonNull
-  public final static Primitive<@NonNull Character> CHARACTER = new Primitive<>(Character.class);
+  public final static Primitive<@NonNull Character> CHARACTER = new Primitive<>(Character.class,
+    "character");
 
   @NonNull
   public final static Primitive<@Nullable Character> NULLABLE_CHARACTER = (
@@ -71,7 +74,7 @@ public final class Primitives {
   );
 
   @NonNull
-  public final static Primitive<@NonNull String> STRING = new Primitive<>(String.class);
+  public final static Primitive<@NonNull String> STRING = new Primitive<>(String.class, "string");
 
   @NonNull
   public final static Primitive<@Nullable String> NULLABLE_STRING = (
@@ -80,7 +83,7 @@ public final class Primitives {
 
   @NonNull
   public final static Primitive<@NonNull ZonedDateTime> DATE_TIME = (
-    new Primitive<>(ZonedDateTime.class)
+    new Primitive<>(ZonedDateTime.class, "datetime")
   );
 
   @NonNull

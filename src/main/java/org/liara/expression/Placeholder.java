@@ -2,7 +2,7 @@ package org.liara.expression;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.liara.data.primitive.Primitive;
-import org.liara.data.type.DataType;
+import org.liara.support.view.View;
 
 /**
  * A value to define at the evaluation of the given expression.
@@ -12,7 +12,10 @@ import org.liara.data.type.DataType;
 public class Placeholder<Result> implements Expression<Result>
 {
   @NonNull
-  private final Primitive<Result> _type;
+  private final static View<@NonNull Expression> CHILDREN = View.readonly(Expression.class);
+
+  @NonNull
+  private final        Primitive<Result>         _type;
 
   /**
    * Instantiate a new placeholder of a given type.
@@ -29,5 +32,13 @@ public class Placeholder<Result> implements Expression<Result>
   @Override
   public @NonNull Primitive<Result> getResultType () {
     return _type;
+  }
+
+  /**
+   * @see Expression#getChildren()
+   */
+  @Override
+  public @NonNull View<@NonNull Expression> getChildren () {
+    return CHILDREN;
   }
 }
