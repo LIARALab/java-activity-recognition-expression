@@ -6,7 +6,7 @@ import org.liara.data.graph.implementation.StaticColumn;
 import org.liara.data.primitive.Primitive;
 import org.liara.support.view.View;
 
-public class ChainedStaticColumnBuilder<Parent> implements ColumnBuilder
+public class ChainedStaticColumnBuilder<Type, Parent> implements ColumnBuilder<Type>
 {
   @NonNull
   private final Parent _parent;
@@ -19,23 +19,23 @@ public class ChainedStaticColumnBuilder<Parent> implements ColumnBuilder
     _builder = new StaticColumnBuilder();
   }
 
-  public @NonNull Parent ofType (@Nullable final Primitive<?> type) {
+  public @NonNull Parent ofType (@Nullable final Primitive<Type> type) {
     setType(type);
     return _parent;
   }
 
   @Override
-  public @NonNull StaticColumn build (@NonNull final GraphBuildingContext context) {
-    return new StaticColumn(context, this);
+  public @NonNull StaticColumn<Type> build (@NonNull final GraphBuildingContext context) {
+    return new StaticColumn<>(context, this);
   }
 
   @Override
-  public @Nullable Primitive<?> getType () {
+  public @Nullable Primitive<Type> getType () {
     return _builder.getType();
   }
 
   @Override
-  public void setType (@Nullable final Primitive<?> type) {
+  public void setType (@Nullable final Primitive<Type> type) {
     _builder.setType(type);
   }
 }

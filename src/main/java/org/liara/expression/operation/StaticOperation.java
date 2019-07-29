@@ -1,12 +1,14 @@
 package org.liara.expression.operation;
 
+import org.checkerframework.checker.index.qual.NonNegative;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.liara.data.primitive.Primitive;
+import org.liara.expression.RewritableExpression;
 import org.liara.support.view.View;
 import org.liara.expression.Expression;
 import java.util.Objects;
 
-public class StaticOperation<Result> implements Operation<Result>
+public class StaticOperation<Result> implements Operation<Result>, RewritableExpression<Result>
 {
   @NonNull
   private final View<@NonNull Expression> _operands;
@@ -44,6 +46,21 @@ public class StaticOperation<Result> implements Operation<Result>
   }
 
   /**
+   * Rewrite an existing operation.
+   *
+   * @param origin Original operation.
+   * @param operands The new operands of the given operation.
+   */
+  private StaticOperation (
+    @NonNull final StaticOperation<Result> origin,
+    @NonNegative final Expression[] operands
+  ) {
+    _operands = View.readonly(Expression.class, operands);
+    _operator = origin.getOperator();
+    _type = origin.getResultType();
+  }
+
+  /**
    * @see Operation#getResultType()
    */
   @Override
@@ -65,5 +82,26 @@ public class StaticOperation<Result> implements Operation<Result>
   @Override
   public @NonNull View<@NonNull Expression> getChildren () {
     return _operands;
+  }
+
+  /**
+   * @see RewritableExpression#rewrite(int, Expression)
+   */
+  @Override
+  public @NonNull Expression<Result> rewrite (
+    @NonNegative final int index,
+    @NonNull final Expression<?> expression
+  ) {
+    if (index < _operands.getSize()) {
+      @NonNull final Expression[] operands = getChildren().toArray();
+      operands[index] = expression;
+
+      return new StaticOperation<>(this, operands);
+    } else {
+      throw new IllegalArgumentException(
+        "Unable to rewrite the " + index + "th child of this operation expression because " +
+        "this operation expression only have " + getChildren().getSize() + " children."
+      );
+    }
   }
 }

@@ -29,10 +29,10 @@ public class StaticTableBuilder
     _columnsView = View.readonly(ColumnBuilder.class, _columns.getValues());
   }
 
-  public @NonNull ChainedStaticColumnBuilder<StaticTableBuilder> column (
+  public <Type> @NonNull ChainedStaticColumnBuilder<Type, StaticTableBuilder> column (
     @NonNull final String name
   ) {
-    @NonNull final ChainedStaticColumnBuilder<StaticTableBuilder> builder = (
+    @NonNull final ChainedStaticColumnBuilder<Type, StaticTableBuilder> builder = (
       new ChainedStaticColumnBuilder<>(this)
     );
 

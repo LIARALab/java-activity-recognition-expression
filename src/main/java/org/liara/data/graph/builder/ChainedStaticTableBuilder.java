@@ -22,10 +22,10 @@ public class ChainedStaticTableBuilder<Parent> implements TableBuilder
     return new StaticTable(context, this);
   }
 
-  public @NonNull ChainedStaticColumnBuilder<ChainedStaticTableBuilder<Parent>> column (
+  public <Type> @NonNull ChainedStaticColumnBuilder<Type, ChainedStaticTableBuilder<Parent>> column (
     @NonNull final String name
   ) {
-    @NonNull final ChainedStaticColumnBuilder<ChainedStaticTableBuilder<Parent>> builder = (
+    @NonNull final ChainedStaticColumnBuilder<Type, ChainedStaticTableBuilder<Parent>> builder = (
       new ChainedStaticColumnBuilder<>(this)
     );
 

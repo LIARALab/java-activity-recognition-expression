@@ -12,17 +12,17 @@ import org.liara.data.primitive.Primitive;
 
 import java.util.Objects;
 
-public class StaticColumn extends StaticGraphElement implements Column
+public class StaticColumn<Type> extends StaticGraphElement implements Column<Type>
 {
   @NonNegative
   private final int _tableIdentifier;
 
   @NonNull
-  private final Primitive<?> _type;
+  private final Primitive<Type> _type;
 
   public StaticColumn (
     @NonNull final GraphBuildingContext context,
-    @NonNull final ColumnBuilder builder
+    @NonNull final ColumnBuilder<Type> builder
   ) {
     super(context, builder);
     _tableIdentifier = context.getTableIdentifier(builder);
@@ -49,7 +49,7 @@ public class StaticColumn extends StaticGraphElement implements Column
    * @see Column#getType()
    */
   @Override
-  public @NonNull Primitive<?> getType () {
+  public @NonNull Primitive<Type> getType () {
     return _type;
   }
 }

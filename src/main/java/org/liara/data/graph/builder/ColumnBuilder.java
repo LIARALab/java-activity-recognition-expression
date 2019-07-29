@@ -8,7 +8,7 @@ import org.liara.data.primitive.Primitive;
 /**
  * An object that describe a data table's column.
  */
-public interface ColumnBuilder extends GraphElementBuilder
+public interface ColumnBuilder<Type> extends GraphElementBuilder
 {
   /**
    * Build the column in a given context.
@@ -17,12 +17,12 @@ public interface ColumnBuilder extends GraphElementBuilder
    *
    * @return A new column instance.
    */
-  @NonNull Column build (@NonNull final GraphBuildingContext context);
+  @NonNull Column<Type> build (@NonNull final GraphBuildingContext context);
 
   /**
    * @return Primitive type of value stored into this column.
    */
-  @Nullable Primitive<?> getType();
+  @Nullable Primitive<Type> getType();
 
-  void setType (@Nullable final Primitive<?> primitive);
+  void setType (@Nullable final Primitive<Type> primitive);
 }

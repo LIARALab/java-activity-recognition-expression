@@ -40,7 +40,7 @@ public class ExpressionFactory
   }
 
   public <Type> @NonNull Expression<Type> placeholder (@NonNull final Primitive<Type> type) {
-    return new Placeholder<>(type);
+    return new StaticPlaceholder<>(type);
   }
 
   public <Type> @NonNull Expression<@Nullable Type> nullableConstant (

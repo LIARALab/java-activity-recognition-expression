@@ -13,6 +13,30 @@ import org.liara.support.view.View;
 public interface Expression<Result> extends TreeElement
 {
   /**
+   * Cast an unknown expression type to a known one.
+   *
+   * @param type Expected type of the expression.
+   * @param expression Expression to cast.
+   *
+   * @param <Cast> Expected result type of the given expression.
+   *
+   * @return An expression of known type.
+   */
+  static <Cast> Expression<Cast> cast (
+    @NonNull final Primitive<Cast> type,
+    @NonNull final Expression<?> expression
+  ) {
+    if (expression.getResultType().equals(type)) {
+      return (Expression<Cast>) expression;
+    } else {
+      throw new IllegalArgumentException(
+        "Unable to cast an expression of " + expression.getResultType().toString() + " result " +
+        "to an expression of " + type.toString() + " result."
+      );
+    }
+  }
+
+  /**
    * @return The type of result to expect from an evaluation of this expression.
    */
   @NonNull Primitive<Result> getResultType();

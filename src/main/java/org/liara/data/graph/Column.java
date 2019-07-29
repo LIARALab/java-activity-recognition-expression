@@ -6,7 +6,7 @@ import org.liara.data.primitive.Primitive;
 /**
  * A table column.
  */
-public interface Column extends GraphElement {
+public interface Column<Type> extends GraphElement {
   /**
    * @return The table that contains this column.
    */
@@ -20,5 +20,5 @@ public interface Column extends GraphElement {
   /**
    * @return Primitive type of value stored into this column.
    */
-  @NonNull Primitive<?> getType();
+  @NonNull Primitive<Type> getType();
 }
