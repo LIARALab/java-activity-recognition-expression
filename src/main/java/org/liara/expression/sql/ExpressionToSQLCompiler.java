@@ -130,13 +130,17 @@ public class ExpressionToSQLCompiler
    * Let the compiler enter into the next child expression.
    *
    * @param output The string builder to fill with the compiled content.
+   *
+   * @return The entered expression.
    */
-  public void enter (@NonNull final StringBuilder output) {
+  public @NonNull Expression<?> enter (@NonNull final StringBuilder output) {
     @NonNull final Expression<?> expression = _walker.enter();
 
     if (expression instanceof Operation) {
       enterOperation((Operation<?>) expression, output);
     }
+
+    return expression;
   }
 
   /**
@@ -193,8 +197,10 @@ public class ExpressionToSQLCompiler
    * Let the compiler moves out of its current node.
    *
    * @param output The string builder to fill with the compiled content.
+   *
+   * @return The exited expression.
    */
-  public void exit (@NonNull final StringBuilder output) {
+  public @NonNull Expression<?> exit (@NonNull final StringBuilder output) {
     @NonNull final Expression<?> expression = _walker.exit();
 
     if (expression instanceof Constant) {
@@ -206,6 +212,8 @@ public class ExpressionToSQLCompiler
     if (_walker.hasCurrent()) {
       back(output);
     }
+
+    return expression;
   }
 
   /**
