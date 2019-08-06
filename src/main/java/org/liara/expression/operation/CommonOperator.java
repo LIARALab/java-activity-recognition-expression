@@ -1,5 +1,6 @@
 package org.liara.expression.operation;
 
+import org.checkerframework.checker.index.qual.NonNegative;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 public class CommonOperator
@@ -8,16 +9,16 @@ public class CommonOperator
   public static void load () {}
 
   @NonNull
-  public static final CommonOperator MINUS = new CommonOperator();
+  public static final CommonOperator MINUS = new CommonOperator(1);
 
   @NonNull
-  public static final CommonOperator PLUS = new CommonOperator();
+  public static final CommonOperator PLUS = new CommonOperator(1);
 
   @NonNull
-  public static final CommonOperator NOT = new CommonOperator();
+  public static final CommonOperator NOT = new CommonOperator(1);
 
   @NonNull
-  public static final CommonOperator BITWISE_NOT = new CommonOperator();
+  public static final CommonOperator BITWISE_NOT = new CommonOperator(1);
 
   @NonNull
   public static final CommonOperator OR = new CommonOperator();
@@ -78,4 +79,11 @@ public class CommonOperator
 
   @NonNull
   public static final CommonOperator BITWISE_XOR = new CommonOperator();
+
+  private CommonOperator () {
+  }
+
+  private CommonOperator (@NonNegative final int order) {
+    super(order);
+  }
 }

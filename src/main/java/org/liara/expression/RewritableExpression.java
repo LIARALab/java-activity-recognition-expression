@@ -16,10 +16,22 @@ public interface RewritableExpression<Result> extends Expression<Result>
    * @param index Index of the children expression to replace.
    * @param expression The expression to set.
    *
-   * @return A copy of this expression with one of its children expression replaced by the given one.
+   * @return A copy of this expression with one of its children expression replaced by the given
+   * one.
    */
   @NonNull Expression<Result> rewrite (
     @NonNegative final int index,
     @NonNull final Expression<?> expression
   );
+
+  /**
+   * Return a copy of this expression with all of its children expression replaced by the given
+   * ones.
+   *
+   * @param expressions New children expression of this expression.
+   *
+   * @return A copy of this expression with all of its children expression replaced by the given
+   * ones.
+   */
+  @NonNull Expression<Result> rewrite (@NonNull final Expression[] expressions);
 }

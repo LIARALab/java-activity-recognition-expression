@@ -64,4 +64,23 @@ public final class Identity<Result> implements RewritableExpression<Result>
       );
     }
   }
+
+
+  /**
+   * @see RewritableExpression#rewrite(Expression[])
+   */
+  @Override
+  public @NonNull Identity<Result> rewrite (
+    @NonNull final Expression[] expressions
+  ) {
+    if (expressions.length == 1) {
+      return rewrite(0, expressions[0]);
+    } else {
+      throw new IllegalArgumentException(
+        "Unable to rewrite all children of this identity expression because the given " +
+        "children list is too long or does not contains enough elements : " +
+        expressions.length + " != 1."
+      );
+    }
+  }
 }

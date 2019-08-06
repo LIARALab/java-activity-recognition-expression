@@ -104,4 +104,22 @@ public class StaticOperation<Result> implements Operation<Result>, RewritableExp
       );
     }
   }
+
+  /**
+   * @see RewritableExpression#rewrite(Expression[])
+   */
+  @Override
+  public @NonNull Expression<Result> rewrite (
+    @NonNull final Expression[] expressions
+  ) {
+    if (expressions.length == _operands.getSize()) {
+      return new StaticOperation<>(this, expressions);
+    } else {
+      throw new IllegalArgumentException(
+        "Unable to rewrite this operation expression with the given ones because " +
+        "the given array of expression does not have the right size : " + expressions.length +
+        " != " + _operands.getSize()
+      );
+    }
+  }
 }

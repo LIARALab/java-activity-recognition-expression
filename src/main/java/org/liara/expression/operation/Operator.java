@@ -53,11 +53,20 @@ public class Operator
   @NonNegative
   private final int _identifier;
 
+  @NonNegative
+  private final int _order;
+
   /**
    * Instantiate an operator.
    */
   public Operator () {
     _identifier = Operator.register(this);
+    _order = 2;
+  }
+
+  public Operator (@NonNegative final int order) {
+    _identifier = Operator.register(this);
+    _order = order;
   }
 
   /**
@@ -65,6 +74,13 @@ public class Operator
    */
   public @NonNegative int getIdentifier () {
     return _identifier;
+  }
+
+  /**
+   * @return The order of this operator.
+   */
+  public @NonNegative int getOrder () {
+    return _order;
   }
 
   @Override
