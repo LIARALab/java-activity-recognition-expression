@@ -13,9 +13,9 @@ public class ListView<T> implements View<T>
   private final Class<T> _valueClass;
 
   @NonNull
-  private final List<T> _wrapped;
+  private final List<? extends T> _wrapped;
 
-  public ListView (@NonNull final Class<T> valueClass, @NonNull final List<T> list) {
+  public ListView (@NonNull final Class<T> valueClass, @NonNull final List<? extends T> list) {
     _wrapped = list;
     _valueClass = valueClass;
   }

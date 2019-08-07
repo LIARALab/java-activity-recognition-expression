@@ -14,5 +14,5 @@ public interface TableBuilder extends GraphElementBuilder
 
   @NonNull View<@NonNull String> getColumnNames ();
 
-  @NonNull View<@NonNull ColumnBuilder> getColumns ();
+  @NonNull View<? extends @NonNull ColumnBuilder> getColumns ();
 }

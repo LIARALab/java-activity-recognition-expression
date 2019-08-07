@@ -54,7 +54,7 @@ public interface View<T> extends Iterable<T>
    */
   static <T> @NonNull View<T> readonly (
     @NonNull final Class<T> valueClass,
-    @NonNull final List<T> list
+    @NonNull final List<? extends T> list
   ) {
     return new ListView<>(valueClass, list);
   }

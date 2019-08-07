@@ -54,7 +54,7 @@ public class StaticGraphBuilder implements GraphBuilder
     for (int table = 0, tables = _tables.getSize(); table < tables; ++table) {
       content.getTables().put(_tables.getKey(table), _tables.getValue(table).build(_context));
 
-      @NonNull final View<@NonNull ColumnBuilder> columnBuilders = (
+      @NonNull final View<? extends @NonNull ColumnBuilder> columnBuilders = (
         _tables.getValue(table).getColumns()
       );
 
@@ -72,7 +72,7 @@ public class StaticGraphBuilder implements GraphBuilder
     @NonNegative int nextColumnIdentifier = 0;
 
     for (int table = 0, tables = _tables.getSize(); table < tables; ++table) {
-      @NonNull final View<@NonNull ColumnBuilder> columnBuilders = (
+      @NonNull final View<? extends @NonNull ColumnBuilder> columnBuilders = (
         _tables.getValue(table).getColumns()
       );
 
