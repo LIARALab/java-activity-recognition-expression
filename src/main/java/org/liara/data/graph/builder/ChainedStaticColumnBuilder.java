@@ -34,7 +34,6 @@ public class ChainedStaticColumnBuilder<Type, Parent> implements ColumnBuilder<T
     return _builder.getType();
   }
 
-  @Override
   public void setType (@Nullable final Primitive<Type> type) {
     _builder.setType(type);
   }

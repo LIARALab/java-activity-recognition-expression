@@ -46,7 +46,6 @@ public class StaticTableBuilder
     return new StaticTable(context, this);
   }
 
-  @Override
   public void putColumn (
     @NonNull final String name, 
     @NonNull final ColumnBuilder builder
@@ -54,12 +53,10 @@ public class StaticTableBuilder
     _columns.put(name, builder);
   }
 
-  @Override
   public void removeColumn (@NonNull final String name) {
     _columns.remove(name);
   }
 
-  @Override
   public void renameColumn (
     @NonNull final String oldName,
     @NonNull final String newName

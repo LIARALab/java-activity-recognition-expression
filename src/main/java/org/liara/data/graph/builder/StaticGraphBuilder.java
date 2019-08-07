@@ -106,9 +106,11 @@ public class StaticGraphBuilder implements GraphBuilder
   }
 
   /**
-   * @see GraphBuilder#putTable(String, TableBuilder)
+   * Add or replace a table of this graph.
+   *
+   * @param name Name of the table to add or replace.
+   * @param builder The builder to use for instantiating the given table.
    */
-  @Override
   public void putTable (
     @NonNull final String name, 
     @NonNull final TableBuilder builder
@@ -117,17 +119,20 @@ public class StaticGraphBuilder implements GraphBuilder
   }
 
   /**
-   * @see GraphBuilder#removeTable(String)
+   * Remove a table from this graph.
+   *
+   * @param name Name of the table to remove.
    */
-  @Override
   public void removeTable (@NonNull final String name) {
     _tables.remove(name);
   }
 
   /**
-   * @see GraphBuilder#renameTable(String, String)
+   * Rename a table of this graph.
+   *
+   * @param oldName Name of the table to rename.
+   * @param newName New name to set for the given table.
    */
-  @Override
   public void renameTable (
     @NonNull final String oldName,
     @NonNull final String newName

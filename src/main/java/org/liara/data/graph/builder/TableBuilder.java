@@ -8,12 +8,6 @@ public interface TableBuilder extends GraphElementBuilder
 {
   @NonNull Table build (@NonNull final GraphBuildingContext context);
 
-  void putColumn (@NonNull final String name, @NonNull final ColumnBuilder builder);
-
-  void removeColumn (@NonNull final String name);
-
-  void renameColumn (@NonNull final String oldName, @NonNull final String newName);
-
   @NonNull ColumnBuilder getColumn (@NonNull final String name);
 
   boolean containsColumn (@NonNull final String name);

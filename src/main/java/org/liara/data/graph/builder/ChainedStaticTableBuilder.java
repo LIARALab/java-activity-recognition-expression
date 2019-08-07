@@ -34,7 +34,6 @@ public class ChainedStaticTableBuilder<Parent> implements TableBuilder
     return builder;
   }
 
-  @Override
   public void putColumn (
     final @NonNull String name,
     final @NonNull ColumnBuilder builder
@@ -42,12 +41,10 @@ public class ChainedStaticTableBuilder<Parent> implements TableBuilder
     _builder.putColumn(name, builder);
   }
 
-  @Override
   public void removeColumn (final @NonNull String name) {
     _builder.removeColumn(name);
   }
 
-  @Override
   public void renameColumn (
     final @NonNull String oldName,
     final @NonNull String newName

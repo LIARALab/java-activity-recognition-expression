@@ -28,7 +28,6 @@ public class StaticColumnBuilder<Type> implements ColumnBuilder<Type>
     return _type;
   }
 
-  @Override
   public void setType (@Nullable final Primitive<Type> type) {
     _type = type;
   }

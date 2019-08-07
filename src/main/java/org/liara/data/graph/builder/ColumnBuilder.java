@@ -23,6 +23,4 @@ public interface ColumnBuilder<Type> extends GraphElementBuilder
    * @return Primitive type of value stored into this column.
    */
   @Nullable Primitive<Type> getType();
-
-  void setType (@Nullable final Primitive<Type> primitive);
 }

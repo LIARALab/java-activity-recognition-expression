@@ -14,29 +14,6 @@ public interface GraphBuilder
   @NonNull Graph build ();
 
   /**
-   * Add or replace a table of this graph.
-   *
-   * @param name Name of the table to add or replace.
-   * @param builder The builder to use for instantiating the given table.
-   */
-  void putTable (@NonNull final String name, @NonNull final TableBuilder builder);
-
-  /**
-   * Remove a table from this graph.
-   *
-   * @param name Name of the table to remove.
-   */
-  void removeTable (@NonNull final String name);
-
-  /**
-   * Rename a table of this graph.
-   *
-   * @param oldName Name of the table to rename.
-   * @param newName New name to set for the given table.
-   */
-  void renameTable (@NonNull final String oldName, @NonNull final String newName);
-
-  /**
    * Return a table of this graph.
    *
    * @param name Name of the table to get.
