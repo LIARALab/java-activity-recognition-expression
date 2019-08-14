@@ -221,6 +221,28 @@ public class ExpressionFactory
     return _staticOperationBuilder.build(operands.get(0).getResultType());
   }
 
+  public <@NonNull T extends Number> @NonNull Expression<@NonNull T> modulus (
+    @NonNull final Expression<@NonNull T> leftOperand,
+    @NonNull final Expression<@NonNull T> rightOperand
+  ) {
+    _staticOperationBuilder.clear();
+    _staticOperationBuilder.addOperand(leftOperand);
+    _staticOperationBuilder.addOperand(rightOperand);
+    _staticOperationBuilder.setOperator(CommonOperator.MODULUS);
+
+    return _staticOperationBuilder.build(leftOperand.getResultType());
+  }
+
+  public <@NonNull T extends Number> @NonNull Expression<@NonNull T> modulus (
+    @NonNull @MinLen(1) final List<@NonNull Expression<@NonNull T>> operands
+  ) {
+    _staticOperationBuilder.clear();
+    _staticOperationBuilder.addOperands(operands);
+    _staticOperationBuilder.setOperator(CommonOperator.MODULUS);
+
+    return _staticOperationBuilder.build(operands.get(0).getResultType());
+  }
+
   public <@NonNull T extends Number> @NonNull Expression<@NonNull T> bitwiseOr (
     @NonNull final Expression<@NonNull T> leftOperand,
     @NonNull final Expression<@NonNull T> rightOperand
@@ -327,16 +349,13 @@ public class ExpressionFactory
     return _staticOperationBuilder.build(Primitives.BOOLEAN);
   }
 
-  public <@NonNull Compared, @NonNull Target extends Comparable<Compared>>
+  public <@NonNull Target extends Comparable<Target>>
   @NonNull Expression<@NonNull Boolean> between (
     @NonNull final Expression<@NonNull Target> target,
-    @NonNull final Expression<@NonNull Compared> lower,
-    @NonNull final Expression<@NonNull Compared> upper
+    @NonNull final Expression<@NonNull Target> lower,
+    @NonNull final Expression<@NonNull Target> upper
   ) {
-    return and(
-      greaterThanOrEqual(target, lower),
-      lessThanOrEqual(target, upper)
-    );
+    return new Range<>(target, lower, upper);
   }
 
   public <@NonNull Right, @NonNull Left extends Comparable<Right>>

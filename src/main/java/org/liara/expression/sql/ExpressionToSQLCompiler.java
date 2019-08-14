@@ -122,6 +122,10 @@ public class ExpressionToSQLCompiler
 
       if (_walker.canExit()) {
         exit(output);
+
+        if (_walker.hasCurrent()) {
+          back(output);
+        }
       }
     }
   }
@@ -207,10 +211,6 @@ public class ExpressionToSQLCompiler
       exitConstant((Constant<?>) expression, output);
     } else if (expression instanceof Operation) {
       exitOperation((Operation<?>) expression, output);
-    }
-
-    if (_walker.hasCurrent()) {
-      back(output);
     }
 
     return expression;
@@ -315,12 +315,14 @@ public class ExpressionToSQLCompiler
    *
    * @param output The string builder to fill with the compiled content.
    */
-  private void back (@NonNull final StringBuilder output) {
+  public @NonNull Expression<?> back (@NonNull final StringBuilder output) {
     @NonNull final Expression<?> expression = _walker.current();
 
     if (expression instanceof Operation) {
       backOperation((Operation<?>) expression, output);
     }
+
+    return expression;
   }
 
   /**
