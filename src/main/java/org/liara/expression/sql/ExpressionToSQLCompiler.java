@@ -6,6 +6,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.liara.expression.Constant;
 import org.liara.expression.Expression;
+import org.liara.expression.Range;
 import org.liara.expression.operation.Operation;
 import org.liara.expression.operation.Operator;
 import org.liara.expression.operation.CommonOperator;
@@ -45,10 +46,11 @@ public class ExpressionToSQLCompiler
     PRECEDENCE.set(CommonOperator.LESS_THAN_OR_EQUAL.getIdentifier(), 8);
     PRECEDENCE.set(CommonOperator.LESS_THAN.getIdentifier(), 8);
     PRECEDENCE.set(CommonOperator.NOT_EQUAL.getIdentifier(),8);
-    PRECEDENCE.set(CommonOperator.NOT.getIdentifier(), 9);
-    PRECEDENCE.set(CommonOperator.AND.getIdentifier(), 10);
-    PRECEDENCE.set(CommonOperator.XOR.getIdentifier(), 11);
-    PRECEDENCE.set(CommonOperator.OR.getIdentifier(), 12);
+    PRECEDENCE.set(CommonOperator.BETWEEN.getIdentifier(),9);
+    PRECEDENCE.set(CommonOperator.NOT.getIdentifier(), 10);
+    PRECEDENCE.set(CommonOperator.AND.getIdentifier(), 11);
+    PRECEDENCE.set(CommonOperator.XOR.getIdentifier(), 12);
+    PRECEDENCE.set(CommonOperator.OR.getIdentifier(), 13);
   }
 
   @NonNull
@@ -142,9 +144,19 @@ public class ExpressionToSQLCompiler
 
     if (expression instanceof Operation) {
       enterOperation((Operation<?>) expression, output);
+    } else if (expression instanceof Range) {
+      enterRange((Range<?>) expression, output);
     }
 
     return expression;
+  }
+
+  private <T extends Comparable<T>> void enterRange (
+    @NonNull final Range<T> expression,
+    @NonNull final StringBuilder output
+  ) {
+    _operators.add(CommonOperator.BETWEEN);
+    if (doViolatePrecedence()) output.append('(');
   }
 
   /**
@@ -211,9 +223,32 @@ public class ExpressionToSQLCompiler
       exitConstant((Constant<?>) expression, output);
     } else if (expression instanceof Operation) {
       exitOperation((Operation<?>) expression, output);
+    } else if (expression instanceof Range) {
+      exitRange((Range<?>) expression, output);
+    }
+
+    if (_walker.hasCurrent() && _walker.current() instanceof Range) {
+      @NonNull final Range<?> range = (Range<?>) _walker.current();
+
+      if (expression == range.getValue()) {
+        output.append(" BETWEEN ");
+      } else if (expression == range.getMinimum()) {
+        output.append(" AND ");
+      }
     }
 
     return expression;
+  }
+
+  private <T extends Comparable<T>> void exitRange (
+    final Range<T> expression,
+    final StringBuilder output
+  ) {
+    if (doViolatePrecedence()) {
+      output.append(')');
+    }
+
+    _operators.remove(_operators.size() - 1);
   }
 
   /**

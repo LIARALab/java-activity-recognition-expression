@@ -355,4 +355,40 @@ class ExpressionToSQLCompilerSpecification
     then: "we expect that the compiler successfully rendered the visited expressions"
     output.toString() == "NOT (1 AND (0 XOR 1 AND NOT 0) AND (1 OR NOT NOT 1)) OR 0"
   }
+
+  def "#compile successfully render range operations" () {
+    given: "an SQL expression compiler"
+    final ExpressionToSQLCompiler compiler = new ExpressionToSQLCompiler()
+
+    and: "an expression factory"
+    final ExpressionFactory factory = new ExpressionFactory()
+
+    and: "an expression"
+    final Expression expression = factory.between(
+      factory.bitwiseOr(Arrays.asList(
+        factory.nonNullConstant(5),
+        factory.bitwiseAnd(
+          factory.nonNullConstant(1),
+          factory.nonNullConstant(6)
+        )
+      )),
+      factory.bitwiseXor(
+        factory.nonNullConstant(6),
+        factory.bitwiseOr(
+          factory.nonNullConstant(8),
+          factory.bitwiseNot(factory.nonNullConstant(3))
+        )
+      ),
+      factory.nonNullConstant(3)
+    )
+
+    when: "we compile a range operation"
+    final StringBuilder output = new StringBuilder()
+
+    compiler.setExpression(expression)
+    compiler.compile(output)
+
+    then: "we expect that the compiler successfully rendered the range expression"
+    output.toString() == "5 | 1 & 6 BETWEEN 6 ^ (8 | ~ 3) AND 3"
+  }
 }

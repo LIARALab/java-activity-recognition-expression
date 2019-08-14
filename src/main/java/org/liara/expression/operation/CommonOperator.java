@@ -80,6 +80,9 @@ public class CommonOperator
   @NonNull
   public static final CommonOperator BITWISE_XOR = new CommonOperator();
 
+  @NonNull
+  public static final CommonOperator BETWEEN = new CommonOperator();
+
   private CommonOperator () {
   }
 
