@@ -83,6 +83,12 @@ public class CommonOperator
   @NonNull
   public static final CommonOperator BETWEEN = new CommonOperator();
 
+  @NonNull
+  public static final CommonOperator LIKE = new CommonOperator();
+
+  @NonNull
+  public static final CommonOperator REGEXP = new CommonOperator();
+
   private CommonOperator () {
   }
 

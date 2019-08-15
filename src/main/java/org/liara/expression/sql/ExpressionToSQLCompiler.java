@@ -46,6 +46,8 @@ public class ExpressionToSQLCompiler
     PRECEDENCE.set(CommonOperator.LESS_THAN_OR_EQUAL.getIdentifier(), 8);
     PRECEDENCE.set(CommonOperator.LESS_THAN.getIdentifier(), 8);
     PRECEDENCE.set(CommonOperator.NOT_EQUAL.getIdentifier(),8);
+    PRECEDENCE.set(CommonOperator.LIKE.getIdentifier(),8);
+    PRECEDENCE.set(CommonOperator.REGEXP.getIdentifier(),8);
     PRECEDENCE.set(CommonOperator.BETWEEN.getIdentifier(),9);
     PRECEDENCE.set(CommonOperator.NOT.getIdentifier(), 10);
     PRECEDENCE.set(CommonOperator.AND.getIdentifier(), 11);
@@ -77,6 +79,8 @@ public class ExpressionToSQLCompiler
     SYMBOLS.set(CommonOperator.LESS_THAN_OR_EQUAL.getIdentifier(), "<=");
     SYMBOLS.set(CommonOperator.LESS_THAN.getIdentifier(), "<");
     SYMBOLS.set(CommonOperator.NOT_EQUAL.getIdentifier(), "!=");
+    SYMBOLS.set(CommonOperator.LIKE.getIdentifier(), "LIKE");
+    SYMBOLS.set(CommonOperator.REGEXP.getIdentifier(), "REGEXP");
     SYMBOLS.set(CommonOperator.AND.getIdentifier(), "AND");
     SYMBOLS.set(CommonOperator.XOR.getIdentifier(), "XOR");
     SYMBOLS.set(CommonOperator.OR.getIdentifier(), "OR");

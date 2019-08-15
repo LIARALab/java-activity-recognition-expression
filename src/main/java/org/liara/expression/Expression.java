@@ -22,6 +22,7 @@ public interface Expression<Result> extends TreeElement
    *
    * @return An expression of known type.
    */
+  @SuppressWarnings("unchecked") // Checked by result type comparison.
   static <Cast> Expression<Cast> cast (
     @NonNull final Primitive<Cast> type,
     @NonNull final Expression<?> expression

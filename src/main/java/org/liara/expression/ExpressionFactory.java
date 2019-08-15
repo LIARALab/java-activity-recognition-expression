@@ -8,7 +8,6 @@ import org.liara.data.primitive.Primitive;
 import org.liara.data.primitive.Primitives;
 import org.liara.expression.operation.CommonOperator;
 import org.liara.expression.operation.StaticOperationBuilder;
-import org.liara.expression.function.StaticFunctionExpressionBuilder;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -27,12 +26,8 @@ public class ExpressionFactory
   @NonNull
   private final StaticOperationBuilder _staticOperationBuilder;
 
-  @NonNull
-  private final StaticFunctionExpressionBuilder _staticFunctionExpressionBuilder;
-
   public ExpressionFactory () {
     _staticOperationBuilder = new StaticOperationBuilder();
-    _staticFunctionExpressionBuilder = new StaticFunctionExpressionBuilder();
   }
 
   public <Type> @NonNull Expression<Type> identity (@NonNull final Expression<Type> value) {
@@ -418,6 +413,30 @@ public class ExpressionFactory
     _staticOperationBuilder.addOperand(left);
     _staticOperationBuilder.addOperand(right);
     _staticOperationBuilder.setOperator(CommonOperator.EQUAL);
+
+    return _staticOperationBuilder.build(Primitives.BOOLEAN);
+  }
+
+  public @NonNull Expression<@NonNull Boolean> like (
+    @NonNull final Expression<@NonNull String> left,
+    @NonNull final Expression<@NonNull String> right
+  ) {
+    _staticOperationBuilder.clear();
+    _staticOperationBuilder.addOperand(left);
+    _staticOperationBuilder.addOperand(right);
+    _staticOperationBuilder.setOperator(CommonOperator.LIKE);
+
+    return _staticOperationBuilder.build(Primitives.BOOLEAN);
+  }
+
+  public @NonNull Expression<@NonNull Boolean> regexp (
+    @NonNull final Expression<@NonNull String> left,
+    @NonNull final Expression<@NonNull String> right
+  ) {
+    _staticOperationBuilder.clear();
+    _staticOperationBuilder.addOperand(left);
+    _staticOperationBuilder.addOperand(right);
+    _staticOperationBuilder.setOperator(CommonOperator.REGEXP);
 
     return _staticOperationBuilder.build(Primitives.BOOLEAN);
   }
