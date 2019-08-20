@@ -1,12 +1,11 @@
 package org.liara.expression.sql;
 
 import org.apache.commons.text.StringEscapeUtils;
-import org.checkerframework.checker.index.qual.NonNegative;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.liara.expression.Constant;
 import org.liara.expression.Expression;
-import org.liara.expression.Range;
+import org.liara.expression.operation.StaticRange;
 import org.liara.expression.operation.Operation;
 import org.liara.expression.operation.Operator;
 import org.liara.expression.operation.CommonOperator;
@@ -16,82 +15,43 @@ import java.util.*;
 
 public class ExpressionToSQLCompiler
 {
-  static {
-    CommonOperator.load();
-  }
-
   @NonNull
-  private static final List<@NonNegative @NonNull Integer> PRECEDENCE;
-
-  static {
-    PRECEDENCE = new ArrayList<>(Operator.getCount());
-
-    for (int index = 0; index < Operator.getCount(); ++index) PRECEDENCE.add(0);
-
-    PRECEDENCE.set(CommonOperator.MINUS.getIdentifier(), 1);
-    PRECEDENCE.set(CommonOperator.BITWISE_NOT.getIdentifier(), 1);
-    PRECEDENCE.set(CommonOperator.BITWISE_XOR.getIdentifier(), 2);
-    PRECEDENCE.set(CommonOperator.MULTIPLICATION.getIdentifier(), 3);
-    PRECEDENCE.set(CommonOperator.DIVISION.getIdentifier(), 3);
-    PRECEDENCE.set(CommonOperator.MODULUS.getIdentifier(), 3);
-    PRECEDENCE.set(CommonOperator.SUBTRACTION.getIdentifier(), 4);
-    PRECEDENCE.set(CommonOperator.ADDITION.getIdentifier(), 4);
-    PRECEDENCE.set(CommonOperator.SHIFT_LEFT.getIdentifier(), 5);
-    PRECEDENCE.set(CommonOperator.SHIFT_RIGHT.getIdentifier(), 5);
-    PRECEDENCE.set(CommonOperator.BITWISE_AND.getIdentifier(), 6);
-    PRECEDENCE.set(CommonOperator.BITWISE_OR.getIdentifier(), 7);
-    PRECEDENCE.set(CommonOperator.EQUAL.getIdentifier(), 8);
-    PRECEDENCE.set(CommonOperator.GREATER_THAN_OR_EQUAL.getIdentifier(), 8);
-    PRECEDENCE.set(CommonOperator.GREATER_THAN.getIdentifier(), 8);
-    PRECEDENCE.set(CommonOperator.LESS_THAN_OR_EQUAL.getIdentifier(), 8);
-    PRECEDENCE.set(CommonOperator.LESS_THAN.getIdentifier(), 8);
-    PRECEDENCE.set(CommonOperator.NOT_EQUAL.getIdentifier(),8);
-    PRECEDENCE.set(CommonOperator.LIKE.getIdentifier(),8);
-    PRECEDENCE.set(CommonOperator.REGEXP.getIdentifier(),8);
-    PRECEDENCE.set(CommonOperator.BETWEEN.getIdentifier(),9);
-    PRECEDENCE.set(CommonOperator.NOT.getIdentifier(), 10);
-    PRECEDENCE.set(CommonOperator.AND.getIdentifier(), 11);
-    PRECEDENCE.set(CommonOperator.XOR.getIdentifier(), 12);
-    PRECEDENCE.set(CommonOperator.OR.getIdentifier(), 13);
-  }
+  private final static String EMPTY_STRING = "";
 
   @NonNull
   private static final List<@NonNull String> SYMBOLS;
 
   static {
-    SYMBOLS = new ArrayList<>(Operator.getCount());
+    SYMBOLS = new ArrayList<>(Operator.values().length);
 
-    for (int index = 0; index < Operator.getCount(); ++index) SYMBOLS.add("");
+    for (int index = 0; index < Operator.values().length; ++index) SYMBOLS.add(EMPTY_STRING);
 
-    SYMBOLS.set(CommonOperator.BITWISE_XOR.getIdentifier(), "^");
-    SYMBOLS.set(CommonOperator.MULTIPLICATION.getIdentifier(), "*");
-    SYMBOLS.set(CommonOperator.DIVISION.getIdentifier(), "/");
-    SYMBOLS.set(CommonOperator.MODULUS.getIdentifier(), "%");
-    SYMBOLS.set(CommonOperator.SUBTRACTION.getIdentifier(), "-");
-    SYMBOLS.set(CommonOperator.ADDITION.getIdentifier(), "+");
-    SYMBOLS.set(CommonOperator.SHIFT_LEFT.getIdentifier(), "<<");
-    SYMBOLS.set(CommonOperator.SHIFT_RIGHT.getIdentifier(), ">>");
-    SYMBOLS.set(CommonOperator.BITWISE_AND.getIdentifier(), "&");
-    SYMBOLS.set(CommonOperator.BITWISE_OR.getIdentifier(), "|");
-    SYMBOLS.set(CommonOperator.EQUAL.getIdentifier(), "=");
-    SYMBOLS.set(CommonOperator.GREATER_THAN_OR_EQUAL.getIdentifier(), ">=");
-    SYMBOLS.set(CommonOperator.GREATER_THAN.getIdentifier(), ">");
-    SYMBOLS.set(CommonOperator.LESS_THAN_OR_EQUAL.getIdentifier(), "<=");
-    SYMBOLS.set(CommonOperator.LESS_THAN.getIdentifier(), "<");
-    SYMBOLS.set(CommonOperator.NOT_EQUAL.getIdentifier(), "!=");
-    SYMBOLS.set(CommonOperator.LIKE.getIdentifier(), "LIKE");
-    SYMBOLS.set(CommonOperator.REGEXP.getIdentifier(), "REGEXP");
-    SYMBOLS.set(CommonOperator.AND.getIdentifier(), "AND");
-    SYMBOLS.set(CommonOperator.XOR.getIdentifier(), "XOR");
-    SYMBOLS.set(CommonOperator.OR.getIdentifier(), "OR");
-    SYMBOLS.set(CommonOperator.PLUS.getIdentifier(), "+");
-    SYMBOLS.set(CommonOperator.MINUS.getIdentifier(), "-");
-    SYMBOLS.set(CommonOperator.NOT.getIdentifier(), "NOT");
-    SYMBOLS.set(CommonOperator.BITWISE_NOT.getIdentifier(), "~");
+    SYMBOLS.set(Operator.BITWISE_XOR.ordinal(), "^");
+    SYMBOLS.set(Operator.MULTIPLICATION.ordinal(), "*");
+    SYMBOLS.set(Operator.DIVISION.ordinal(), "/");
+    SYMBOLS.set(Operator.MODULUS.ordinal(), "%");
+    SYMBOLS.set(Operator.SUBTRACTION.ordinal(), "-");
+    SYMBOLS.set(Operator.ADDITION.ordinal(), "+");
+    SYMBOLS.set(Operator.SHIFT_LEFT.ordinal(), "<<");
+    SYMBOLS.set(Operator.SHIFT_RIGHT.ordinal(), ">>");
+    SYMBOLS.set(Operator.BITWISE_AND.ordinal(), "&");
+    SYMBOLS.set(Operator.BITWISE_OR.ordinal(), "|");
+    SYMBOLS.set(Operator.EQUAL.ordinal(), "=");
+    SYMBOLS.set(Operator.GREATER_THAN_OR_EQUAL.ordinal(), ">=");
+    SYMBOLS.set(Operator.GREATER_THAN.ordinal(), ">");
+    SYMBOLS.set(Operator.LESS_THAN_OR_EQUAL.ordinal(), "<=");
+    SYMBOLS.set(Operator.LESS_THAN.ordinal(), "<");
+    SYMBOLS.set(Operator.NOT_EQUAL.ordinal(), "!=");
+    SYMBOLS.set(Operator.LIKE.ordinal(), "LIKE");
+    SYMBOLS.set(Operator.REGEXP.ordinal(), "REGEXP");
+    SYMBOLS.set(Operator.AND.ordinal(), "AND");
+    SYMBOLS.set(Operator.XOR.ordinal(), "XOR");
+    SYMBOLS.set(Operator.OR.ordinal(), "OR");
+    SYMBOLS.set(Operator.PLUS.ordinal(), "+");
+    SYMBOLS.set(Operator.MINUS.ordinal(), "-");
+    SYMBOLS.set(Operator.NOT.ordinal(), "NOT");
+    SYMBOLS.set(Operator.BITWISE_NOT.ordinal(), "~");
   }
-
-  @NonNull
-  private final static String EMPTY_STRING = "";
 
   @NonNull
   private final List<@NonNull Operator> _operators;
@@ -148,15 +108,15 @@ public class ExpressionToSQLCompiler
 
     if (expression instanceof Operation) {
       enterOperation((Operation<?>) expression, output);
-    } else if (expression instanceof Range) {
-      enterRange((Range<?>) expression, output);
+    } else if (expression instanceof StaticRange) {
+      enterRange((StaticRange<?>) expression, output);
     }
 
     return expression;
   }
 
   private <T extends Comparable<T>> void enterRange (
-    @NonNull final Range<T> expression,
+    @NonNull final StaticRange<T> expression,
     @NonNull final StringBuilder output
   ) {
     _operators.add(CommonOperator.BETWEEN);
@@ -227,12 +187,12 @@ public class ExpressionToSQLCompiler
       exitConstant((Constant<?>) expression, output);
     } else if (expression instanceof Operation) {
       exitOperation((Operation<?>) expression, output);
-    } else if (expression instanceof Range) {
-      exitRange((Range<?>) expression, output);
+    } else if (expression instanceof StaticRange) {
+      exitRange((StaticRange<?>) expression, output);
     }
 
-    if (_walker.hasCurrent() && _walker.current() instanceof Range) {
-      @NonNull final Range<?> range = (Range<?>) _walker.current();
+    if (_walker.hasCurrent() && _walker.current() instanceof StaticRange) {
+      @NonNull final StaticRange<?> range = (StaticRange<?>) _walker.current();
 
       if (expression == range.getValue()) {
         output.append(" BETWEEN ");
@@ -245,7 +205,7 @@ public class ExpressionToSQLCompiler
   }
 
   private <T extends Comparable<T>> void exitRange (
-    final Range<T> expression,
+    final StaticRange<T> expression,
     final StringBuilder output
   ) {
     if (doViolatePrecedence()) {

@@ -17,8 +17,7 @@ public final class Primitives {
   private final static View<@NonNull Primitive> VIEW = View.readonly(Primitive.class, PRIMITIVES);
 
   @NonNull
-  public final static Primitive<@NonNull Boolean>  BOOLEAN = new Primitive<>(Boolean.class,
-    "boolean");
+  public final static Primitive<@NonNull Boolean>  BOOLEAN = new Primitive<>(Boolean.class, "boolean");
 
   @NonNull
   public final static Primitive<@Nullable Boolean> NULLABLE_BOOLEAN = (

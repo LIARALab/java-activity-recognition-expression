@@ -9,7 +9,7 @@ import org.liara.support.view.View;
  *
  * @param <Result> Primitive to expect from an evaluation of this expression.
  */
-public final class Constant<Result> implements Expression<Result>
+public final class Constant<Result> implements Expression
 {
   @NonNull
   private final static View<@NonNull Expression> CHILDREN = View.readonly(Expression.class);

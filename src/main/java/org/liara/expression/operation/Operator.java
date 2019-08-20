@@ -7,97 +7,50 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import java.util.ArrayList;
 import java.util.Objects;
 
-public class Operator
+public enum Operator
 {
-  @NonNull
-  private final static ArrayList<@NonNull Operator> OPERATORS = new ArrayList<>();
-
-  /**
-   * Register an operator and return an identifier for it.
-   *
-   * @param operator An operator to register.
-   *
-   * @return An identifier for the given operator.
-   */
-  private static @NonNegative int register (@NonNull final Operator operator) {
-    @NonNegative final int identifier;
-
-    synchronized (OPERATORS) {
-      identifier = OPERATORS.size();
-      OPERATORS.add(operator);
-    }
-
-    return identifier;
-  }
-
-  /**
-   * Return the operator with the given identifier.
-   *
-   * @param identifier Identifier of the operator to get.
-   *
-   * @return The operator with the given identifier.
-   */
-  public static @NonNull Operator get (@NonNegative final int identifier) {
-    return OPERATORS.get(identifier);
-  }
-
-  /**
-   * Return the number of existing operators.
-   *
-   * @return The number of existing operators.
-   */
-  public static @NonNegative int getCount () {
-    return OPERATORS.size();
-  }
+  //INTERVAL(0),
+  //BINARY(1),
+  //COLLATE(2)
+  NEGATION(3),
+  MINUS(4),
+  PLUS(4),
+  BITWISE_NOT(4),
+  BITWISE_XOR(5),
+  MULTIPLICATION(6),
+  DIVISION(6),
+  MODULUS(6),
+  SUBTRACTION(7),
+  ADDITION(7),
+  SHIFT_LEFT(8),
+  SHIFT_RIGHT(8),
+  BITWISE_AND(9),
+  BITWISE_OR(10),
+  EQUAL(11),
+  NOT_EQUAL(11),
+  GREATER_THAN(11),
+  GREATER_THAN_OR_EQUAL(11),
+  LESS_THAN(11),
+  LESS_THAN_OR_EQUAL(11),
+  IS(11),
+  LIKE(11),
+  REGEXP(11),
+  IN(11),
+  BETWEEN(12),
+  NOT(13),
+  AND(14),
+  XOR(15),
+  OR(16),
+  FUNCTION(17);
 
   @NonNegative
-  private final int _identifier;
+  private final int _priority;
 
-  @NonNegative
-  private final int _order;
-
-  /**
-   * Instantiate an operator.
-   */
-  public Operator () {
-    _identifier = Operator.register(this);
-    _order = 2;
+  Operator (@NonNegative final int priority) {
+    _priority = priority;
   }
 
-  public Operator (@NonNegative final int order) {
-    _identifier = Operator.register(this);
-    _order = order;
-  }
-
-  /**
-   * @return A number that identify this operator.
-   */
-  public @NonNegative int getIdentifier () {
-    return _identifier;
-  }
-
-  /**
-   * @return The order of this operator.
-   */
-  public @NonNegative int getOrder () {
-    return _order;
-  }
-
-  @Override
-  public boolean equals (@Nullable final Object other) {
-    if (other == null) return false;
-    if (other == this) return true;
-
-    if (other instanceof Operator) {
-      @NonNull final Operator otherOperator = (Operator) other;
-      return Objects.equals(_identifier, otherOperator.getIdentifier());
-    }
-
-    return false;
-  }
-
-  @Override
-  public int hashCode () {
-    return _identifier;
+  public @NonNegative int getPriority () {
+    return _priority;
   }
 }

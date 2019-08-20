@@ -8,6 +8,7 @@ import org.liara.data.primitive.Primitive;
 import org.liara.data.primitive.Primitives;
 import org.liara.expression.operation.CommonOperator;
 import org.liara.expression.operation.StaticOperationBuilder;
+import org.liara.expression.operation.StaticRange;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -350,7 +351,7 @@ public class ExpressionFactory
     @NonNull final Expression<@NonNull Target> lower,
     @NonNull final Expression<@NonNull Target> upper
   ) {
-    return new Range<>(target, lower, upper);
+    return new StaticRange<>(target, lower, upper);
   }
 
   public <@NonNull Right, @NonNull Left extends Comparable<Right>>

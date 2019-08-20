@@ -3,12 +3,14 @@ package org.liara.expression.operation;
 import org.checkerframework.checker.index.qual.NonNegative;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.liara.data.primitive.Primitive;
-import org.liara.expression.RewritableExpression;
 import org.liara.support.view.View;
 import org.liara.expression.Expression;
+
+import java.util.Arrays;
 import java.util.Objects;
 
-public class StaticOperation<Result> implements Operation<Result>, RewritableExpression<Result>
+public class StaticOperation<Result>
+  implements Operation.Rewritable<Result>, Expression.Rewritable<Result>
 {
   @NonNull
   private final View<@NonNull Expression> _operands;
@@ -46,18 +48,20 @@ public class StaticOperation<Result> implements Operation<Result>, RewritableExp
   }
 
   /**
-   * Rewrite an existing operation.
+   * Create a new operation without a builder. For internal use only.
    *
-   * @param origin Original operation.
-   * @param operands The new operands of the given operation.
+   * @param operator The operator of the operation to instantiate.
+   * @param children An array with all children expression of this operation.
+   * @param resultType Expected result type of the given operation.
    */
-  private StaticOperation (
-    @NonNull final StaticOperation<Result> origin,
-    @NonNegative final Expression[] operands
+  protected StaticOperation (
+    @NonNull final Operator operator,
+    @NonNull final Expression<?>[] children,
+    @NonNull final Primitive<Result> resultType
   ) {
-    _operands = View.readonly(Expression.class, operands);
-    _operator = origin.getOperator();
-    _type = origin.getResultType();
+    _operands = View.readonly(Expression.class, Arrays.copyOf(children, children.length));
+    _operator = operator;
+    _type = resultType;
   }
 
   /**
@@ -85,41 +89,31 @@ public class StaticOperation<Result> implements Operation<Result>, RewritableExp
   }
 
   /**
-   * @see RewritableExpression#rewrite(int, Expression)
+   * @see Expression.Rewritable#rewrite(int, Expression)
    */
   @Override
-  public @NonNull Expression<Result> rewrite (
+  public @NonNull Operation<Result> rewrite (
     @NonNegative final int index,
     @NonNull final Expression<?> expression
   ) {
     if (index < _operands.getSize()) {
-      @NonNull final Expression[] operands = getChildren().toArray();
-      operands[index] = expression;
+      @NonNull final Expression<?>[] expressions = _operands.toArray();
+      expressions[index] = expression;
 
-      return new StaticOperation<>(this, operands);
+      return rewrite(expressions);
     } else {
       throw new IllegalArgumentException(
-        "Unable to rewrite the " + index + "th child of this operation expression because " +
+        "Unable to rewrite the " + index + "th operand of this operation expression because " +
         "this operation expression only have " + getChildren().getSize() + " children."
       );
     }
   }
 
   /**
-   * @see RewritableExpression#rewrite(Expression[])
+   * @see Expression.Rewritable#rewrite(Expression[])
    */
   @Override
-  public @NonNull Expression<Result> rewrite (
-    @NonNull final Expression[] expressions
-  ) {
-    if (expressions.length == _operands.getSize()) {
-      return new StaticOperation<>(this, expressions);
-    } else {
-      throw new IllegalArgumentException(
-        "Unable to rewrite this operation expression with the given ones because " +
-        "the given array of expression does not have the right size : " + expressions.length +
-        " != " + _operands.getSize()
-      );
-    }
+  public @NonNull Operation<Result> rewrite (@NonNull final Expression[] expressions) {
+    return new StaticOperation<>(_operator, expressions, _type);
   }
 }
