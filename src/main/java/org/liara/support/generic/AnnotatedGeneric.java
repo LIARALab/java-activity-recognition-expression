@@ -1,17 +1,18 @@
 package org.liara.support.generic;
 
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
-import org.liara.support.view.View;
-
 import java.lang.annotation.Annotation;
-import java.lang.reflect.*;
+import java.lang.reflect.AnnotatedType;
+import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
+import org.liara.support.view.View;
 
 class AnnotatedGeneric<Value> implements Generic<Value> {
+
   @NonNull
   private static final Set<@NonNull Annotation> SET = new HashSet<>();
 
@@ -23,7 +24,7 @@ class AnnotatedGeneric<Value> implements Generic<Value> {
 
   private final int _hash;
 
-  public AnnotatedGeneric (@NonNull final AnnotatedType type) {
+  public AnnotatedGeneric(@NonNull final AnnotatedType type) {
     _type = type;
     _annotations = View.readonly(Annotation.class, type.getAnnotations());
 
@@ -33,29 +34,33 @@ class AnnotatedGeneric<Value> implements Generic<Value> {
   }
 
   @Override
-  public @NonNull Type getType () {
+  public @NonNull Type getType() {
     return _type.getType();
   }
 
   @Override
-  public @NonNull View<@NonNull Annotation> getAnnotations () {
+  public @NonNull View<@NonNull Annotation> getAnnotations() {
     return _annotations;
   }
 
   @Override
-  public <T extends Annotation> @Nullable T getAnnotation (@NonNull final Class<T> annotation) {
+  public <T extends Annotation> @Nullable T getAnnotation(@NonNull final Class<T> annotation) {
     return _type.getAnnotation(annotation);
   }
 
   @Override
-  public <T extends Annotation> boolean isAnnotationPresent (@NonNull final Class<T> annotation) {
+  public <T extends Annotation> boolean isAnnotationPresent(@NonNull final Class<T> annotation) {
     return _type.isAnnotationPresent(annotation);
   }
 
   @Override
-  public boolean equals (@Nullable final Object other) {
-    if (other == null) return false;
-    if (other == this) return true;
+  public boolean equals(@Nullable final Object other) {
+    if (other == null) {
+      return false;
+    }
+    if (other == this) {
+      return true;
+    }
 
     if (other instanceof Generic) {
       @NonNull final Generic otherGeneric = (Generic) other;
@@ -67,7 +72,7 @@ class AnnotatedGeneric<Value> implements Generic<Value> {
   }
 
   @Override
-  public int hashCode () {
+  public int hashCode() {
     return _hash;
   }
 }

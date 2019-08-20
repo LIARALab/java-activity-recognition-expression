@@ -4,9 +4,8 @@ import org.checkerframework.checker.index.qual.NonNegative;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import java.lang.reflect.AnnotatedElement;
-
 public class Primitive<Type> {
+
   @NonNegative
   private final int _identifier;
 
@@ -21,7 +20,7 @@ public class Primitive<Type> {
    *
    * @param javaClass A Java type used to store values of this primitive type.
    */
-  public Primitive (@NonNull final Class<Type> javaClass, @NonNull final String name) {
+  public Primitive(@NonNull final Class<Type> javaClass, @NonNull final String name) {
     _javaClass = javaClass;
     _identifier = Primitives.register(this);
     _name = name;
@@ -32,7 +31,7 @@ public class Primitive<Type> {
    *
    * @param toCopy A primitive type instance to copy.
    */
-  public Primitive (@NonNull final Primitive<Type> toCopy) {
+  public Primitive(@NonNull final Primitive<Type> toCopy) {
     _javaClass = toCopy.getJavaClass();
     _identifier = toCopy.getIdentifier();
     _name = toCopy.getName();
@@ -41,18 +40,18 @@ public class Primitive<Type> {
   /**
    * @return The Java type used to store values of this primitive type.
    */
-  public @NonNull Class<Type> getJavaClass () {
+  public @NonNull Class<Type> getJavaClass() {
     return _javaClass;
   }
 
   /**
    * @return A non-negative integer that fully represent this primitive type.
    */
-  public @NonNegative int getIdentifier () {
+  public @NonNegative int getIdentifier() {
     return _identifier;
   }
 
-  public @NonNull String getName () {
+  public @NonNull String getName() {
     return _name;
   }
 
@@ -60,9 +59,13 @@ public class Primitive<Type> {
    * @see Object#equals(Object)
    */
   @Override
-  public boolean equals (@Nullable final Object other) {
-    if (other == null) return false;
-    if (other == this) return true;
+  public boolean equals(@Nullable final Object other) {
+    if (other == null) {
+      return false;
+    }
+    if (other == this) {
+      return true;
+    }
 
     if (other instanceof Primitive) {
       return _identifier == ((Primitive) other).getIdentifier();
@@ -75,12 +78,12 @@ public class Primitive<Type> {
    * @see Object#hashCode()
    */
   @Override
-  public int hashCode () {
+  public int hashCode() {
     return _identifier;
   }
 
   @Override
-  public @NonNull String toString () {
+  public @NonNull String toString() {
     return _name;
   }
 }

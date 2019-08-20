@@ -7,10 +7,11 @@ import org.liara.data.primitive.Primitive;
  * A table column.
  */
 public interface Column<Type> extends GraphElement {
+
   /**
    * @return The table that contains this column.
    */
-  @NonNull Table getTable ();
+  @NonNull Table getTable();
 
   /**
    * @return The name of this column.

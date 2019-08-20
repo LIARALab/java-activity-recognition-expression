@@ -7,20 +7,19 @@ import org.liara.support.generic.Generic
 import org.liara.support.generic.Generics
 
 class CharacterDataTypeSpecification
-  extends DataTypeSpecification<Character>
-{
-  @Override
-  DataType<Byte> getType () {
-    return DataTypes.CHARACTER
-  }
+        extends DataTypeSpecification<Character> {
+    @Override
+    DataType<Byte> getType() {
+        return DataTypes.CHARACTER
+    }
 
-  @Override
-  Generic<Byte> getExpextedGeneric () {
-    return Generics.CHARACTER
-  }
+    @Override
+    Generic<Byte> getExpextedGeneric() {
+        return Generics.CHARACTER
+    }
 
-  @Override
-  Character getRandomValue () {
-    return (char) random.nextInt()
-  }
+    @Override
+    Character getRandomValue() {
+        return (char) random.nextInt()
+    }
 }

@@ -7,20 +7,19 @@ import org.liara.support.generic.Generic
 import org.liara.support.generic.Generics
 
 class LongDataTypeSpecification
-  extends DataTypeSpecification<Long>
-{
-  @Override
-  DataType<Long> getType () {
-    return DataTypes.LONG
-  }
+        extends DataTypeSpecification<Long> {
+    @Override
+    DataType<Long> getType() {
+        return DataTypes.LONG
+    }
 
-  @Override
-  Generic<Long> getExpextedGeneric () {
-    return Generics.LONG
-  }
+    @Override
+    Generic<Long> getExpextedGeneric() {
+        return Generics.LONG
+    }
 
-  @Override
-  Long getRandomValue () {
-    return random.nextLong()
-  }
+    @Override
+    Long getRandomValue() {
+        return random.nextLong()
+    }
 }

@@ -5,18 +5,18 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import org.liara.data.type.DataType;
 
 @FunctionalInterface
-public interface TypeResolver
-{
+public interface TypeResolver {
+
   /**
    * @return The common type resolver.
    */
-  static @NonNull TypeResolver common () {
+  static @NonNull TypeResolver common() {
     return CommonTypeResolver.INSTANCE;
   }
 
-  @Nullable DataType resolve (final java.lang.reflect.@NonNull Type type);
+  @Nullable DataType resolve(final java.lang.reflect.@NonNull Type type);
 
-  default @NonNull DataType resolveOrThrow (final java.lang.reflect.@NonNull Type type) {
+  default @NonNull DataType resolveOrThrow(final java.lang.reflect.@NonNull Type type) {
     @Nullable final DataType result = resolve(type);
 
     if (result == null) {

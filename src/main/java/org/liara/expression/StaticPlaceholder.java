@@ -9,25 +9,25 @@ import org.liara.support.view.View;
  *
  * @param <Result> Primitive to expect from an evaluation of this expression.
  */
-public class StaticPlaceholder<Result> implements Placeholder<Result>
-{
+public class StaticPlaceholder<Result> implements Placeholder<Result> {
+
   @NonNull
   private final static View<@NonNull Expression> CHILDREN = View.readonly(Expression.class);
 
   @NonNull
-  private final        Primitive<Result>         _type;
+  private final Primitive<Result> _type;
 
   /**
    * Instantiate a new placeholder of a given type.
    *
    * @param type Primitive to expect from an evaluation of this expression.
    */
-  public StaticPlaceholder (@NonNull final Primitive<Result> type) {
+  public StaticPlaceholder(@NonNull final Primitive<Result> type) {
     _type = type;
   }
 
   @Override
-  public @NonNull Primitive<Result> getResultType () {
+  public @NonNull Primitive<Result> getResultType() {
     return _type;
   }
 
@@ -35,7 +35,7 @@ public class StaticPlaceholder<Result> implements Placeholder<Result>
    * @see Expression#getChildren()
    */
   @Override
-  public @NonNull View<@NonNull Expression> getChildren () {
+  public @NonNull View<@NonNull Expression> getChildren() {
     return CHILDREN;
   }
 }

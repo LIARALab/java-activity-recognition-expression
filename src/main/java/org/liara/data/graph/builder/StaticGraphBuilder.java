@@ -1,5 +1,6 @@
 package org.liara.data.graph.builder;
 
+import java.util.Comparator;
 import org.checkerframework.checker.index.qual.NonNegative;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -9,10 +10,8 @@ import org.liara.data.graph.implementation.StaticGraphContent;
 import org.liara.support.ListIndex;
 import org.liara.support.view.View;
 
-import java.util.Comparator;
+public class StaticGraphBuilder implements GraphBuilder {
 
-public class StaticGraphBuilder implements GraphBuilder
-{
   @NonNull
   private final ListIndex<@NonNull String, @NonNull TableBuilder> _tables;
 
@@ -28,11 +27,11 @@ public class StaticGraphBuilder implements GraphBuilder
   @Nullable
   private String _name;
 
-  public StaticGraphBuilder () {
+  public StaticGraphBuilder() {
     this(16);
   }
 
-  public StaticGraphBuilder (@NonNegative final int capacity) {
+  public StaticGraphBuilder(@NonNegative final int capacity) {
     _tables = new ListIndex<>(Comparator.comparing((@NonNull String x) -> x));
     _tableNamesView = View.readonly(String.class, _tables.getKeys());
     _tablesView = View.readonly(TableBuilder.class, _tables.getValues());
@@ -41,7 +40,7 @@ public class StaticGraphBuilder implements GraphBuilder
   }
 
   @Override
-  public @NonNull Graph build () {
+  public @NonNull Graph build() {
     @NonNull final StaticGraphContent content = new StaticGraphContent();
     @NonNull final Graph graph = new StaticGraph(content);
 
@@ -55,7 +54,7 @@ public class StaticGraphBuilder implements GraphBuilder
       content.getTables().put(_tables.getKey(table), _tables.getValue(table).build(_context));
 
       @NonNull final View<? extends @NonNull ColumnBuilder> columnBuilders = (
-        _tables.getValue(table).getColumns()
+          _tables.getValue(table).getColumns()
       );
 
       for (int column = 0, columns = columnBuilders.getSize(); column < columns; ++column) {
@@ -68,12 +67,12 @@ public class StaticGraphBuilder implements GraphBuilder
     return graph;
   }
 
-  private void assignIdentifiers () {
+  private void assignIdentifiers() {
     @NonNegative int nextColumnIdentifier = 0;
 
     for (int table = 0, tables = _tables.getSize(); table < tables; ++table) {
       @NonNull final View<? extends @NonNull ColumnBuilder> columnBuilders = (
-        _tables.getValue(table).getColumns()
+          _tables.getValue(table).getColumns()
       );
 
       _context.setIdentifier(_tables.getValue(table), table);
@@ -90,14 +89,13 @@ public class StaticGraphBuilder implements GraphBuilder
    * Create a new table builder and return it for editing this graph.
    *
    * @param name Name of the new table to create.
-   *
    * @return A builder that allows to editing the created table.
    */
-  public @NonNull ChainedStaticTableBuilder<StaticGraphBuilder> table (
-    @NonNull final String name
+  public @NonNull ChainedStaticTableBuilder<StaticGraphBuilder> table(
+      @NonNull final String name
   ) {
     @NonNull final ChainedStaticTableBuilder<StaticGraphBuilder> builder = (
-      new ChainedStaticTableBuilder<>(this)
+        new ChainedStaticTableBuilder<>(this)
     );
 
     putTable(name, builder);
@@ -111,9 +109,9 @@ public class StaticGraphBuilder implements GraphBuilder
    * @param name Name of the table to add or replace.
    * @param builder The builder to use for instantiating the given table.
    */
-  public void putTable (
-    @NonNull final String name, 
-    @NonNull final TableBuilder builder
+  public void putTable(
+      @NonNull final String name,
+      @NonNull final TableBuilder builder
   ) {
     _tables.put(name, builder);
   }
@@ -123,7 +121,7 @@ public class StaticGraphBuilder implements GraphBuilder
    *
    * @param name Name of the table to remove.
    */
-  public void removeTable (@NonNull final String name) {
+  public void removeTable(@NonNull final String name) {
     _tables.remove(name);
   }
 
@@ -133,9 +131,9 @@ public class StaticGraphBuilder implements GraphBuilder
    * @param oldName Name of the table to rename.
    * @param newName New name to set for the given table.
    */
-  public void renameTable (
-    @NonNull final String oldName,
-    @NonNull final String newName
+  public void renameTable(
+      @NonNull final String oldName,
+      @NonNull final String newName
   ) {
     _tables.setKey(oldName, newName);
   }
@@ -144,7 +142,7 @@ public class StaticGraphBuilder implements GraphBuilder
    * @see GraphBuilder#getTable(String)
    */
   @Override
-  public @NonNull TableBuilder getTable (@NonNull final String name) {
+  public @NonNull TableBuilder getTable(@NonNull final String name) {
     return _tables.getValue(name);
   }
 
@@ -152,7 +150,7 @@ public class StaticGraphBuilder implements GraphBuilder
    * @see GraphBuilder#containsTable(String)
    */
   @Override
-  public boolean containsTable (@NonNull final String name) {
+  public boolean containsTable(@NonNull final String name) {
     return _tables.containsKey(name);
   }
 
@@ -160,7 +158,7 @@ public class StaticGraphBuilder implements GraphBuilder
    * @see GraphBuilder#getTableNames()
    */
   @Override
-  public @NonNull View<@NonNull String> getTableNames () {
+  public @NonNull View<@NonNull String> getTableNames() {
     return _tableNamesView;
   }
 
@@ -168,15 +166,15 @@ public class StaticGraphBuilder implements GraphBuilder
    * @see GraphBuilder#getTables()
    */
   @Override
-  public @NonNull View<@NonNull TableBuilder> getTables () {
+  public @NonNull View<@NonNull TableBuilder> getTables() {
     return _tablesView;
   }
 
-  public @Nullable String getName () {
+  public @Nullable String getName() {
     return _name;
   }
 
-  public void setName (@Nullable final String name) {
+  public void setName(@Nullable final String name) {
     _name = name;
   }
 }

@@ -1,5 +1,6 @@
 package org.liara.data.type.common;
 
+import java.nio.ByteBuffer;
 import org.apache.commons.lang3.mutable.Mutable;
 import org.checkerframework.checker.index.qual.NonNegative;
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -8,19 +9,17 @@ import org.liara.data.type.ComparableDataType;
 import org.liara.data.type.DataType;
 import org.liara.support.generic.Generic;
 
-import java.nio.ByteBuffer;
+public class NullableDataType<T> implements DataType<@Nullable T>, ComparableDataType {
 
-public class NullableDataType<T> implements DataType<@Nullable T>, ComparableDataType
-{
   @NonNull
   private final DataType<T> _wrapped;
 
   @NonNull
   private final Generic<@Nullable T> _generic;
 
-  public NullableDataType (
-    @NonNull final Generic<@Nullable T> generic,
-    @NonNull final DataType<T> wrapped
+  public NullableDataType(
+      @NonNull final Generic<@Nullable T> generic,
+      @NonNull final DataType<T> wrapped
   ) {
     _generic = generic;
     _wrapped = wrapped;
@@ -30,21 +29,21 @@ public class NullableDataType<T> implements DataType<@Nullable T>, ComparableDat
    * @see ComparableDataType#compare(ByteBuffer, int, ByteBuffer, int)
    */
   @Override
-  public int compare (
-    @NonNull final ByteBuffer leftBuffer,
-    @NonNegative final int leftOffset,
-    @NonNull final ByteBuffer rightBuffer,
-    @NonNegative final int rightOffset
+  public int compare(
+      @NonNull final ByteBuffer leftBuffer,
+      @NonNegative final int leftOffset,
+      @NonNull final ByteBuffer rightBuffer,
+      @NonNegative final int rightOffset
   ) {
     final int comparison = Boolean.compare(
-      isDefined(leftBuffer, leftOffset),
-      isDefined(rightBuffer, rightOffset)
+        isDefined(leftBuffer, leftOffset),
+        isDefined(rightBuffer, rightOffset)
     );
 
     if (comparison == 0 && _wrapped instanceof ComparableDataType) {
       return ((ComparableDataType) _wrapped).compare(
-        leftBuffer, leftOffset,
-        rightBuffer, rightOffset
+          leftBuffer, leftOffset,
+          rightBuffer, rightOffset
       );
     } else {
       return comparison;
@@ -56,10 +55,9 @@ public class NullableDataType<T> implements DataType<@Nullable T>, ComparableDat
    *
    * @param buffer A buffer to read.
    * @param offset A number of bytes to skip.
-   *
    * @return True if the value stored at the given location is not null.
    */
-  public boolean isDefined (@NonNull final ByteBuffer buffer, @NonNegative final int offset) {
+  public boolean isDefined(@NonNull final ByteBuffer buffer, @NonNegative final int offset) {
     return buffer.get(offset) > 0;
   }
 
@@ -68,10 +66,9 @@ public class NullableDataType<T> implements DataType<@Nullable T>, ComparableDat
    *
    * @param buffer A buffer to read.
    * @param offset A number of bytes to skip.
-   *
    * @return True if the value stored at the given location is null.
    */
-  public boolean isNull (@NonNull final ByteBuffer buffer, @NonNegative final int offset) {
+  public boolean isNull(@NonNull final ByteBuffer buffer, @NonNegative final int offset) {
     return buffer.get(offset) <= 0;
   }
 
@@ -79,7 +76,7 @@ public class NullableDataType<T> implements DataType<@Nullable T>, ComparableDat
    * @see DataType#getGeneric()
    */
   @Override
-  public @NonNull Generic<@Nullable T> getGeneric () {
+  public @NonNull Generic<@Nullable T> getGeneric() {
     return _generic;
   }
 
@@ -87,7 +84,7 @@ public class NullableDataType<T> implements DataType<@Nullable T>, ComparableDat
    * @see DataType#getBytes()
    */
   @Override
-  public @NonNegative int getBytes () {
+  public @NonNegative int getBytes() {
     return _wrapped.getBytes() + 1;
   }
 
@@ -95,10 +92,10 @@ public class NullableDataType<T> implements DataType<@Nullable T>, ComparableDat
    * @see DataType#read(ByteBuffer, int, Mutable)
    */
   @Override
-  public void read (
-    @NonNull final ByteBuffer buffer,
-    @NonNegative final int offset,
-    @NonNull final Mutable<@Nullable T> output
+  public void read(
+      @NonNull final ByteBuffer buffer,
+      @NonNegative final int offset,
+      @NonNull final Mutable<@Nullable T> output
   ) {
     if (isNull(buffer, offset)) {
       output.setValue(null);
@@ -111,10 +108,10 @@ public class NullableDataType<T> implements DataType<@Nullable T>, ComparableDat
    * @see DataType#write(ByteBuffer, int, Object)
    */
   @Override
-  public void write (
-    @NonNull final ByteBuffer buffer,
-    @NonNegative final int offset,
-    @Nullable final T value
+  public void write(
+      @NonNull final ByteBuffer buffer,
+      @NonNegative final int offset,
+      @Nullable final T value
   ) {
     buffer.put(offset, (byte) (value == null ? 0 : 1));
 

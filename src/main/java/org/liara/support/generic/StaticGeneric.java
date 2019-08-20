@@ -1,9 +1,5 @@
 package org.liara.support.generic;
 
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
-import org.liara.support.view.View;
-
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedParameterizedType;
 import java.lang.reflect.AnnotatedType;
@@ -12,8 +8,12 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
+import org.liara.support.view.View;
 
 public abstract class StaticGeneric<Value> implements Generic<Value> {
+
   @NonNull
   private static final Set<@NonNull Annotation> SET = new HashSet<>();
 
@@ -25,9 +25,9 @@ public abstract class StaticGeneric<Value> implements Generic<Value> {
 
   private final int _hash;
 
-  public StaticGeneric () {
+  public StaticGeneric() {
     _type = (
-      (AnnotatedParameterizedType) getClass().getAnnotatedSuperclass()
+        (AnnotatedParameterizedType) getClass().getAnnotatedSuperclass()
     ).getAnnotatedActualTypeArguments()[0];
 
     _annotations = View.readonly(Annotation.class, _type.getAnnotations());
@@ -38,29 +38,33 @@ public abstract class StaticGeneric<Value> implements Generic<Value> {
   }
 
   @Override
-  public @NonNull Type getType () {
+  public @NonNull Type getType() {
     return _type.getType();
   }
 
   @Override
-  public @NonNull View<@NonNull Annotation> getAnnotations () {
+  public @NonNull View<@NonNull Annotation> getAnnotations() {
     return _annotations;
   }
 
   @Override
-  public <T extends Annotation> @Nullable T getAnnotation (@NonNull final Class<T> annotation) {
+  public <T extends Annotation> @Nullable T getAnnotation(@NonNull final Class<T> annotation) {
     return _type.getAnnotation(annotation);
   }
 
   @Override
-  public <T extends Annotation> boolean isAnnotationPresent (@NonNull final Class<T> annotation) {
+  public <T extends Annotation> boolean isAnnotationPresent(@NonNull final Class<T> annotation) {
     return _type.isAnnotationPresent(annotation);
   }
 
   @Override
-  public boolean equals (@Nullable final Object other) {
-    if (other == null) return false;
-    if (other == this) return true;
+  public boolean equals(@Nullable final Object other) {
+    if (other == null) {
+      return false;
+    }
+    if (other == this) {
+      return true;
+    }
 
     if (other instanceof Generic) {
       @NonNull final Generic otherGeneric = (Generic) other;
@@ -72,7 +76,7 @@ public abstract class StaticGeneric<Value> implements Generic<Value> {
   }
 
   @Override
-  public int hashCode () {
+  public int hashCode() {
     return _hash;
   }
 }

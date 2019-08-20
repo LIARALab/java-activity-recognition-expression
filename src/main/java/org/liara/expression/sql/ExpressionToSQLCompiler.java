@@ -1,20 +1,22 @@
 package org.liara.expression.sql;
 
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 import org.apache.commons.text.StringEscapeUtils;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.liara.expression.Constant;
 import org.liara.expression.Expression;
-import org.liara.expression.operation.StaticRange;
+import org.liara.expression.operation.BinaryOperation;
 import org.liara.expression.operation.Operation;
 import org.liara.expression.operation.Operator;
-import org.liara.expression.operation.CommonOperator;
+import org.liara.expression.operation.Range;
+import org.liara.expression.operation.UnaryOperation;
 import org.liara.support.tree.TreeWalker;
 
-import java.util.*;
+public class ExpressionToSQLCompiler {
 
-public class ExpressionToSQLCompiler
-{
   @NonNull
   private final static String EMPTY_STRING = "";
 
@@ -24,7 +26,9 @@ public class ExpressionToSQLCompiler
   static {
     SYMBOLS = new ArrayList<>(Operator.values().length);
 
-    for (int index = 0; index < Operator.values().length; ++index) SYMBOLS.add(EMPTY_STRING);
+    for (int index = 0; index < Operator.values().length; ++index) {
+      SYMBOLS.add(EMPTY_STRING);
+    }
 
     SYMBOLS.set(Operator.BITWISE_XOR.ordinal(), "^");
     SYMBOLS.set(Operator.MULTIPLICATION.ordinal(), "*");
@@ -62,7 +66,7 @@ public class ExpressionToSQLCompiler
   /**
    * Instantiate a new expression to SQL transpiler.
    */
-  public ExpressionToSQLCompiler () {
+  public ExpressionToSQLCompiler() {
     _operators = new LinkedList<>();
     _walker = new TreeWalker<>(Expression.class);
   }
@@ -70,7 +74,7 @@ public class ExpressionToSQLCompiler
   /**
    * Reset this compiler inner state in order to walk throughout the expression another time.
    */
-  public void reset () {
+  public void reset() {
     _walker.moveToStart();
     _operators.clear();
   }
@@ -80,7 +84,7 @@ public class ExpressionToSQLCompiler
    *
    * @param output The string builder to fill with the compiled content.
    */
-  public void compile (@NonNull final StringBuilder output) {
+  public void compile(@NonNull final StringBuilder output) {
     while (!_walker.isAtEnd()) {
       while (_walker.canEnter()) {
         enter(output);
@@ -108,19 +112,9 @@ public class ExpressionToSQLCompiler
 
     if (expression instanceof Operation) {
       enterOperation((Operation<?>) expression, output);
-    } else if (expression instanceof StaticRange) {
-      enterRange((StaticRange<?>) expression, output);
     }
 
     return expression;
-  }
-
-  private <T extends Comparable<T>> void enterRange (
-    @NonNull final StaticRange<T> expression,
-    @NonNull final StringBuilder output
-  ) {
-    _operators.add(CommonOperator.BETWEEN);
-    if (doViolatePrecedence()) output.append('(');
   }
 
   /**
@@ -128,19 +122,20 @@ public class ExpressionToSQLCompiler
    *
    * @param operation The visited operation.
    * @param output The string builder to fill with the compiled content.
-   *
    * @param <T> The expected result type of the given operation.
    */
-  private <T> void enterOperation (
-    @NonNull final Operation<T> operation,
-    @NonNull final StringBuilder output
+  private <T> void enterOperation(
+      @NonNull final Operation<T> operation,
+      @NonNull final StringBuilder output
   ) {
     _operators.add(operation.getOperator());
 
-    if (doViolatePrecedence()) output.append('(');
+    if (doViolatePrecedence()) {
+      output.append('(');
+    }
 
-    if (operation.getOperator().getOrder() == 1) {
-      output.append(SYMBOLS.get(operation.getOperator().getIdentifier()));
+    if (UnaryOperation.isUnaryOperation(operation)) {
+      output.append(SYMBOLS.get(operation.getOperator().ordinal()));
       output.append(' ');
     }
   }
@@ -148,28 +143,28 @@ public class ExpressionToSQLCompiler
   /**
    * @see TreeWalker#canEnter()
    */
-  public boolean canEnter () {
+  public boolean canEnter() {
     return _walker.canEnter();
   }
 
   /**
    * @see TreeWalker#current()
    */
-  public @NonNull Expression current () {
+  public @NonNull Expression current() {
     return _walker.current();
   }
 
   /**
    * @see TreeWalker#hasCurrent()
    */
-  public boolean hasCurrent () {
+  public boolean hasCurrent() {
     return _walker.hasCurrent();
   }
 
   /**
    * @see TreeWalker#canExit()
    */
-  public boolean canExit () {
+  public boolean canExit() {
     return _walker.canExit();
   }
 
@@ -177,42 +172,30 @@ public class ExpressionToSQLCompiler
    * Let the compiler moves out of its current node.
    *
    * @param output The string builder to fill with the compiled content.
-   *
    * @return The exited expression.
    */
   public @NonNull Expression<?> exit (@NonNull final StringBuilder output) {
-    @NonNull final Expression<?> expression = _walker.exit();
+    @NonNull final Expression<?> exited = _walker.exit();
 
-    if (expression instanceof Constant) {
-      exitConstant((Constant<?>) expression, output);
-    } else if (expression instanceof Operation) {
-      exitOperation((Operation<?>) expression, output);
-    } else if (expression instanceof StaticRange) {
-      exitRange((StaticRange<?>) expression, output);
+    if (exited instanceof Constant) {
+      exitConstant((Constant<?>) exited, output);
+    } else if (exited instanceof Operation) {
+      exitOperation((Operation<?>) exited, output);
     }
 
-    if (_walker.hasCurrent() && _walker.current() instanceof StaticRange) {
-      @NonNull final StaticRange<?> range = (StaticRange<?>) _walker.current();
+    if (_walker.hasCurrent() && _walker.current() instanceof Operation<?>) {
+      @NonNull final Operation<?> operation = (Operation<?>) _walker.current();
 
-      if (expression == range.getValue()) {
-        output.append(" BETWEEN ");
-      } else if (expression == range.getMinimum()) {
-        output.append(" AND ");
+      if (operation.getOperator().equals(Range.getOperator())) {
+        if (exited == Range.getValue(operation)) {
+          output.append(" BETWEEN ");
+        } else if (exited == Range.getMinimum(operation)) {
+          output.append(" AND ");
+        }
       }
     }
 
-    return expression;
-  }
-
-  private <T extends Comparable<T>> void exitRange (
-    final StaticRange<T> expression,
-    final StringBuilder output
-  ) {
-    if (doViolatePrecedence()) {
-      output.append(')');
-    }
-
-    _operators.remove(_operators.size() - 1);
+    return exited;
   }
 
   /**
@@ -221,9 +204,9 @@ public class ExpressionToSQLCompiler
    * @param operation The operation that was exited.
    * @param output The string builder to fill with the compiled content.
    */
-  private <T> void exitOperation (
-    @NonNull final Operation<T> operation,
-    @NonNull final StringBuilder output
+  private <T> void exitOperation(
+      @NonNull final Operation<T> operation,
+      @NonNull final StringBuilder output
   ) {
     if (doViolatePrecedence()) {
       output.append(')');
@@ -240,9 +223,9 @@ public class ExpressionToSQLCompiler
    *
    * @param <T> DataType of the constant expression.
    */
-  private <T> void exitConstant (
-    @NonNull final Constant<T> expression,
-    @NonNull final StringBuilder output
+  private <T> void exitConstant(
+      @NonNull final Constant<T> expression,
+      @NonNull final StringBuilder output
   ) {
     if (Boolean.class.isAssignableFrom(expression.getResultType().getJavaClass())) {
       exitConstant((Boolean) expression.getValue(), output);
@@ -263,7 +246,7 @@ public class ExpressionToSQLCompiler
    * @param value A numeric value to output.
    * @param output The string builder to fill with the compiled content.
    */
-  private void exitConstant (@Nullable final Number value, @NonNull final StringBuilder output) {
+  private void exitConstant(@Nullable final Number value, @NonNull final StringBuilder output) {
     output.append(value == null ? "NULL" : value.toString());
   }
 
@@ -273,7 +256,7 @@ public class ExpressionToSQLCompiler
    * @param value A boolean value to output.
    * @param output The string builder to fill with the compiled content.
    */
-  private void exitConstant (@Nullable final Boolean value, @NonNull final StringBuilder output) {
+  private void exitConstant(@Nullable final Boolean value, @NonNull final StringBuilder output) {
     output.append(value == null ? "NULL" : (value ? "1" : "0"));
   }
 
@@ -283,7 +266,7 @@ public class ExpressionToSQLCompiler
    * @param value A string value to output.
    * @param output The string builder to fill with the compiled content.
    */
-  private void exitConstant (@Nullable final String value, @NonNull final StringBuilder output) {
+  private void exitConstant(@Nullable final String value, @NonNull final StringBuilder output) {
     if (value == null) {
       output.append("NULL");
     } else {
@@ -299,7 +282,7 @@ public class ExpressionToSQLCompiler
    * @param value A character value to output.
    * @param output The string builder to fill with the compiled content.
    */
-  private void exitConstant (@Nullable final Character value, @NonNull final StringBuilder output) {
+  private void exitConstant(@Nullable final Character value, @NonNull final StringBuilder output) {
     if (value == null) {
       output.append("NULL");
     } else {
@@ -330,40 +313,43 @@ public class ExpressionToSQLCompiler
    * @param operation The operation that was entered.
    * @param output The string builder to fill with the compiled content.
    */
-  private <T> void backOperation (
-    @NonNull final Operation<T> operation,
-    @NonNull final StringBuilder output
+  private <T> void backOperation(
+      @NonNull final Operation<T> operation,
+      @NonNull final StringBuilder output
   ) {
-    if (_walker.canEnter()) {
-      output.append(' ');
-      output.append(SYMBOLS.get(operation.getOperator().getIdentifier()));
-      output.append(' ');
+    if (BinaryOperation.isBinaryOperation(operation)) {
+      if (_walker.canEnter()) {
+        output.append(' ');
+        output.append(SYMBOLS.get(operation.getOperator().ordinal()));
+        output.append(' ');
+      }
     }
   }
 
   /**
    * @return True if the current operation violates the operator precedence.
    */
-  private boolean doViolatePrecedence () {
+  private boolean doViolatePrecedence() {
     return _operators.size() > 1 && (
-      PRECEDENCE.get(_operators.get(_operators.size() - 2).getIdentifier())
-    ) < PRECEDENCE.get(_operators.get(_operators.size() - 1).getIdentifier());
+        _operators.get(_operators.size() - 2).getPriority() <
+            _operators.get(_operators.size() - 1).getPriority()
+    );
   }
 
   /**
    * @return The current compiled expression.
    */
-  public @Nullable Expression<?> getExpression () {
+  public @Nullable Expression<?> getExpression() {
     return _walker.getRoot();
   }
 
   /**
-   * Update the compiled expression, this method will reset the compiler state and
-   * moves it back to the start of the given expression.
+   * Update the compiled expression, this method will reset the compiler state and moves it back to
+   * the start of the given expression.
    *
    * @param expression An expression to compile.
    */
-  public void setExpression (@Nullable final Expression<?> expression) {
+  public void setExpression(@Nullable final Expression<?> expression) {
     _walker.setRoot(expression);
     _operators.clear();
   }
@@ -371,42 +357,42 @@ public class ExpressionToSQLCompiler
   /**
    * @see TreeWalker#isAtLocation(TreeWalker)
    */
-  public boolean isAtLocation (@NonNull final TreeWalker<Expression> walker) {
+  public boolean isAtLocation(@NonNull final TreeWalker<Expression> walker) {
     return _walker.isAtLocation(walker);
   }
 
   /**
    * @see TreeWalker#isAtEnd()
    */
-  public boolean isAtEnd () {
+  public boolean isAtEnd() {
     return _walker.isAtEnd();
   }
 
   /**
    * @see TreeWalker#isAtStart()
    */
-  public boolean isAtStart () {
+  public boolean isAtStart() {
     return _walker.isAtStart();
   }
 
   /**
    * @see TreeWalker#doesMoveForward()
    */
-  public boolean doesMoveForward () {
+  public boolean doesMoveForward() {
     return _walker.doesMoveForward();
   }
 
   /**
    * @see TreeWalker#setMovingForward(boolean)
    */
-  public void setMovingForward (final boolean forward) {
+  public void setMovingForward(final boolean forward) {
     _walker.setMovingForward(forward);
   }
 
   /**
    * @see TreeWalker#getPath()
    */
-  public @NonNull List<@NonNull Expression> getPath () {
+  public @NonNull List<@NonNull Expression> getPath() {
     return _walker.getPath();
   }
 }

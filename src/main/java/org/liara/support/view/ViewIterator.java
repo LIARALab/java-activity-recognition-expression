@@ -1,32 +1,30 @@
 package org.liara.support.view;
 
+import java.util.Iterator;
+import java.util.NoSuchElementException;
 import org.checkerframework.checker.index.qual.NonNegative;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-import java.util.Iterator;
-import java.util.ListIterator;
-import java.util.NoSuchElementException;
+public class ViewIterator<T> implements Iterator<T> {
 
-public class ViewIterator<T> implements Iterator<T>
-{
   @NonNegative
   private int _next;
 
   @NonNull
   private final View<T> _view;
 
-  public ViewIterator (@NonNull final View<T> view) {
+  public ViewIterator(@NonNull final View<T> view) {
     _next = 0;
     _view = view;
   }
 
   @Override
-  public boolean hasNext () {
+  public boolean hasNext() {
     return _next < _view.getSize();
   }
 
   @Override
-  public T next () {
+  public T next() {
     if (_next < _view.getSize()) {
       return _view.get(_next++);
     } else {
@@ -34,11 +32,11 @@ public class ViewIterator<T> implements Iterator<T>
     }
   }
 
-  public boolean hasPrevious () {
+  public boolean hasPrevious() {
     return _next > 0;
   }
 
-  public T previous () {
+  public T previous() {
     if (_next > 0) {
       return _view.get(--_next);
     } else {
@@ -46,7 +44,7 @@ public class ViewIterator<T> implements Iterator<T>
     }
   }
 
-  public int nextIndex () {
+  public int nextIndex() {
     if (_next < _view.getSize()) {
       return _next;
     } else {
@@ -54,7 +52,7 @@ public class ViewIterator<T> implements Iterator<T>
     }
   }
 
-  public int previousIndex () {
+  public int previousIndex() {
     if (_next > 0) {
       return _next - 1;
     } else {
@@ -63,7 +61,7 @@ public class ViewIterator<T> implements Iterator<T>
   }
 
   @Override
-  public void remove () {
+  public void remove() {
     throw new UnsupportedOperationException();
   }
 
@@ -72,14 +70,14 @@ public class ViewIterator<T> implements Iterator<T>
    *
    * @param index The index where to set this iterator.
    */
-  public void setIndex (@NonNegative final int index) {
+  public void setIndex(@NonNegative final int index) {
     _next = index;
   }
 
   /**
    * @return The current position of this iterator.
    */
-  public @NonNegative int getIndex () {
+  public @NonNegative int getIndex() {
     return _next;
   }
 }

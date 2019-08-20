@@ -7,8 +7,8 @@ import org.liara.support.view.View;
 /**
  * An identity expression.
  */
-public final class Identity implements Expression
-{
+public final class Identity implements Expression {
+
   @NonNull
   private final Expression _child;
 
@@ -20,9 +20,9 @@ public final class Identity implements Expression
    *
    * @param expression An expression to wrap into an identity one.
    */
-  public Identity (@NonNull final Expression expression) {
+  public Identity(@NonNull final Expression expression) {
     _child = expression;
-    _children = View.readonly(Expression.class, new Expression[] {expression});
+    _children = View.readonly(Expression.class, new Expression[]{expression});
   }
 
   /**
@@ -30,16 +30,16 @@ public final class Identity implements Expression
    *
    * @param toCopy An identity expression instance to copy.
    */
-  public Identity (@NonNull final Identity toCopy) {
+  public Identity(@NonNull final Identity toCopy) {
     _child = toCopy._child;
-    _children = View.readonly(Expression.class, new Expression[] { _child });
+    _children = View.readonly(Expression.class, new Expression[]{_child});
   }
 
   /**
    * @see Expression#getChildren()
    */
   @Override
-  public @NonNull View<@NonNull Expression> getChildren () {
+  public @NonNull View<@NonNull Expression> getChildren() {
     return _children;
   }
 
@@ -47,7 +47,7 @@ public final class Identity implements Expression
    * @see Expression#getResultType()
    */
   @Override
-  public @NonNull Primitive<?> getResultType () {
+  public @NonNull Primitive<?> getResultType() {
     return _child.getResultType();
   }
 }

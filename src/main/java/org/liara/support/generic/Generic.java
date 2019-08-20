@@ -1,42 +1,41 @@
 package org.liara.support.generic;
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.AnnotatedElement;
+import java.lang.reflect.Type;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.liara.support.view.View;
 
-import java.lang.annotation.Annotation;
-import java.lang.reflect.*;
+public interface Generic<Value> {
 
-public interface Generic<Value>
-{
   /**
    * @return Return the underlying type represented by this generic.
    */
-  @NonNull Type getType ();
+  @NonNull Type getType();
 
   /**
    * @return A view over each annotation of this generic.
    */
-  @NonNull View<@NonNull Annotation> getAnnotations ();
+  @NonNull View<@NonNull Annotation> getAnnotations();
 
   /**
    * @see AnnotatedElement#getAnnotation(Class)
    */
-  @Nullable <T extends Annotation> T getAnnotation (@NonNull final Class<T> annotation);
+  @Nullable <T extends Annotation> T getAnnotation(@NonNull final Class<T> annotation);
 
   /**
    * @see AnnotatedElement#isAnnotationPresent(Class)
    */
-  <T extends Annotation> boolean isAnnotationPresent (@NonNull final Class<T> annotation);
+  <T extends Annotation> boolean isAnnotationPresent(@NonNull final Class<T> annotation);
 
   /**
    * Compare two generic types annotations and return true if both of them are equals.
    *
    * @param otherGeneric Other generic type to compare to this one.
-   *
    * @return True if both generic type have equals annotations.
    */
-  default boolean hasSameAnnotationsAs (@NonNull final Generic<?> otherGeneric) {
+  default boolean hasSameAnnotationsAs(@NonNull final Generic<?> otherGeneric) {
     @NonNull final View<@NonNull Annotation> annotations = getAnnotations();
 
     if (otherGeneric.getAnnotations().getSize() != annotations.getSize()) {

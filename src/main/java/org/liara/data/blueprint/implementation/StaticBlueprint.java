@@ -9,8 +9,8 @@ import org.liara.support.view.View;
 /**
  * A static immutable blueprint implementation.
  */
-public class StaticBlueprint implements Blueprint
-{
+public class StaticBlueprint implements Blueprint {
+
   @NonNull
   private final StaticBlueprintContent _content;
 
@@ -22,7 +22,7 @@ public class StaticBlueprint implements Blueprint
    *
    * @param content Content of the blueprint to instantiate.
    */
-  public StaticBlueprint (@NonNull final StaticBlueprintContent content) {
+  public StaticBlueprint(@NonNull final StaticBlueprintContent content) {
     _content = content;
     _elements = View.readonly(BlueprintElement.class, _content.getElements());
   }
@@ -31,7 +31,7 @@ public class StaticBlueprint implements Blueprint
    * @see Blueprint#getElements()
    */
   @Override
-  public @NonNull View<@NonNull BlueprintElement> getElements () {
+  public @NonNull View<@NonNull BlueprintElement> getElements() {
     return _elements;
   }
 
@@ -39,7 +39,7 @@ public class StaticBlueprint implements Blueprint
    * @see Blueprint#getParentOf(BlueprintElement)
    */
   @Override
-  public @Nullable BlueprintElement getParentOf (@NonNull final BlueprintElement element) {
+  public @Nullable BlueprintElement getParentOf(@NonNull final BlueprintElement element) {
     return _content.getParents().get(element.getIdentifier());
   }
 
@@ -47,7 +47,7 @@ public class StaticBlueprint implements Blueprint
    * @see Blueprint#getRootElement()
    */
   @Override
-  public @NonNull BlueprintElement getRootElement () {
+  public @NonNull BlueprintElement getRootElement() {
     return _content.getRoot();
   }
 }

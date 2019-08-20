@@ -6,10 +6,10 @@ import org.liara.support.view.View;
 /**
  * A tree structure element.
  */
-public interface TreeElement
-{
+public interface TreeElement {
+
   /**
    * @return A view over each children of this tree element.
    */
-  @NonNull View<@NonNull ? extends TreeElement> getChildren ();
+  @NonNull View<@NonNull ? extends TreeElement> getChildren();
 }

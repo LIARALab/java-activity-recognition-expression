@@ -7,8 +7,8 @@ import org.liara.data.primitive.Primitive;
  * A placeholder for a primitive of an expected type.
  */
 public interface ValueBlueprint
-  extends BlueprintElement
-{
+    extends BlueprintElement {
+
   /**
    * @return The type of primitive expected at this location.
    */

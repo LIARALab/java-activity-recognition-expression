@@ -1,12 +1,11 @@
 package org.liara.data.primitive;
 
+import java.time.ZonedDateTime;
+import java.util.ArrayList;
 import org.checkerframework.checker.index.qual.NonNegative;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.liara.support.view.View;
-
-import java.time.ZonedDateTime;
-import java.util.ArrayList;
 
 public final class Primitives {
 
@@ -17,11 +16,12 @@ public final class Primitives {
   private final static View<@NonNull Primitive> VIEW = View.readonly(Primitive.class, PRIMITIVES);
 
   @NonNull
-  public final static Primitive<@NonNull Boolean>  BOOLEAN = new Primitive<>(Boolean.class, "boolean");
+  public final static Primitive<@NonNull Boolean> BOOLEAN = new Primitive<>(Boolean.class,
+      "boolean");
 
   @NonNull
   public final static Primitive<@Nullable Boolean> NULLABLE_BOOLEAN = (
-    new NullablePrimitive<>(BOOLEAN)
+      new NullablePrimitive<>(BOOLEAN)
   );
 
   @NonNull
@@ -38,11 +38,11 @@ public final class Primitives {
 
   @NonNull
   public final static Primitive<@NonNull Integer> INTEGER = new Primitive<>(Integer.class,
-    "integer");
+      "integer");
 
   @NonNull
   public final static Primitive<@Nullable Integer> NULLABLE_INTEGER = (
-    new NullablePrimitive<>(INTEGER)
+      new NullablePrimitive<>(INTEGER)
   );
 
   @NonNull
@@ -65,11 +65,11 @@ public final class Primitives {
 
   @NonNull
   public final static Primitive<@NonNull Character> CHARACTER = new Primitive<>(Character.class,
-    "character");
+      "character");
 
   @NonNull
   public final static Primitive<@Nullable Character> NULLABLE_CHARACTER = (
-    new NullablePrimitive<>(CHARACTER)
+      new NullablePrimitive<>(CHARACTER)
   );
 
   @NonNull
@@ -77,27 +77,26 @@ public final class Primitives {
 
   @NonNull
   public final static Primitive<@Nullable String> NULLABLE_STRING = (
-    new NullablePrimitive<>(STRING)
+      new NullablePrimitive<>(STRING)
   );
 
   @NonNull
   public final static Primitive<@NonNull ZonedDateTime> DATE_TIME = (
-    new Primitive<>(ZonedDateTime.class, "datetime")
+      new Primitive<>(ZonedDateTime.class, "datetime")
   );
 
   @NonNull
   public final static Primitive<@Nullable ZonedDateTime> NULLABLE_DATE_TIME = (
-    new NullablePrimitive<>(DATE_TIME)
+      new NullablePrimitive<>(DATE_TIME)
   );
 
   /**
    * Register the given primitive and assign an identifier to it.
    *
    * @param primitive The primitive to register.
-   *
    * @return An identifier for the given primitive.
    */
-  public static @NonNegative int register (@NonNull final Primitive<?> primitive) {
+  public static @NonNegative int register(@NonNull final Primitive<?> primitive) {
     @NonNegative final int identifier;
 
     identifier = PRIMITIVES.size();
@@ -109,7 +108,7 @@ public final class Primitives {
   /**
    * @return A view over each registered primitive.
    */
-  public static @NonNull View<@NonNull Primitive> getPrimitives () {
+  public static @NonNull View<@NonNull Primitive> getPrimitives() {
     return VIEW;
   }
 }

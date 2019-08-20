@@ -1,17 +1,16 @@
 package org.liara.data.blueprint.implementation;
 
+import java.util.Objects;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.liara.data.blueprint.ValueBlueprint;
 import org.liara.data.blueprint.builder.BlueprintBuildingContext;
 import org.liara.data.blueprint.builder.StaticValueBlueprintBuilder;
 import org.liara.data.primitive.Primitive;
 
-import java.util.Objects;
-
 public class StaticValueBlueprint
-  extends StaticBlueprintElement
-  implements ValueBlueprint
-{
+    extends StaticBlueprintElement
+    implements ValueBlueprint {
+
   @NonNull
   private final Primitive _type;
 
@@ -21,9 +20,9 @@ public class StaticValueBlueprint
    * @param context A context to use for instantiating blueprint element.
    * @param builder A builder to use for instantiating blueprint element.
    */
-  public StaticValueBlueprint (
-    @NonNull final BlueprintBuildingContext context,
-    @NonNull final StaticValueBlueprintBuilder builder
+  public StaticValueBlueprint(
+      @NonNull final BlueprintBuildingContext context,
+      @NonNull final StaticValueBlueprintBuilder builder
   ) {
     super(context, builder);
 
@@ -34,7 +33,7 @@ public class StaticValueBlueprint
    * @see ValueBlueprint#getType()
    */
   @Override
-  public @NonNull Primitive<?> getType () {
+  public @NonNull Primitive<?> getType() {
     return _type;
   }
 }

@@ -7,20 +7,19 @@ import org.liara.support.generic.Generic
 import org.liara.support.generic.Generics
 
 class FloatDataTypeSpecification
-  extends DataTypeSpecification<Float>
-{
-  @Override
-  DataType<Float> getType () {
-    return DataTypes.FLOAT
-  }
+        extends DataTypeSpecification<Float> {
+    @Override
+    DataType<Float> getType() {
+        return DataTypes.FLOAT
+    }
 
-  @Override
-  Generic<Float> getExpextedGeneric () {
-    return Generics.FLOAT
-  }
+    @Override
+    Generic<Float> getExpextedGeneric() {
+        return Generics.FLOAT
+    }
 
-  @Override
-  Float getRandomValue () {
-    return random.nextFloat()
-  }
+    @Override
+    Float getRandomValue() {
+        return random.nextFloat()
+    }
 }

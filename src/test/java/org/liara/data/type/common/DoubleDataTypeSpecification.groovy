@@ -7,20 +7,19 @@ import org.liara.support.generic.Generic
 import org.liara.support.generic.Generics
 
 class DoubleDataTypeSpecification
-  extends DataTypeSpecification<Double>
-{
-  @Override
-  DataType<Double> getType () {
-    return DataTypes.DOUBLE
-  }
+        extends DataTypeSpecification<Double> {
+    @Override
+    DataType<Double> getType() {
+        return DataTypes.DOUBLE
+    }
 
-  @Override
-  Generic<Double> getExpextedGeneric () {
-    return Generics.DOUBLE
-  }
+    @Override
+    Generic<Double> getExpextedGeneric() {
+        return Generics.DOUBLE
+    }
 
-  @Override
-  Double getRandomValue () {
-    return random.nextDouble()
-  }
+    @Override
+    Double getRandomValue() {
+        return random.nextDouble()
+    }
 }

@@ -9,17 +9,17 @@ import org.liara.support.view.View;
  * An object that is able to build blueprint elements.
  */
 public interface BlueprintElementBuilder extends TreeElement {
+
   /**
    * Build an instance of blueprint element in accordance with this builder state.
    *
    * @param context Contextual information to use for building the blueprint element.
-   *
    * @return A blueprint element instance.
    */
-  @NonNull BlueprintElement build (@NonNull final BlueprintBuildingContext context);
+  @NonNull BlueprintElement build(@NonNull final BlueprintBuildingContext context);
 
   /**
    * @return A view over each child builder of this builder.
    */
-  @NonNull View<@NonNull BlueprintElementBuilder> getChildren ();
+  @NonNull View<@NonNull BlueprintElementBuilder> getChildren();
 }

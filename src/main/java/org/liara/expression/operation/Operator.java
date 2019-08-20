@@ -1,14 +1,8 @@
 package org.liara.expression.operation;
 
 import org.checkerframework.checker.index.qual.NonNegative;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
 
-import java.util.ArrayList;
-import java.util.Objects;
-
-public enum Operator
-{
+public enum Operator {
   //INTERVAL(0),
   //BINARY(1),
   //COLLATE(2)
@@ -46,11 +40,11 @@ public enum Operator
   @NonNegative
   private final int _priority;
 
-  Operator (@NonNegative final int priority) {
+  Operator(@NonNegative final int priority) {
     _priority = priority;
   }
 
-  public @NonNegative int getPriority () {
+  public @NonNegative int getPriority() {
     return _priority;
   }
 }

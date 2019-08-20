@@ -9,8 +9,8 @@ import org.liara.support.view.View;
  *
  * @param <Result> Primitive to expect from an evaluation of this expression.
  */
-public final class Constant<Result> implements Expression
-{
+public final class Constant<Result> implements Expression<Result> {
+
   @NonNull
   private final static View<@NonNull Expression> CHILDREN = View.readonly(Expression.class);
 
@@ -25,7 +25,7 @@ public final class Constant<Result> implements Expression
    * @param type DataType of this constant.
    * @param value Value of this constant.
    */
-  public Constant (@NonNull final Primitive<Result> type, final Result value) {
+  public Constant(@NonNull final Primitive<Result> type, final Result value) {
     _value = value;
     _type = type;
   }
@@ -35,7 +35,7 @@ public final class Constant<Result> implements Expression
    *
    * @param toCopy An existing constant to copy.
    */
-  public Constant (@NonNull final Constant<Result> toCopy) {
+  public Constant(@NonNull final Constant<Result> toCopy) {
     _value = toCopy.getValue();
     _type = toCopy.getResultType();
   }
@@ -43,7 +43,7 @@ public final class Constant<Result> implements Expression
   /**
    * @return The value of this constant.
    */
-  public Result getValue () {
+  public Result getValue() {
     return _value;
   }
 
@@ -51,7 +51,7 @@ public final class Constant<Result> implements Expression
    * @see Expression#getResultType()
    */
   @Override
-  public @NonNull Primitive<Result> getResultType () {
+  public @NonNull Primitive<Result> getResultType() {
     return _type;
   }
 
@@ -59,7 +59,7 @@ public final class Constant<Result> implements Expression
    * @see Expression#getChildren()
    */
   @Override
-  public @NonNull View<@NonNull Expression> getChildren () {
+  public @NonNull View<@NonNull Expression> getChildren() {
     return CHILDREN;
   }
 }

@@ -4,15 +4,15 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.liara.data.graph.Table;
 import org.liara.support.view.View;
 
-public interface TableBuilder extends GraphElementBuilder
-{
-  @NonNull Table build (@NonNull final GraphBuildingContext context);
+public interface TableBuilder extends GraphElementBuilder {
 
-  @NonNull ColumnBuilder getColumn (@NonNull final String name);
+  @NonNull Table build(@NonNull final GraphBuildingContext context);
 
-  boolean containsColumn (@NonNull final String name);
+  @NonNull ColumnBuilder getColumn(@NonNull final String name);
 
-  @NonNull View<@NonNull String> getColumnNames ();
+  boolean containsColumn(@NonNull final String name);
 
-  @NonNull View<? extends @NonNull ColumnBuilder> getColumns ();
+  @NonNull View<@NonNull String> getColumnNames();
+
+  @NonNull View<? extends @NonNull ColumnBuilder> getColumns();
 }

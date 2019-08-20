@@ -1,17 +1,16 @@
 package org.liara.data.type.resolver;
 
+import java.lang.reflect.AnnotatedType;
+import java.util.HashMap;
+import java.util.Map;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.liara.data.type.DataType;
 import org.liara.data.type.DataTypes;
 
-import java.lang.reflect.AnnotatedType;
-import java.util.HashMap;
-import java.util.Map;
-
 public class CommonTypeResolver
-  implements TypeResolver
-{
+    implements TypeResolver {
+
   @NonNull
   public static final CommonTypeResolver INSTANCE = new CommonTypeResolver();
 
@@ -58,7 +57,7 @@ public class CommonTypeResolver
   }
 
   @Override
-  public @Nullable DataType resolve (final java.lang.reflect.@NonNull Type type) {
+  public @Nullable DataType resolve(final java.lang.reflect.@NonNull Type type) {
     System.out.println(type.toString());
 
     if (type instanceof Class) {

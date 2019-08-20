@@ -1,13 +1,12 @@
 package org.liara.support.view;
 
+import java.util.function.Function;
 import org.checkerframework.checker.index.qual.LessThan;
 import org.checkerframework.checker.index.qual.NonNegative;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-import java.util.function.Function;
+public class MappedView<From, To> implements View<To> {
 
-public class MappedView<From, To> implements View<To>
-{
   @NonNull
   private final Class<To> _valueClass;
 
@@ -17,10 +16,10 @@ public class MappedView<From, To> implements View<To>
   @NonNull
   private final Function<From, To> _mapper;
 
-  public MappedView (
-    @NonNull final Class<To> valueClass,
-    @NonNull final View<From> source,
-    @NonNull final Function<From, To> mapper
+  public MappedView(
+      @NonNull final Class<To> valueClass,
+      @NonNull final View<From> source,
+      @NonNull final Function<From, To> mapper
   ) {
     _source = source;
     _mapper = mapper;
@@ -28,24 +27,24 @@ public class MappedView<From, To> implements View<To>
   }
 
   @Override
-  public @NonNegative int getSize () {
+  public @NonNegative int getSize() {
     return _source.getSize();
   }
 
   @Override
-  public To get (
-    @NonNegative @LessThan("getSize()") final int index
+  public To get(
+      @NonNegative @LessThan("getSize()") final int index
   )
-  throws IndexOutOfBoundsException {
+      throws IndexOutOfBoundsException {
     return _mapper.apply(_source.get(index));
   }
 
   @Override
-  public @NonNull Class<To> getValueClass () {
+  public @NonNull Class<To> getValueClass() {
     return _valueClass;
   }
 
-  public @NonNull View<From> getSource () {
+  public @NonNull View<From> getSource() {
     return _source;
   }
 }

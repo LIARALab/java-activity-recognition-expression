@@ -6,11 +6,11 @@ import org.liara.data.blueprint.implementation.StaticValueBlueprint;
 import org.liara.data.primitive.Primitive;
 import org.liara.support.view.View;
 
-public class StaticValueBlueprintBuilder implements BlueprintElementBuilder
-{
+public class StaticValueBlueprintBuilder implements BlueprintElementBuilder {
+
   @NonNull
   private static final View<@NonNull BlueprintElementBuilder> EMPTY_VIEW = View.readonly(
-    BlueprintElementBuilder.class, new BlueprintElementBuilder[0]
+      BlueprintElementBuilder.class, new BlueprintElementBuilder[0]
   );
 
   @Nullable
@@ -19,7 +19,7 @@ public class StaticValueBlueprintBuilder implements BlueprintElementBuilder
   /**
    * Instantiate a new value blueprint builder.
    */
-  public StaticValueBlueprintBuilder () {
+  public StaticValueBlueprintBuilder() {
     _type = null;
   }
 
@@ -27,7 +27,7 @@ public class StaticValueBlueprintBuilder implements BlueprintElementBuilder
    * @see BlueprintElementBuilder#build(BlueprintBuildingContext)
    */
   @Override
-  public @NonNull StaticValueBlueprint build (@NonNull final BlueprintBuildingContext context) {
+  public @NonNull StaticValueBlueprint build(@NonNull final BlueprintBuildingContext context) {
     return new StaticValueBlueprint(context, this);
   }
 
@@ -35,14 +35,14 @@ public class StaticValueBlueprintBuilder implements BlueprintElementBuilder
    * @see BlueprintElementBuilder#getChildren()
    */
   @Override
-  public @NonNull View<@NonNull BlueprintElementBuilder> getChildren () {
+  public @NonNull View<@NonNull BlueprintElementBuilder> getChildren() {
     return EMPTY_VIEW;
   }
 
   /**
    * @return The type of value expected by the resulting blueprint.
    */
-  public @Nullable Primitive<?> getType () {
+  public @Nullable Primitive<?> getType() {
     return _type;
   }
 
@@ -51,7 +51,7 @@ public class StaticValueBlueprintBuilder implements BlueprintElementBuilder
    *
    * @param type The new type of value expected by the resulting blueprint.
    */
-  public void setType (@Nullable final Primitive<?> type) {
+  public void setType(@Nullable final Primitive<?> type) {
     _type = type;
   }
 }

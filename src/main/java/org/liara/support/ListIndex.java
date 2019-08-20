@@ -1,12 +1,15 @@
 package org.liara.support;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+import java.util.NoSuchElementException;
 import org.checkerframework.checker.index.qual.NonNegative;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-import java.util.*;
+public class ListIndex<Key, Value> implements Index<Key, Value> {
 
-public class ListIndex<Key, Value> implements Index<Key, Value>
-{
   @NonNull
   private final Comparator<Key> _keyComparator;
 
@@ -28,15 +31,15 @@ public class ListIndex<Key, Value> implements Index<Key, Value>
   @NonNull
   private final List<Key> _readonlyKeys;
 
-  public ListIndex (
-    @NonNull final Comparator<Key> keyComparator
+  public ListIndex(
+      @NonNull final Comparator<Key> keyComparator
   ) {
     this(16, keyComparator);
   }
 
-  public ListIndex (
-    @NonNegative final int capacity,
-    @NonNull final Comparator<Key> keyComparator
+  public ListIndex(
+      @NonNegative final int capacity,
+      @NonNull final Comparator<Key> keyComparator
   ) {
     _keys = new ArrayList<>(capacity);
     _orderedKeys = new ArrayList<>(capacity);
@@ -49,7 +52,7 @@ public class ListIndex<Key, Value> implements Index<Key, Value>
     _keyComparator = keyComparator;
   }
 
-  public void put (final Key key, final Value value) {
+  public void put(final Key key, final Value value) {
     final int orderedKeyIndex = Collections.binarySearch(_orderedKeys, key, _keyComparator);
 
     if (orderedKeyIndex < 0) {
@@ -64,46 +67,46 @@ public class ListIndex<Key, Value> implements Index<Key, Value>
     }
   }
 
-  public void setValue (final int index, final Value value) {
+  public void setValue(final int index, final Value value) {
     _values.set(index, value);
   }
 
-  public void setValue (final Key key, final Value value) {
+  public void setValue(final Key key, final Value value) {
     _values.set(getIndexOfKey(key), value);
   }
 
-  public void setKey (final Key from, final Key to) {
+  public void setKey(final Key from, final Key to) {
     final int index = Collections.binarySearch(_orderedKeys, from, _keyComparator);
 
     if (index < 0) {
       throw new IllegalArgumentException(
-        "Unable to update the key of the pair with key \"" + from.toString() + "\" to \"" +
-        to.toString() + "\" because no pair with key \"" + from.toString() + "\" exists " +
-        "into this index."
+          "Unable to update the key of the pair with key \"" + from.toString() + "\" to \"" +
+              to.toString() + "\" because no pair with key \"" + from.toString() + "\" exists " +
+              "into this index."
       );
     }
 
     setKey(_keysIndexes.get(index), to);
   }
 
-  public void setKey (final int index, final Key target) {
+  public void setKey(final int index, final Key target) {
     if (index >= _keys.size()) {
       throw new IllegalArgumentException(
-        "Unable to update the key of the " + index + "th pair to \"" + target.toString() +
-        "\" because the " + index + "th pair is out of this index bounds that are between " +
-        "0 (included) and " + _keys.size() + " (excluded)."
+          "Unable to update the key of the " + index + "th pair to \"" + target.toString() +
+              "\" because the " + index + "th pair is out of this index bounds that are between " +
+              "0 (included) and " + _keys.size() + " (excluded)."
       );
     }
 
     if (containsKey(target)) {
       throw new IllegalArgumentException(
-        "Unable to update the key of the " + index + "th pair to \"" + target.toString() +
-        "\" because another pair of this index does already use the given key."
+          "Unable to update the key of the " + index + "th pair to \"" + target.toString() +
+              "\" because another pair of this index does already use the given key."
       );
     }
 
     final int oldKeyIndex = Collections.binarySearch(
-      _orderedKeys, _keys.get(index), _keyComparator
+        _orderedKeys, _keys.get(index), _keyComparator
     );
     final int keyField = _keysIndexes.get(oldKeyIndex);
 
@@ -117,13 +120,13 @@ public class ListIndex<Key, Value> implements Index<Key, Value>
     _keysIndexes.add(newKeyIndex, keyField);
   }
 
-  public void remove (final Key key) {
+  public void remove(final Key key) {
     int orderedKeyIndex = Collections.binarySearch(_orderedKeys, key, _keyComparator);
 
     if (orderedKeyIndex < 0) {
       throw new IllegalArgumentException(
-        "Unable to remove the pair with the key \"" + key.toString() + "\" from this " +
-        "index because no pair with key \"" + key.toString() + "\" exists into it."
+          "Unable to remove the pair with the key \"" + key.toString() + "\" from this " +
+              "index because no pair with key \"" + key.toString() + "\" exists into it."
       );
     } else {
       @NonNegative final int keyIndex = _keysIndexes.get(orderedKeyIndex);
@@ -135,16 +138,16 @@ public class ListIndex<Key, Value> implements Index<Key, Value>
 
       for (int index = keyIndex, size = _keys.size(); index < size; ++index) {
         int otherKeyIndex = Collections.binarySearch(
-          _orderedKeys, _keys.get(index), _keyComparator
+            _orderedKeys, _keys.get(index), _keyComparator
         );
         _keysIndexes.set(otherKeyIndex, _keysIndexes.get(otherKeyIndex) - 1);
       }
     }
   }
 
-  public void remove (final int keyIndex) {
+  public void remove(final int keyIndex) {
     int orderedKeyIndex = Collections.binarySearch(
-      _orderedKeys, _keys.get(keyIndex), _keyComparator
+        _orderedKeys, _keys.get(keyIndex), _keyComparator
     );
 
     _values.remove(keyIndex);
@@ -154,13 +157,13 @@ public class ListIndex<Key, Value> implements Index<Key, Value>
 
     for (int index = keyIndex, size = _keys.size(); index < size; ++index) {
       int otherKeyIndex = Collections.binarySearch(
-        _orderedKeys, _keys.get(index), _keyComparator
+          _orderedKeys, _keys.get(index), _keyComparator
       );
       _keysIndexes.set(otherKeyIndex, _keysIndexes.get(otherKeyIndex) - 1);
     }
   }
 
-  public void clear () {
+  public void clear() {
     _keys.clear();
     _keysIndexes.clear();
     _orderedKeys.clear();
@@ -168,13 +171,13 @@ public class ListIndex<Key, Value> implements Index<Key, Value>
   }
 
   @Override
-  public @NonNegative int getIndexOfKey (final Key key) {
+  public @NonNegative int getIndexOfKey(final Key key) {
     final int index = Collections.binarySearch(_orderedKeys, key, _keyComparator);
 
     if (index < 0) {
       throw new NoSuchElementException(
-        "Unable to retrieve the index of key \"" + key.toString() +
-        "\" into this index because the given key is not in this index."
+          "Unable to retrieve the index of key \"" + key.toString() +
+              "\" into this index because the given key is not in this index."
       );
     }
 
@@ -182,37 +185,37 @@ public class ListIndex<Key, Value> implements Index<Key, Value>
   }
 
   @Override
-  public boolean containsKey (final Key key) {
+  public boolean containsKey(final Key key) {
     return Collections.binarySearch(_orderedKeys, key, _keyComparator) >= 0;
   }
 
   @Override
-  public Key getKey (@NonNegative final int index) {
+  public Key getKey(@NonNegative final int index) {
     return _keys.get(index);
   }
 
   @Override
-  public Value getValue (@NonNegative final int index) {
+  public Value getValue(@NonNegative final int index) {
     return _values.get(index);
   }
 
   @Override
-  public Value getValue (final Key key) {
+  public Value getValue(final Key key) {
     return _values.get(getIndexOfKey(key));
   }
 
   @Override
-  public int getSize () {
+  public int getSize() {
     return _keys.size();
   }
 
   @Override
-  public @NonNull List<Value> getValues () {
+  public @NonNull List<Value> getValues() {
     return _readonlyValues;
   }
 
   @Override
-  public @NonNull List<Key> getKeys () {
+  public @NonNull List<Key> getKeys() {
     return _readonlyKeys;
   }
 }

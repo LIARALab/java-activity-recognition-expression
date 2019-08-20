@@ -1,45 +1,44 @@
 package org.liara.support.view;
 
+import java.util.List;
 import org.checkerframework.checker.index.qual.LessThan;
 import org.checkerframework.checker.index.qual.NonNegative;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import java.util.List;
+public class ListView<T> implements View<T> {
 
-public class ListView<T> implements View<T>
-{
   @NonNull
   private final Class<T> _valueClass;
 
   @NonNull
   private final List<? extends T> _wrapped;
 
-  public ListView (@NonNull final Class<T> valueClass, @NonNull final List<? extends T> list) {
+  public ListView(@NonNull final Class<T> valueClass, @NonNull final List<? extends T> list) {
     _wrapped = list;
     _valueClass = valueClass;
   }
 
-  public ListView (@NonNull final ListView<T> toCopy) {
+  public ListView(@NonNull final ListView<T> toCopy) {
     _wrapped = toCopy._wrapped;
     _valueClass = toCopy.getValueClass();
   }
 
   @Override
-  public @NonNegative int getSize () {
+  public @NonNegative int getSize() {
     return _wrapped.size();
   }
 
   @Override
-  public @Nullable T get (
-    @NonNegative @LessThan("getSize()") final int index
+  public @Nullable T get(
+      @NonNegative @LessThan("getSize()") final int index
   )
-  throws IndexOutOfBoundsException {
+      throws IndexOutOfBoundsException {
     return _wrapped.get(index);
   }
 
   @Override
-  public @NonNull Class<T> getValueClass () {
+  public @NonNull Class<T> getValueClass() {
     return _valueClass;
   }
 }

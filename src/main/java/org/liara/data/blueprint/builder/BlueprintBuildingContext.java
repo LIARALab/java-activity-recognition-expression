@@ -8,13 +8,12 @@ import org.liara.data.blueprint.Blueprint;
 /**
  * An object that store contextual information used for building blueprint elements.
  */
-public interface BlueprintBuildingContext
-{
+public interface BlueprintBuildingContext {
+
   /**
    * Return the identifier assigned to the given builder in accordance with this context.
    *
    * @param builder A builder to resolve.
-   *
    * @return The identifier assigned to the given builder in accordance with this context.
    */
   @NonNegative int getIdentifier(@NonNull final BlueprintElementBuilder builder);

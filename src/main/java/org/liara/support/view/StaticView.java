@@ -5,12 +5,12 @@ import org.checkerframework.checker.index.qual.NonNegative;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-public class StaticView<T> implements View<T>
-{
+public class StaticView<T> implements View<T> {
+
   @NonNull
   private final View<T> _wrapped;
 
-  public StaticView (@NonNull final View<T> view) {
+  public StaticView(@NonNull final View<T> view) {
     if (view instanceof StaticView) {
       _wrapped = ((StaticView<T>) view)._wrapped;
     } else {
@@ -18,25 +18,25 @@ public class StaticView<T> implements View<T>
     }
   }
 
-  public StaticView (@NonNull final StaticView<T> toCopy) {
+  public StaticView(@NonNull final StaticView<T> toCopy) {
     _wrapped = toCopy._wrapped;
   }
 
   @Override
-  public @NonNegative int getSize () {
+  public @NonNegative int getSize() {
     return _wrapped.getSize();
   }
 
   @Override
-  public @Nullable T get (
-    @NonNegative @LessThan("getBytes()") final int index
+  public @Nullable T get(
+      @NonNegative @LessThan("getBytes()") final int index
   )
-  throws IndexOutOfBoundsException {
+      throws IndexOutOfBoundsException {
     return _wrapped.get(index);
   }
 
   @Override
-  public @NonNull Class<T> getValueClass () {
+  public @NonNull Class<T> getValueClass() {
     return _wrapped.getValueClass();
   }
 }

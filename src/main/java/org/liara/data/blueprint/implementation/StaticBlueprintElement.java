@@ -1,5 +1,6 @@
 package org.liara.data.blueprint.implementation;
 
+import java.util.Objects;
 import org.checkerframework.checker.index.qual.NonNegative;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.liara.data.blueprint.Blueprint;
@@ -8,14 +9,12 @@ import org.liara.data.blueprint.builder.BlueprintBuildingContext;
 import org.liara.data.blueprint.builder.BlueprintElementBuilder;
 import org.liara.support.view.View;
 
-import java.util.Objects;
-
 public class StaticBlueprintElement
-  implements BlueprintElement
-{
+    implements BlueprintElement {
+
   @NonNull
   private static final View<@NonNull BlueprintElement> EMPTY_VIEW = View.readonly(
-    BlueprintElement.class, new BlueprintElement[0]
+      BlueprintElement.class, new BlueprintElement[0]
   );
 
   @NonNull
@@ -30,9 +29,9 @@ public class StaticBlueprintElement
    * @param context A context to use for instantiating blueprint element.
    * @param builder A builder to use for instantiating blueprint element.
    */
-  public StaticBlueprintElement (
-    @NonNull final BlueprintBuildingContext context,
-    @NonNull final BlueprintElementBuilder builder
+  public StaticBlueprintElement(
+      @NonNull final BlueprintBuildingContext context,
+      @NonNull final BlueprintElementBuilder builder
   ) {
     _blueprint = Objects.requireNonNull(context.getBlueprint());
     _identifier = context.getIdentifier(builder);
@@ -42,7 +41,7 @@ public class StaticBlueprintElement
    * @see BlueprintElement#getIdentifier()
    */
   @Override
-  public @NonNegative int getIdentifier () {
+  public @NonNegative int getIdentifier() {
     return _identifier;
   }
 
@@ -50,7 +49,7 @@ public class StaticBlueprintElement
    * @see BlueprintElement#getBlueprint()
    */
   @Override
-  public @NonNull Blueprint getBlueprint () {
+  public @NonNull Blueprint getBlueprint() {
     return _blueprint;
   }
 
@@ -58,7 +57,7 @@ public class StaticBlueprintElement
    * @see BlueprintElement#getChildren()
    */
   @Override
-  public @NonNull View<@NonNull BlueprintElement> getChildren () {
+  public @NonNull View<@NonNull BlueprintElement> getChildren() {
     return EMPTY_VIEW;
   }
 }

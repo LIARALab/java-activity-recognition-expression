@@ -10,8 +10,8 @@ import org.liara.data.blueprint.implementation.StaticBlueprintContent;
 import org.liara.data.primitive.Primitive;
 import org.liara.support.tree.TreeWalker;
 
-public class StaticBlueprintBuilder
-{
+public class StaticBlueprintBuilder {
+
   @NonNull
   private static final BlueprintElementBuilder DEFAULT_BLUEPRINT = new StaticNullBlueprintBuilder();
 
@@ -24,15 +24,15 @@ public class StaticBlueprintBuilder
   @NonNull
   private final StaticBlueprintBuildingContext _context;
 
-  public StaticBlueprintBuilder () {
+  public StaticBlueprintBuilder() {
     _blueprint = null;
     _walker = new TreeWalker<>(BlueprintElementBuilder.class);
     _context = new StaticBlueprintBuildingContext();
   }
 
-  public @NonNull Blueprint build () {
+  public @NonNull Blueprint build() {
     @NonNull final BlueprintElementBuilder root = _blueprint == null ? DEFAULT_BLUEPRINT
-                                                                     : _blueprint;
+        : _blueprint;
     @NonNull final StaticBlueprintContent content = new StaticBlueprintContent();
     @NonNull final Blueprint blueprint = new StaticBlueprint(content);
 
@@ -51,7 +51,7 @@ public class StaticBlueprintBuilder
       while (_walker.canEnter()) {
         @NonNull final BlueprintElementBuilder next = _walker.enter();
         @NonNull final BlueprintElement current = content.getElements().get(
-          _context.getIdentifier(next)
+            _context.getIdentifier(next)
         );
 
         for (int index = 0, size = next.getChildren().getSize(); index < size; ++index) {
@@ -69,7 +69,7 @@ public class StaticBlueprintBuilder
     return blueprint;
   }
 
-  private void assignIdentifiers (@NonNull final BlueprintElementBuilder blueprint) {
+  private void assignIdentifiers(@NonNull final BlueprintElementBuilder blueprint) {
     _walker.setRoot(blueprint);
     _walker.movesForward();
 
@@ -92,9 +92,9 @@ public class StaticBlueprintBuilder
     _walker.setRoot(null);
   }
 
-  public @NonNull ChainedStaticObjectBlueprintBuilder<StaticBlueprintBuilder> describeObject () {
+  public @NonNull ChainedStaticObjectBlueprintBuilder<StaticBlueprintBuilder> describeObject() {
     @NonNull final ChainedStaticObjectBlueprintBuilder<StaticBlueprintBuilder> result = (
-      new ChainedStaticObjectBlueprintBuilder<>(this)
+        new ChainedStaticObjectBlueprintBuilder<>(this)
     );
 
     _blueprint = result;
@@ -102,9 +102,9 @@ public class StaticBlueprintBuilder
     return result;
   }
 
-  public @NonNull ChainedStaticTupleBlueprintBuilder<StaticBlueprintBuilder> describeTuple () {
+  public @NonNull ChainedStaticTupleBlueprintBuilder<StaticBlueprintBuilder> describeTuple() {
     @NonNull final ChainedStaticTupleBlueprintBuilder<StaticBlueprintBuilder> result = (
-      new ChainedStaticTupleBlueprintBuilder<>(this)
+        new ChainedStaticTupleBlueprintBuilder<>(this)
     );
 
     _blueprint = result;
@@ -112,7 +112,7 @@ public class StaticBlueprintBuilder
     return result;
   }
 
-  public @NonNull StaticBlueprintBuilder describeValue (@NonNull final Primitive<?> type) {
+  public @NonNull StaticBlueprintBuilder describeValue(@NonNull final Primitive<?> type) {
     @NonNull final StaticValueBlueprintBuilder result = new StaticValueBlueprintBuilder();
     result.setType(type);
 
@@ -121,21 +121,21 @@ public class StaticBlueprintBuilder
     return this;
   }
 
-  public @NonNull StaticBlueprintBuilder describeNull () {
+  public @NonNull StaticBlueprintBuilder describeNull() {
     _blueprint = new StaticNullBlueprintBuilder();
     return this;
   }
 
-  public @NonNull StaticBlueprintBuilder clear () {
+  public @NonNull StaticBlueprintBuilder clear() {
     _blueprint = null;
     return this;
   }
 
-  public @Nullable BlueprintElementBuilder getBlueprint () {
+  public @Nullable BlueprintElementBuilder getBlueprint() {
     return _blueprint;
   }
 
-  public void setBlueprint (@Nullable final BlueprintElementBuilder blueprint) {
+  public void setBlueprint(@Nullable final BlueprintElementBuilder blueprint) {
     _blueprint = blueprint;
   }
 }

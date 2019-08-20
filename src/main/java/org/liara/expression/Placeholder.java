@@ -1,4 +1,5 @@
 package org.liara.expression;
 
-public interface Placeholder extends Expression
-{ }
+public interface Placeholder<Result> extends Expression<Result> {
+
+}

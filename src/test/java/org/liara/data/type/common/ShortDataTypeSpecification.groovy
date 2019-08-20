@@ -7,20 +7,19 @@ import org.liara.support.generic.Generic
 import org.liara.support.generic.Generics
 
 class ShortDataTypeSpecification
-  extends DataTypeSpecification<Short>
-{
-  @Override
-  DataType<Short> getType () {
-    return DataTypes.SHORT
-  }
+        extends DataTypeSpecification<Short> {
+    @Override
+    DataType<Short> getType() {
+        return DataTypes.SHORT
+    }
 
-  @Override
-  Generic<Short> getExpextedGeneric () {
-    return Generics.SHORT
-  }
+    @Override
+    Generic<Short> getExpextedGeneric() {
+        return Generics.SHORT
+    }
 
-  @Override
-  Short getRandomValue () {
-    return (short) random.nextInt()
-  }
+    @Override
+    Short getRandomValue() {
+        return (short) random.nextInt()
+    }
 }

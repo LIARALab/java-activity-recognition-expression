@@ -1,5 +1,6 @@
 package org.liara.data.blueprint.implementation;
 
+import java.util.Arrays;
 import org.checkerframework.checker.index.qual.NonNegative;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.liara.data.blueprint.BlueprintElement;
@@ -8,12 +9,10 @@ import org.liara.data.blueprint.builder.BlueprintBuildingContext;
 import org.liara.data.blueprint.builder.BlueprintElementBuilder;
 import org.liara.support.view.View;
 
-import java.util.Arrays;
-
 public class StaticTupleBlueprint
-  extends StaticBlueprintElement
-  implements TupleBlueprint
-{
+    extends StaticBlueprintElement
+    implements TupleBlueprint {
+
   private final int[] _children;
 
   @NonNull
@@ -30,15 +29,15 @@ public class StaticTupleBlueprint
    * @param context A context to use for instantiating blueprint element.
    * @param builder A builder to use for instantiating blueprint element.
    */
-  public StaticTupleBlueprint (
-    @NonNull final BlueprintBuildingContext context,
-    @NonNull final BlueprintElementBuilder builder
+  public StaticTupleBlueprint(
+      @NonNull final BlueprintBuildingContext context,
+      @NonNull final BlueprintElementBuilder builder
   ) {
     super(context, builder);
 
     _children = new int[builder.getChildren().getSize()];
     _view = View.readonly(_children).map(
-      BlueprintElement.class, getBlueprint().getElements()::get
+        BlueprintElement.class, getBlueprint().getElements()::get
     );
 
     for (int index = 0, size = builder.getChildren().getSize(); index < size; ++index) {
@@ -60,10 +59,12 @@ public class StaticTupleBlueprint
   /**
    * @return The boundaries of all identifiers of all children element of this tuple.
    */
-  private @NonNegative int[] computeChildrenBoundaries () {
-    if (_children.length == 0) return new int[] {0, 0};
+  private @NonNegative int[] computeChildrenBoundaries() {
+    if (_children.length == 0) {
+      return new int[]{0, 0};
+    }
 
-    @NonNegative int[] result = new int[] {Integer.MAX_VALUE, Integer.MIN_VALUE};
+    @NonNegative int[] result = new int[]{Integer.MAX_VALUE, Integer.MIN_VALUE};
 
     for (int index = 0, size = _children.length; index < size; ++index) {
       @NonNegative final int elementIdentifier = _children[index];
@@ -79,19 +80,21 @@ public class StaticTupleBlueprint
    * @see TupleBlueprint#getIndexOf(BlueprintElement)
    */
   @Override
-  public @NonNegative int getIndexOf (@NonNull final BlueprintElement value) {
-    if (value.getBlueprint() != getBlueprint()) return -1;
+  public @NonNegative int getIndexOf(@NonNull final BlueprintElement value) {
+    if (value.getBlueprint() != getBlueprint()) {
+      return -1;
+    }
 
     @NonNegative final int index = value.getIdentifier() - _offset;
 
-    return index >= 0 && index < _indexes.length ? _indexes[index] : - 1;
+    return index >= 0 && index < _indexes.length ? _indexes[index] : -1;
   }
 
   /**
    * @see BlueprintElement#getChildren()
    */
   @Override
-  public @NonNull View<@NonNull BlueprintElement> getChildren () {
+  public @NonNull View<@NonNull BlueprintElement> getChildren() {
     return _view;
   }
 }

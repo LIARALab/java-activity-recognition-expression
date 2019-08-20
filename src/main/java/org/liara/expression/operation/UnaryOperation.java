@@ -1,16 +1,24 @@
 package org.liara.expression.operation;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
-import org.liara.expression.Expression;
 
-public interface UnaryOperation<Result> extends Operation<Result>
-{
+public interface UnaryOperation {
   /**
-   * Return the operand of this unary operation.
+   * Return true if the given operation is an unary one.
    *
-   * @return The operand of this unary operation.
+   * @param operation An operation.
+   *
+   * @return True if the given operation is an unary one.
    */
-  default @NonNull Expression<?> getOperand () {
-    return getChildren().get(0);
+  static boolean isUnaryOperation (@NonNull final Operation<?> operation) {
+    switch (operation.getOperator()) {
+      case NEGATION:
+      case NOT:
+      case PLUS:
+      case MINUS:
+        return true;
+    }
+
+    return false;
   }
 }

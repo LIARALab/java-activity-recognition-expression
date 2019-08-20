@@ -1,116 +1,110 @@
 package org.liara.expression.operation;
 
-import org.checkerframework.checker.index.qual.NonNegative;
+import java.util.Objects;
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
+import org.liara.data.primitive.Primitive;
 import org.liara.expression.Expression;
-
-import java.util.Collection;
 
 /**
  * A range expression that test that a comparable value is between a lower one (included) and an
  * upper one (included).
- *
- * @param <Compared> Type used to make the comparison.
  */
-public interface Range<Compared extends Comparable<Compared>>
-  extends Operation<Boolean>
-{
+public interface Range {
   /**
-   * @return The expression that gives the compared value.
+   * @return The operator that describe a range operation.
    */
-  @NonNull Expression<Compared> getValue ();
+  static @NonNull Operator getOperator () {
+    return Operator.BETWEEN;
+  }
 
   /**
-   * @return The expression that gives the minimum value of this range.
-   */
-  @NonNull Expression<Compared> getMinimum ();
-
-  /**
-   * @return The expression that gives the maximum value of this range.
-   */
-  @NonNull Expression<Compared> getMaximum ();
-
-  /**
-   * A rewritable expression that test that a comparable value is between a lower one (included) and
-   * an upper one (included).
+   * Returns true if the given operation is a range operation.
    *
-   * @param <Compared> Type used to make the comparison.
+   * @param operation An operation to validate.
+   *
+   * @return True if the given operation is a range operation.
    */
-  interface Rewritable<Compared extends Comparable<Compared>>
-    extends Range<Compared>, Operation.Rewritable<@NonNull Boolean>
-  {
-    /**
-     * @see Operation.Rewritable#rewrite(int, Expression)
-     */
-    @Override
-    @NonNull Range<Compared> rewrite (
-      @NonNegative final int index, final @NonNull Expression<?> expression
-    );
+  static boolean isRange (@Nullable final Operation<?> operation) {
+    return Objects.nonNull(operation) &&
+           operation.getOperator().equals(getOperator()) &&
+           operation.getChildren().getSize() == 3 &&
+           Objects.equals(
+               operation.getOperand(0).getResultType(),
+               operation.getOperand(1).getResultType()
+           ) && Objects.equals(
+               operation.getOperand(1).getResultType(),
+               operation.getOperand(2).getResultType()
+           );
+  }
 
-    /**
-     * @see Operation.Rewritable#rewrite(Expression[])
-     */
-    @Override
-    @NonNull Range<Compared> rewrite (@NonNull final Expression[] expressions);
-
-
-    /**
-     * @see Operation.Rewritable#setOperand(int, Expression)
-     */
-    @Override
-    default @NonNull Range<Compared> setOperand (
-      @NonNegative final int index, final @NonNull Expression<?> operand
-    ) {
-      return rewrite(index, operand);
+  /**
+   * Returns true if the given operation is a range operation.
+   *
+   * @param operation An operation to validate.
+   *
+   * @return True if the given operation is a range operation.
+   */
+  static <Value extends Operation<?>> @NonNull Value assertThatIsRange (final Value operation) {
+    if (Objects.isNull(operation)) {
+      throw new IllegalArgumentException("Null operations are not range operation.");
     }
 
-    /**
-     * @see Operation.Rewritable#setOperands(Expression[])
-     */
-    @Override
-    default @NonNull Range<Compared> setOperands (@NonNull final Expression<?>[] operands) {
-      return rewrite(operands);
+    if (!operation.getOperator().equals(getOperator())) {
+      throw new IllegalArgumentException(
+          "The given operation is not a range operation because its operator is " +
+              operation.getOperator().toString() + " instead of " + getOperator().toString()
+      );
     }
 
-    /**
-     * @see Operation.Rewritable#setOperands(Collection)
-     */
-    @Override
-    default @NonNull Range<Compared> setOperands (
-      @NonNull final Collection<@NonNull Expression<?>> operands
-    ) { return setOperands(operands.toArray(new Expression[0])); }
-
-    /**
-     * Instantiate a copy of this range expression with a new expression of the compared value.
-     *
-     * @param value The new expression of the value to compare.
-     *
-     * @return A copy of this range expression with a new expression of the compared value.
-     */
-    default @NonNull Range<Compared> setValue (@NonNull final Expression<Compared> value) {
-      return rewrite(0, value);
+    if (operation.getChildren().getSize() != 3) {
+      throw new IllegalArgumentException(
+          "The given operation is not a range operation because it contains " +
+              operation.getChildren().getSize() + "operand(s) instead of 3 : the value to compare" +
+              ", the lower boundary and the upper boundary."
+      );
     }
 
-    /**
-     * Instantiate a copy of this range expression with a new expression of the minimum boundary.
-     *
-     * @param minimum The new expression of the minimum boundary.
-     *
-     * @return A copy of this range expression with a new expression of the minimum boundary.
-     */
-    default @NonNull Range<Compared> setMinimum (@NonNull final Expression<Compared> minimum) {
-      return rewrite(1, minimum);
+    @NonNull final Primitive<?> type = operation.getOperand(0).getResultType();
+
+    for (int index = 1; index < 3; ++index) {
+      if (!operation.getOperand(index).getResultType().equals(type)) {
+        throw new IllegalArgumentException(
+            "The given operation is not a range operation because its operators are not of the " +
+                "same type, the expected type of the operands is " + type.getName() +
+                " in accordance with the first one but the " + index + "th operand is of type " +
+                operation.getOperand(index).getResultType().getName() + "."
+        );
+      }
     }
 
-    /**
-     * Instantiate a copy of this range expression with a new expression of the maximum boundary.
-     *
-     * @param maximum The new expression of the maximum boundary.
-     *
-     * @return A copy of this range expression with a new expression of the maximum boundary.
-     */
-    default @NonNull Range<Compared> setMaximum (@NonNull final Expression<Compared> maximum) {
-      return rewrite(2, maximum);
-    }
+    return operation;
+  }
+
+  /**
+   * @param operation A range operation.
+   *
+   * @return The expression that gives the value to compare.
+   */
+  static @NonNull Expression<?> getValue(@NonNull final Operation<?> operation) {
+    return operation.getOperand(0);
+  }
+
+  /**
+   * @param operation A range operation.
+   *
+   * @return The expression that gives the lower bound of this range (included).
+   */
+  static @NonNull Expression<?> getMinimum(@NonNull final Operation<?> operation) {
+    return operation.getOperand(1);
+  }
+
+  /**
+   * @param operation A range operation.
+   *
+   * @return The expression that gives the upper bound of this range (included).
+   */
+  static @NonNull Expression<?> getMaximum(@NonNull final Operation<?> operation) {
+    return operation.getOperand(2);
   }
 }

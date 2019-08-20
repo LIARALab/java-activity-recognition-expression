@@ -9,22 +9,22 @@ import org.liara.support.view.View;
 /**
  * An element of a blueprint.
  */
-public interface BlueprintElement extends TreeElement
-{
+public interface BlueprintElement extends TreeElement {
+
   /**
    * @return A number that fully identify this element into the parent blueprint.
    */
-  @NonNegative int getIdentifier ();
+  @NonNegative int getIdentifier();
 
   /**
    * @return The parent blueprint of this element.
    */
-  @NonNull Blueprint getBlueprint ();
+  @NonNull Blueprint getBlueprint();
 
   /**
    * @return The parent blueprint element of this element if exists, null otherwise.
    */
-  default @Nullable BlueprintElement getParent () {
+  default @Nullable BlueprintElement getParent() {
     return getBlueprint().getParentOf(this);
   }
 

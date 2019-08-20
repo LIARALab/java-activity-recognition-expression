@@ -1,23 +1,22 @@
 package org.liara.support;
 
+import java.util.List;
 import org.checkerframework.checker.index.qual.NonNegative;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-import java.util.List;
+public interface Index<Key, Value> {
 
-public interface Index<Key, Value>
-{
-  @NonNegative int getIndexOfKey (final Key key);
+  @NonNegative int getIndexOfKey(final Key key);
 
-  Key getKey (@NonNegative final int index);
+  Key getKey(@NonNegative final int index);
 
-  boolean containsKey (final Key key);
+  boolean containsKey(final Key key);
 
-  Value getValue (@NonNegative final int index);
+  Value getValue(@NonNegative final int index);
 
-  Value getValue (final Key key);
+  Value getValue(final Key key);
 
-  int getSize ();
+  int getSize();
 
   @NonNull List<Value> getValues();
 
