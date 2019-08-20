@@ -1,6 +1,7 @@
 package org.liara.data.type
 
-import org.liara.support.Box
+import org.apache.commons.lang3.mutable.Mutable
+import org.apache.commons.lang3.mutable.MutableObject
 import org.liara.support.generic.Generic
 import spock.lang.Specification
 
@@ -26,7 +27,7 @@ abstract class DataTypeSpecification<T> extends Specification {
         }
 
         then: "we expect to be able to read all written values"
-        final Box<T> box = new Box(type.generic, null)
+        final Mutable<T> box = new MutableObject<>(null)
 
         for (int index = 0; index < values.length; ++index) {
             type.read(data, index * type.bytes, box)

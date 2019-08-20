@@ -391,4 +391,50 @@ class ExpressionToSQLCompilerSpecification
         then: "we expect that the compiler successfully rendered the range expression"
         output.toString() == "5 | 1 & 6 BETWEEN 6 ^ (8 | ~ 3) AND 3"
     }
+
+    def "#compile successfully render like operations"() {
+        given: "an SQL expression compiler"
+        final ExpressionToSQLCompiler compiler = new ExpressionToSQLCompiler()
+
+        and: "an expression factory"
+        final ExpressionFactory factory = new ExpressionFactory()
+
+        and: "an expression"
+        final Expression expression = factory.like(
+            factory.nonnull("te\"st"),
+            factory.nonnull("%pwet%")
+        )
+
+        when: "we compile the expression"
+        final StringBuilder output = new StringBuilder()
+
+        compiler.setExpression(expression)
+        compiler.compile(output)
+
+        then: "we expect that the compiler successfully rendered the expression"
+        output.toString() == "\"te\\\"st\" LIKE \"%pwet%\""
+    }
+
+    def "#compile successfully render regexp operations"() {
+        given: "an SQL expression compiler"
+        final ExpressionToSQLCompiler compiler = new ExpressionToSQLCompiler()
+
+        and: "an expression factory"
+        final ExpressionFactory factory = new ExpressionFactory()
+
+        and: "an expression"
+        final Expression expression = factory.regexp(
+                factory.nonnull("te\"st"),
+                factory.nonnull("t(.*?)\\d+")
+        )
+
+        when: "we compile the expression"
+        final StringBuilder output = new StringBuilder()
+
+        compiler.setExpression(expression)
+        compiler.compile(output)
+
+        then: "we expect that the compiler successfully rendered the expression"
+        output.toString() == "\"te\\\"st\" REGEXP \"t(.*?)\\\\d+\""
+    }
 }
