@@ -1,6 +1,8 @@
 package org.liara.expression;
 
+import java.util.Objects;
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.liara.data.primitive.Primitive;
 import org.liara.support.view.View;
 
@@ -61,5 +63,47 @@ public final class Constant<Result> implements Expression<Result> {
   @Override
   public @NonNull View<@NonNull Expression> getChildren() {
     return CHILDREN;
+  }
+
+  /**
+   * @see Object#equals(Object)
+   */
+  @Override
+  public boolean equals(@Nullable final Object other) {
+    if (other == null) {
+      return false;
+    }
+
+    if (other == this) {
+      return true;
+    }
+
+    if (other instanceof Constant) {
+      @NonNull final Constant otherConstant = (Constant) other;
+
+      return Objects.equals(
+          _value, otherConstant.getValue()
+      ) && Objects.equals(
+          _type, otherConstant.getResultType()
+      );
+    }
+
+    return false;
+  }
+
+  /**
+   * @see Object#hashCode()
+   */
+  @Override
+  public int hashCode() {
+    return Objects.hash(_value, _type);
+  }
+
+  /**
+   * @see Object#toString()
+   */
+  @Override
+  public @NonNull String toString() {
+    return super.toString() + "{ " + _type.getName() + " " + Objects.toString(_value) + " }";
   }
 }

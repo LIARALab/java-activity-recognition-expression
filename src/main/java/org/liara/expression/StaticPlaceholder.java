@@ -38,4 +38,12 @@ public class StaticPlaceholder<Result> implements Placeholder<Result> {
   public @NonNull View<@NonNull Expression> getChildren() {
     return CHILDREN;
   }
+
+  /**
+   * @see Object#toString()
+   */
+  @Override
+  public @NonNull String toString() {
+    return super.toString() + "{ " + _type.getName() + " }";
+  }
 }

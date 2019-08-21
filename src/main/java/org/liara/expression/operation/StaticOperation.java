@@ -1,13 +1,16 @@
 package org.liara.expression.operation;
 
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.Objects;
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.liara.data.primitive.Primitive;
 import org.liara.expression.Expression;
 import org.liara.support.view.View;
 
 public class StaticOperation<Result> implements Operation<Result> {
+
   @NonNull
   private final View<@NonNull Expression> _operands;
 
@@ -37,7 +40,7 @@ public class StaticOperation<Result> implements Operation<Result> {
    *
    * @param toCopy A static operation to copy.
    */
-  public StaticOperation (@NonNull final StaticOperation<Result> toCopy) {
+  public StaticOperation(@NonNull final StaticOperation<Result> toCopy) {
     _operands = View.readonly(toCopy.getChildren());
     _operator = toCopy.getOperator();
     _type = toCopy.getResultType();
@@ -93,5 +96,71 @@ public class StaticOperation<Result> implements Operation<Result> {
   @Override
   public @NonNull View<@NonNull Expression> getChildren() {
     return _operands;
+  }
+
+  /**
+   * @see Object#equals(Object)
+   */
+  @Override
+  public boolean equals(@Nullable final Object other) {
+    if (other == null) {
+      return false;
+    }
+    if (other == this) {
+      return true;
+    }
+
+    if (other instanceof StaticOperation) {
+      @NonNull final StaticOperation otherStaticOperation = (StaticOperation) other;
+
+      return Objects.equals(
+          _operands,
+          otherStaticOperation.getChildren()
+      ) && Objects.equals(
+          _operator,
+          otherStaticOperation.getOperator()
+      ) && Objects.equals(
+          _type,
+          otherStaticOperation.getResultType()
+      );
+    }
+
+    return false;
+  }
+
+  /**
+   * @see Object#hashCode()
+   */
+  @Override
+  public int hashCode() {
+    return Objects.hash(_operands, _operator, _type);
+  }
+
+  /**
+   * @see Object#toString()
+   */
+  @Override
+  public @NonNull String toString() {
+    @NonNull final StringBuilder builder = new StringBuilder();
+
+    builder.append(super.toString());
+    builder.append("{ ");
+    builder.append(_operator.toString());
+    builder.append(" [");
+
+    @NonNull final Iterator<@NonNull Expression> iterator = _operands.iterator();
+
+    while (iterator.hasNext()) {
+      builder.append(iterator.next().toString());
+      if (iterator.hasNext()) {
+        builder.append(", ");
+      }
+    }
+
+    builder.append(" ] ");
+    builder.append(_type.getName());
+    builder.append(" }");
+
+    return builder.toString();
   }
 }
