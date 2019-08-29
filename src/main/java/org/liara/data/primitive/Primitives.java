@@ -1,5 +1,8 @@
 package org.liara.data.primitive;
 
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import org.checkerframework.checker.index.qual.NonNegative;
@@ -88,6 +91,26 @@ public final class Primitives {
   @NonNull
   public final static Primitive<@Nullable ZonedDateTime> NULLABLE_DATE_TIME = (
       new NullablePrimitive<>(DATE_TIME)
+  );
+
+  @NonNull
+  public final static Primitive<@NonNull LocalTime> TIME = (
+      new Primitive<>(LocalTime.class, "time")
+  );
+
+  @NonNull
+  public final static Primitive<@Nullable LocalTime> NULLABLE_TIME = (
+      new NullablePrimitive<>(TIME)
+  );
+
+  @NonNull
+  public final static Primitive<@NonNull LocalDate> DATE = (
+      new Primitive<>(LocalDate.class, "date")
+  );
+
+  @NonNull
+  public final static Primitive<@Nullable LocalDate> NULLABLE_DATE = (
+      new NullablePrimitive<>(DATE)
   );
 
   /**

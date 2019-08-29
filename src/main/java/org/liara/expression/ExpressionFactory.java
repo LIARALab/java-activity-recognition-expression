@@ -2,6 +2,8 @@ package org.liara.expression;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.ZonedDateTime;
 import java.util.Arrays;
 import java.util.List;
@@ -96,10 +98,16 @@ public class ExpressionFactory {
     return constant(Primitives.NULLABLE_STRING, value);
   }
 
-  public @NonNull Expression<@Nullable ZonedDateTime> nullable(
-      @Nullable final ZonedDateTime value
-  ) {
+  public @NonNull Expression<@Nullable ZonedDateTime> nullable(@Nullable final ZonedDateTime value) {
     return constant(Primitives.NULLABLE_DATE_TIME, value);
+  }
+
+  public @NonNull Expression<@Nullable LocalDate> nullable(@Nullable final LocalDate value) {
+    return constant(Primitives.NULLABLE_DATE, value);
+  }
+
+  public @NonNull Expression<@Nullable LocalTime> nullable(@Nullable final LocalTime value) {
+    return constant(Primitives.NULLABLE_TIME, value);
   }
 
   public @NonNull Expression<@NonNull Byte> nonnull(final byte value) {
@@ -138,15 +146,21 @@ public class ExpressionFactory {
     return constant(Primitives.STRING, value);
   }
 
-  public @NonNull Expression<@Nullable ZonedDateTime> nonnull(
-      @NonNull final ZonedDateTime value
-  ) {
+  public @NonNull Expression<@NonNull ZonedDateTime> nonnull(@NonNull final ZonedDateTime value) {
     return constant(Primitives.DATE_TIME, value);
   }
 
-  public <T extends Number> @NonNull Expression<@NonNull T> add(
-      @NonNull final Expression<@NonNull T> leftOperand,
-      @NonNull final Expression<@NonNull T> rightOperand
+  public @NonNull Expression<@NonNull LocalDate> nonnull(@NonNull final LocalDate value) {
+    return constant(Primitives.DATE, value);
+  }
+
+  public @NonNull Expression<@NonNull LocalTime> nonnull(@NonNull final LocalTime value) {
+    return constant(Primitives.TIME, value);
+  }
+
+  public <Value extends Number> @NonNull Expression<@NonNull Value> add(
+      @NonNull final Expression<@NonNull Value> leftOperand,
+      @NonNull final Expression<@NonNull Value> rightOperand
   ) {
     _staticOperationBuilder.clear();
     _staticOperationBuilder.getOperands().add(leftOperand);
@@ -156,8 +170,8 @@ public class ExpressionFactory {
     return _staticOperationBuilder.build(leftOperand.getResultType());
   }
 
-  public <@NonNull T extends Number> @NonNull Expression<@NonNull T> add(
-      @NonNull @MinLen(1) final List<? extends @NonNull Expression<@NonNull T>> operands
+  public <@NonNull Value extends Number> @NonNull Expression<@NonNull Value> add(
+      @NonNull @MinLen(1) final List<? extends @NonNull Expression<@NonNull Value>> operands
   ) {
     _staticOperationBuilder.clear();
     _staticOperationBuilder.setOperands(operands);
@@ -166,9 +180,9 @@ public class ExpressionFactory {
     return _staticOperationBuilder.build(operands.get(0).getResultType());
   }
 
-  public <@NonNull T extends Number> @NonNull Expression<@NonNull T> subtract(
-      @NonNull final Expression<@NonNull T> leftOperand,
-      @NonNull final Expression<@NonNull T> rightOperand
+  public <@NonNull Value extends Number> @NonNull Expression<@NonNull Value> subtract(
+      @NonNull final Expression<@NonNull Value> leftOperand,
+      @NonNull final Expression<@NonNull Value> rightOperand
   ) {
     _staticOperationBuilder.clear();
     _staticOperationBuilder.getOperands().add(leftOperand);
@@ -178,8 +192,8 @@ public class ExpressionFactory {
     return _staticOperationBuilder.build(leftOperand.getResultType());
   }
 
-  public <@NonNull T extends Number> @NonNull Expression<@NonNull T> subtract (
-      @NonNull @MinLen(1) final List<? extends @NonNull Expression<@NonNull T>> operands
+  public <@NonNull Value extends Number> @NonNull Expression<@NonNull Value> subtract (
+      @NonNull @MinLen(1) final List<? extends @NonNull Expression<@NonNull Value>> operands
   ) {
     _staticOperationBuilder.clear();
     _staticOperationBuilder.setOperands(operands);
@@ -188,9 +202,9 @@ public class ExpressionFactory {
     return _staticOperationBuilder.build(operands.get(0).getResultType());
   }
 
-  public <@NonNull T extends Number> @NonNull Expression<@NonNull T> multiply (
-      @NonNull final Expression<@NonNull T> leftOperand,
-      @NonNull final Expression<@NonNull T> rightOperand
+  public <@NonNull Value extends Number> @NonNull Expression<@NonNull Value> multiply (
+      @NonNull final Expression<@NonNull Value> leftOperand,
+      @NonNull final Expression<@NonNull Value> rightOperand
   ) {
     _staticOperationBuilder.clear();
     _staticOperationBuilder.getOperands().add(leftOperand);
@@ -200,8 +214,8 @@ public class ExpressionFactory {
     return _staticOperationBuilder.build(leftOperand.getResultType());
   }
 
-  public <@NonNull T extends Number> @NonNull Expression<@NonNull T> multiply(
-      @NonNull @MinLen(1) final List<@NonNull Expression<@NonNull T>> operands
+  public <@NonNull Value extends Number> @NonNull Expression<@NonNull Value> multiply(
+      @NonNull @MinLen(1) final List<@NonNull Expression<@NonNull Value>> operands
   ) {
     _staticOperationBuilder.clear();
     _staticOperationBuilder.setOperands(operands);
@@ -210,9 +224,9 @@ public class ExpressionFactory {
     return _staticOperationBuilder.build(operands.get(0).getResultType());
   }
 
-  public <@NonNull T extends Number> @NonNull Expression<@NonNull T> divide(
-      @NonNull final Expression<@NonNull T> leftOperand,
-      @NonNull final Expression<@NonNull T> rightOperand
+  public <@NonNull Value extends Number> @NonNull Expression<@NonNull Value> divide(
+      @NonNull final Expression<@NonNull Value> leftOperand,
+      @NonNull final Expression<@NonNull Value> rightOperand
   ) {
     _staticOperationBuilder.clear();
     _staticOperationBuilder.getOperands().add(leftOperand);
@@ -222,8 +236,8 @@ public class ExpressionFactory {
     return _staticOperationBuilder.build(leftOperand.getResultType());
   }
 
-  public <@NonNull T extends Number> @NonNull Expression<@NonNull T> divide(
-      @NonNull @MinLen(1) final List<@NonNull Expression<@NonNull T>> operands
+  public <@NonNull Value extends Number> @NonNull Expression<@NonNull Value> divide(
+      @NonNull @MinLen(1) final List<@NonNull Expression<@NonNull Value>> operands
   ) {
     _staticOperationBuilder.clear();
     _staticOperationBuilder.setOperands(operands);
@@ -232,9 +246,9 @@ public class ExpressionFactory {
     return _staticOperationBuilder.build(operands.get(0).getResultType());
   }
 
-  public <@NonNull T extends Number> @NonNull Expression<@NonNull T> modulus(
-      @NonNull final Expression<@NonNull T> leftOperand,
-      @NonNull final Expression<@NonNull T> rightOperand
+  public <@NonNull Value extends Number> @NonNull Expression<@NonNull Value> modulus(
+      @NonNull final Expression<@NonNull Value> leftOperand,
+      @NonNull final Expression<@NonNull Value> rightOperand
   ) {
     _staticOperationBuilder.clear();
     _staticOperationBuilder.getOperands().add(leftOperand);
@@ -244,8 +258,8 @@ public class ExpressionFactory {
     return _staticOperationBuilder.build(leftOperand.getResultType());
   }
 
-  public <@NonNull T extends Number> @NonNull Expression<@NonNull T> modulus(
-      @NonNull @MinLen(1) final List<@NonNull Expression<@NonNull T>> operands
+  public <@NonNull Value extends Number> @NonNull Expression<@NonNull Value> modulus(
+      @NonNull @MinLen(1) final List<@NonNull Expression<@NonNull Value>> operands
   ) {
     _staticOperationBuilder.clear();
     _staticOperationBuilder.setOperands(operands);
@@ -254,9 +268,9 @@ public class ExpressionFactory {
     return _staticOperationBuilder.build(operands.get(0).getResultType());
   }
 
-  public <@NonNull T extends Number> @NonNull Expression<@NonNull T> bitwiseOr(
-      @NonNull final Expression<@NonNull T> leftOperand,
-      @NonNull final Expression<@NonNull T> rightOperand
+  public <@NonNull Value extends Number> @NonNull Expression<@NonNull Value> bitwiseOr(
+      @NonNull final Expression<@NonNull Value> leftOperand,
+      @NonNull final Expression<@NonNull Value> rightOperand
   ) {
     _staticOperationBuilder.clear();
     _staticOperationBuilder.getOperands().add(leftOperand);
@@ -266,8 +280,8 @@ public class ExpressionFactory {
     return _staticOperationBuilder.build(leftOperand.getResultType());
   }
 
-  public <@NonNull T extends Number> @NonNull Expression<@NonNull T> bitwiseOr(
-      @NonNull @MinLen(1) final List<@NonNull Expression<@NonNull T>> operands
+  public <@NonNull Value extends Number> @NonNull Expression<@NonNull Value> bitwiseOr(
+      @NonNull @MinLen(1) final List<@NonNull Expression<@NonNull Value>> operands
   ) {
     _staticOperationBuilder.clear();
     _staticOperationBuilder.setOperands(operands);
@@ -276,9 +290,9 @@ public class ExpressionFactory {
     return _staticOperationBuilder.build(operands.get(0).getResultType());
   }
 
-  public <@NonNull T extends Number> @NonNull Expression<@NonNull T> bitwiseAnd(
-      @NonNull final Expression<@NonNull T> leftOperand,
-      @NonNull final Expression<@NonNull T> rightOperand
+  public <@NonNull Value extends Number> @NonNull Expression<@NonNull Value> bitwiseAnd(
+      @NonNull final Expression<@NonNull Value> leftOperand,
+      @NonNull final Expression<@NonNull Value> rightOperand
   ) {
     _staticOperationBuilder.clear();
     _staticOperationBuilder.getOperands().add(leftOperand);
@@ -288,8 +302,8 @@ public class ExpressionFactory {
     return _staticOperationBuilder.build(leftOperand.getResultType());
   }
 
-  public <@NonNull T extends Number> @NonNull Expression<@NonNull T> bitwiseAnd(
-      @NonNull @MinLen(1) final List<@NonNull Expression<@NonNull T>> operands
+  public <@NonNull Value extends Number> @NonNull Expression<@NonNull Value> bitwiseAnd(
+      @NonNull @MinLen(1) final List<@NonNull Expression<@NonNull Value>> operands
   ) {
     _staticOperationBuilder.clear();
     _staticOperationBuilder.setOperands(operands);
@@ -298,9 +312,9 @@ public class ExpressionFactory {
     return _staticOperationBuilder.build(operands.get(0).getResultType());
   }
 
-  public <@NonNull T extends Number> @NonNull Expression<@NonNull T> bitwiseXor(
-      @NonNull final Expression<@NonNull T> leftOperand,
-      @NonNull final Expression<@NonNull T> rightOperand
+  public <@NonNull Value extends Number> @NonNull Expression<@NonNull Value> bitwiseXor(
+      @NonNull final Expression<@NonNull Value> leftOperand,
+      @NonNull final Expression<@NonNull Value> rightOperand
   ) {
     _staticOperationBuilder.clear();
     _staticOperationBuilder.getOperands().add(leftOperand);
@@ -310,8 +324,8 @@ public class ExpressionFactory {
     return _staticOperationBuilder.build(leftOperand.getResultType());
   }
 
-  public <@NonNull T extends Number> @NonNull Expression<@NonNull T> bitwiseXor(
-      @NonNull @MinLen(1) final List<@NonNull Expression<@NonNull T>> operands
+  public <@NonNull Value extends Number> @NonNull Expression<@NonNull Value> bitwiseXor(
+      @NonNull @MinLen(1) final List<@NonNull Expression<@NonNull Value>> operands
   ) {
     _staticOperationBuilder.clear();
     _staticOperationBuilder.setOperands(operands);
@@ -320,8 +334,8 @@ public class ExpressionFactory {
     return _staticOperationBuilder.build(operands.get(0).getResultType());
   }
 
-  public <@NonNull T extends Number> @NonNull Expression<@NonNull T> minus(
-      @NonNull final Expression<@NonNull T> value
+  public <@NonNull Value extends Number> @NonNull Expression<@NonNull Value> minus(
+      @NonNull final Expression<@NonNull Value> value
   ) {
     _staticOperationBuilder.clear();
     _staticOperationBuilder.getOperands().add(value);
@@ -330,8 +344,8 @@ public class ExpressionFactory {
     return _staticOperationBuilder.build(value.getResultType());
   }
 
-  public <@NonNull T extends Number> @NonNull Expression<@NonNull T> plus(
-      @NonNull final Expression<@NonNull T> value
+  public <@NonNull Value extends Number> @NonNull Expression<@NonNull Value> plus(
+      @NonNull final Expression<@NonNull Value> value
   ) {
     _staticOperationBuilder.clear();
     _staticOperationBuilder.getOperands().add(value);
@@ -340,8 +354,8 @@ public class ExpressionFactory {
     return _staticOperationBuilder.build(value.getResultType());
   }
 
-  public <@NonNull T extends Number> @NonNull Expression<@NonNull T> bitwiseNot(
-      @NonNull final Expression<@NonNull T> value
+  public <@NonNull Value extends Number> @NonNull Expression<@NonNull Value> bitwiseNot(
+      @NonNull final Expression<@NonNull Value> value
   ) {
     _staticOperationBuilder.clear();
     _staticOperationBuilder.getOperands().add(value);
@@ -360,10 +374,10 @@ public class ExpressionFactory {
     return _staticOperationBuilder.build(Primitives.BOOLEAN);
   }
 
-  public <Target extends Comparable<Target>> @NonNull Expression<@NonNull Boolean> between(
-      @NonNull final Expression<@NonNull Target> target,
-      @NonNull final Expression<@NonNull Target> lower,
-      @NonNull final Expression<@NonNull Target> upper
+  public <Value extends Comparable<? super Value>> @NonNull Expression<@NonNull Boolean> between(
+      @NonNull final Expression<@NonNull Value> target,
+      @NonNull final Expression<@NonNull Value> lower,
+      @NonNull final Expression<@NonNull Value> upper
   ) {
     _staticOperationBuilder.clear();
     _staticOperationBuilder.getOperands().add(target);
@@ -374,7 +388,7 @@ public class ExpressionFactory {
     return _staticOperationBuilder.build(Primitives.BOOLEAN);
   }
 
-  public <Value extends Comparable<Value>> @NonNull Expression<@NonNull Boolean> greaterThan(
+  public <Value extends Comparable<? super Value>> @NonNull Expression<@NonNull Boolean> greaterThan(
       @NonNull final Expression<@NonNull Value> left,
       @NonNull final Expression<@NonNull Value> right
   ) {
@@ -386,7 +400,7 @@ public class ExpressionFactory {
     return _staticOperationBuilder.build(Primitives.BOOLEAN);
   }
 
-  public <Value extends Comparable<Value>> @NonNull Expression<@NonNull Boolean> greaterThanOrEqual(
+  public <Value extends Comparable<? super Value>> @NonNull Expression<@NonNull Boolean> greaterThanOrEqual(
       @NonNull final Expression<@NonNull Value> left,
       @NonNull final Expression<@NonNull Value> right
   ) {
@@ -398,7 +412,7 @@ public class ExpressionFactory {
     return _staticOperationBuilder.build(Primitives.BOOLEAN);
   }
 
-  public <Value extends Comparable<Value>> @NonNull Expression<@NonNull Boolean> lessThan(
+  public <Value extends Comparable<? super Value>> @NonNull Expression<@NonNull Boolean> lessThan(
       @NonNull final Expression<@NonNull Value> left,
       @NonNull final Expression<@NonNull Value> right
   ) {
@@ -410,7 +424,7 @@ public class ExpressionFactory {
     return _staticOperationBuilder.build(Primitives.BOOLEAN);
   }
 
-  public <Value extends Comparable<Value>> @NonNull Expression<@NonNull Boolean> lessThanOrEqual(
+  public <Value extends Comparable<? super Value>> @NonNull Expression<@NonNull Boolean> lessThanOrEqual(
       @NonNull final Expression<@NonNull Value> left,
       @NonNull final Expression<@NonNull Value> right
   ) {
@@ -458,6 +472,19 @@ public class ExpressionFactory {
     return _staticOperationBuilder.build(Primitives.BOOLEAN);
   }
 
+  public <Value> @NonNull Expression<Value> function(
+      @NonNull final Primitive<Value> expectedType,
+      @NonNull final String identifier,
+      @NonNull final List<Expression<?>> parameters
+  ) {
+    _staticOperationBuilder.clear();
+    _staticOperationBuilder.getOperands().add(new Identifier(identifier));
+    _staticOperationBuilder.getOperands().addAll(parameters);
+    _staticOperationBuilder.setOperator(Operator.FUNCTION);
+
+    return _staticOperationBuilder.build(expectedType);
+  }
+
   public @NonNull Expression<@NonNull Boolean> and(
       @NonNull final Expression<@NonNull Boolean> left,
       @NonNull final Expression<@NonNull Boolean> right
@@ -473,33 +500,35 @@ public class ExpressionFactory {
   public @NonNull Expression<@NonNull Boolean> and(
       @NonNull final Expression<@NonNull Boolean>[] predicates
   ) {
-    if (predicates.length <= 0) {
-      return nonnull(true);
+    switch (predicates.length) {
+      case 0: return nonnull(true);
+      case 1: return predicates[0];
+      default:
+        _staticOperationBuilder.clear();
+        _staticOperationBuilder.setOperands(Arrays.asList(predicates));
+        _staticOperationBuilder.setOperator(Operator.AND);
+
+        return _staticOperationBuilder.build(Primitives.BOOLEAN);
     }
-
-    _staticOperationBuilder.clear();
-    _staticOperationBuilder.setOperands(Arrays.asList(predicates));
-    _staticOperationBuilder.setOperator(Operator.AND);
-
-    return _staticOperationBuilder.build(Primitives.BOOLEAN);
   }
 
   public @NonNull Expression<@NonNull Boolean> and(
       @NonNull final List<@NonNull Expression<@NonNull Boolean>> predicates
   ) {
-    if (predicates.isEmpty()) {
-      return nonnull(true);
+    switch (predicates.size()) {
+      case 0: return nonnull(true);
+      case 1: return predicates.get(0);
+      default:
+        _staticOperationBuilder.clear();
+
+        for (@NonNull final Expression<@NonNull Boolean> predicate : predicates) {
+          _staticOperationBuilder.getOperands().add(predicate);
+        }
+
+        _staticOperationBuilder.setOperator(Operator.AND);
+
+        return _staticOperationBuilder.build(Primitives.BOOLEAN);
     }
-
-    _staticOperationBuilder.clear();
-
-    for (@NonNull final Expression<@NonNull Boolean> predicate : predicates) {
-      _staticOperationBuilder.getOperands().add(predicate);
-    }
-
-    _staticOperationBuilder.setOperator(Operator.AND);
-
-    return _staticOperationBuilder.build(Primitives.BOOLEAN);
   }
 
   public @NonNull Expression<@NonNull Boolean> or(
@@ -517,33 +546,35 @@ public class ExpressionFactory {
   public @NonNull Expression<@NonNull Boolean> or (
       @NonNull final Expression<@NonNull Boolean>[] predicates
   ) {
-    if (predicates.length <= 0) {
-      return nonnull(true);
+    switch (predicates.length) {
+      case 0: return nonnull(true);
+      case 1: return predicates[0];
+      default:
+        _staticOperationBuilder.clear();
+        _staticOperationBuilder.setOperands(Arrays.asList(predicates));
+        _staticOperationBuilder.setOperator(Operator.OR);
+
+        return _staticOperationBuilder.build(Primitives.BOOLEAN);
     }
-
-    _staticOperationBuilder.clear();
-    _staticOperationBuilder.setOperands(Arrays.asList(predicates));
-    _staticOperationBuilder.setOperator(Operator.OR);
-
-    return _staticOperationBuilder.build(Primitives.BOOLEAN);
   }
 
   public @NonNull Expression<@NonNull Boolean> or(
       @NonNull final List<@NonNull Expression<@NonNull Boolean>> predicates
   ) {
-    if (predicates.isEmpty()) {
-      return nonnull(true);
+    switch (predicates.size()) {
+      case 0: return nonnull(true);
+      case 1: return predicates.get(0);
+      default:
+        _staticOperationBuilder.clear();
+
+        for (@NonNull final Expression<@NonNull Boolean> predicate : predicates) {
+          _staticOperationBuilder.getOperands().add(predicate);
+        }
+
+        _staticOperationBuilder.setOperator(Operator.OR);
+
+        return _staticOperationBuilder.build(Primitives.BOOLEAN);
     }
-
-    _staticOperationBuilder.clear();
-
-    for (@NonNull final Expression<@NonNull Boolean> predicate : predicates) {
-      _staticOperationBuilder.getOperands().add(predicate);
-    }
-
-    _staticOperationBuilder.setOperator(Operator.OR);
-
-    return _staticOperationBuilder.build(Primitives.BOOLEAN);
   }
 
   public @NonNull Expression<@NonNull Boolean> xor(

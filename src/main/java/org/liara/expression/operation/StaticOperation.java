@@ -111,21 +111,29 @@ public class StaticOperation<Result> implements Operation<Result> {
     }
 
     if (other instanceof StaticOperation) {
-      @NonNull final StaticOperation otherStaticOperation = (StaticOperation) other;
-
-      return Objects.equals(
-          _operands,
-          otherStaticOperation.getChildren()
-      ) && Objects.equals(
-          _operator,
-          otherStaticOperation.getOperator()
-      ) && Objects.equals(
-          _type,
-          otherStaticOperation.getResultType()
-      );
+      return equals((StaticOperation) other);
     }
 
     return false;
+  }
+
+  /**
+   * @see Object#equals(Object)
+   */
+  public boolean equals(@NonNull final StaticOperation other) {
+    if (
+        !Objects.equals(_operator, other.getOperator()) ||
+            !Objects.equals(_type, other.getResultType()) ||
+            _operands.getSize() != other.getChildren().getSize()
+    ) { return false; }
+
+    for (int index = 0, size = _operands.getSize(); index < size; ++index) {
+      if (!_operands.get(index).equals(other.getChildren().get(index))) {
+        return false;
+      }
+    }
+
+    return true;
   }
 
   /**
