@@ -5,7 +5,7 @@ import org.checkerframework.checker.index.qual.LessThan;
 import org.checkerframework.checker.index.qual.NonNegative;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-public class MappedView<From, To> implements View<To> {
+public class MappedView<From, To> extends BaseView<To> {
 
   @NonNull
   private final Class<To> _valueClass;

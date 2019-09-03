@@ -5,7 +5,7 @@ import org.checkerframework.checker.index.qual.NonNegative;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-public class ArrayView<T> implements View<T> {
+public class ArrayView<T> extends BaseView<T> {
 
   @NonNull
   private final Class<T> _valueClass;

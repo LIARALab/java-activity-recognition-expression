@@ -1,5 +1,10 @@
 package org.liara.expression.sql;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -8,7 +13,9 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.liara.expression.Constant;
 import org.liara.expression.Expression;
+import org.liara.expression.Identifier;
 import org.liara.expression.operation.BinaryOperation;
+import org.liara.expression.operation.Function;
 import org.liara.expression.operation.Operation;
 import org.liara.expression.operation.Operator;
 import org.liara.expression.operation.Range;
@@ -181,6 +188,8 @@ public class ExpressionToSQLCompiler {
       exitConstant((Constant<?>) exited, output);
     } else if (exited instanceof Operation) {
       exitOperation((Operation<?>) exited, output);
+    } else if (exited instanceof Identifier) {
+      exitIdentifier((Identifier) exited, output);
     }
 
     if (_walker.hasCurrent() && _walker.current() instanceof Operation<?>) {
@@ -193,9 +202,32 @@ public class ExpressionToSQLCompiler {
           output.append(" AND ");
         }
       }
+
+      if (Function.isFunction(operation)) {
+        if (exited == Function.getIdentifier(operation)) {
+          output.append('(');
+        } else if (exited != operation.getChildren().get(operation.getChildren().getSize() - 1)) {
+          output.append(", ");
+        } else {
+          output.append(')');
+        }
+      }
     }
 
     return exited;
+  }
+
+  /**
+   * Called when this compiler exit an identifier.
+   *
+   * @param identifier The identifier that was exited.
+   * @param output The string builder to fill with the compiled content.
+   */
+  private void exitIdentifier(
+      @NonNull final Identifier identifier,
+      @NonNull final StringBuilder output
+  ) {
+    output.append(identifier.getName());
   }
 
   /**
@@ -223,7 +255,7 @@ public class ExpressionToSQLCompiler {
    *
    * @param <T> DataType of the constant expression.
    */
-  private <T> void exitConstant(
+  private <T> void exitConstant (
       @NonNull final Constant<T> expression,
       @NonNull final StringBuilder output
   ) {
@@ -235,6 +267,12 @@ public class ExpressionToSQLCompiler {
       exitConstant((Character) expression.getValue(), output);
     } else if (String.class.isAssignableFrom(expression.getResultType().getJavaClass())) {
       exitConstant((String) expression.getValue(), output);
+    } else if (ZonedDateTime.class.isAssignableFrom(expression.getResultType().getJavaClass())) {
+      exitConstant((ZonedDateTime) expression.getValue(), output);
+    } else if (LocalDate.class.isAssignableFrom(expression.getResultType().getJavaClass())) {
+      exitConstant((LocalDate) expression.getValue(), output);
+    } else if (LocalTime.class.isAssignableFrom(expression.getResultType().getJavaClass())) {
+      exitConstant((LocalTime) expression.getValue(), output);
     } else {
       throw new Error("Unhandled constant type " + expression.getResultType().toString());
     }
@@ -288,6 +326,54 @@ public class ExpressionToSQLCompiler {
     } else {
       output.append('\"');
       output.append(StringEscapeUtils.escapeJava(value.toString()));
+      output.append('\"');
+    }
+  }
+
+  /**
+   * Output a value.
+   *
+   * @param value A value to output.
+   * @param output The string builder to fill with the compiled content.
+   */
+  private void exitConstant(@Nullable final ZonedDateTime value, @NonNull final StringBuilder output) {
+    if (value == null) {
+      output.append("NULL");
+    } else {
+      output.append('\"');
+      output.append(DateTimeFormatter.ISO_ZONED_DATE_TIME.format(value));
+      output.append('\"');
+    }
+  }
+
+  /**
+   * Output a value.
+   *
+   * @param value A value to output.
+   * @param output The string builder to fill with the compiled content.
+   */
+  private void exitConstant(@Nullable final LocalDate value, @NonNull final StringBuilder output) {
+    if (value == null) {
+      output.append("NULL");
+    } else {
+      output.append('\"');
+      output.append(DateTimeFormatter.ISO_LOCAL_DATE.format(value));
+      output.append('\"');
+    }
+  }
+
+  /**
+   * Output a value.
+   *
+   * @param value A value to output.
+   * @param output The string builder to fill with the compiled content.
+   */
+  private void exitConstant(@Nullable final LocalTime value, @NonNull final StringBuilder output) {
+    if (value == null) {
+      output.append("NULL");
+    } else {
+      output.append('\"');
+      output.append(DateTimeFormatter.ISO_LOCAL_TIME.format(value));
       output.append('\"');
     }
   }

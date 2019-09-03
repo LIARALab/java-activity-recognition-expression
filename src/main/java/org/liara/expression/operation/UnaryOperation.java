@@ -13,6 +13,7 @@ public interface UnaryOperation {
   static boolean isUnaryOperation (@NonNull final Operation<?> operation) {
     switch (operation.getOperator()) {
       case NEGATION:
+      case BITWISE_NOT:
       case NOT:
       case PLUS:
       case MINUS:

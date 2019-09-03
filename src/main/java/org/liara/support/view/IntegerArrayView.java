@@ -5,7 +5,7 @@ import org.checkerframework.checker.index.qual.NonNegative;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-public class IntegerArrayView implements View<Integer> {
+public class IntegerArrayView extends BaseView<Integer> {
 
   private final int[] _wrapped;
 

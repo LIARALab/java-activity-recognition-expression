@@ -1,8 +1,15 @@
 package org.liara.expression.sql
 
+import org.liara.data.primitive.Primitives
 import org.liara.expression.Expression
 import org.liara.expression.ExpressionFactory
+import org.liara.expression.Identifier
 import spock.lang.Specification
+
+import java.lang.reflect.Array
+import java.time.LocalDate
+import java.time.LocalTime
+import java.time.ZonedDateTime
 
 class ExpressionToSQLCompilerSpecification
         extends Specification {
@@ -34,6 +41,87 @@ class ExpressionToSQLCompilerSpecification
 
         then: "we expect that the compiler successfully render the given expressions"
         output.toString() == "1, 1, 0, 0, NULL"
+    }
+
+    def "#compile successfully render zoned date time constants"() {
+        given: "an SQL expression compiler"
+        final ExpressionToSQLCompiler compiler = new ExpressionToSQLCompiler()
+
+        and: "an expression factory"
+        final ExpressionFactory factory = new ExpressionFactory()
+
+        and: "a selection of expression"
+        final List<Expression> expressions = [
+                factory.nonnull(ZonedDateTime.parse("2018-10-20T20:10:30Z")),
+                factory.nullable((ZonedDateTime) null)
+        ]
+
+        when: "we visit the given expressions"
+        final StringBuilder output = new StringBuilder()
+        final Iterator<Expression> iterator = expressions.iterator()
+
+        while (iterator.hasNext()) {
+            compiler.setExpression(iterator.next())
+            compiler.compile(output)
+            if (iterator.hasNext()) output.append(", ")
+        }
+
+        then: "we expect that the compiler successfully render the given expressions"
+        output.toString() == "\"2018-10-20T20:10:30Z\", NULL"
+    }
+
+    def "#compile successfully render time constants"() {
+        given: "an SQL expression compiler"
+        final ExpressionToSQLCompiler compiler = new ExpressionToSQLCompiler()
+
+        and: "an expression factory"
+        final ExpressionFactory factory = new ExpressionFactory()
+
+        and: "a selection of expression"
+        final List<Expression> expressions = [
+                factory.nonnull(LocalTime.parse("20:10:30")),
+                factory.nullable((LocalTime) null)
+        ]
+
+        when: "we visit the given expressions"
+        final StringBuilder output = new StringBuilder()
+        final Iterator<Expression> iterator = expressions.iterator()
+
+        while (iterator.hasNext()) {
+            compiler.setExpression(iterator.next())
+            compiler.compile(output)
+            if (iterator.hasNext()) output.append(", ")
+        }
+
+        then: "we expect that the compiler successfully render the given expressions"
+        output.toString() == "\"20:10:30\", NULL"
+    }
+
+    def "#compile successfully render date constants"() {
+        given: "an SQL expression compiler"
+        final ExpressionToSQLCompiler compiler = new ExpressionToSQLCompiler()
+
+        and: "an expression factory"
+        final ExpressionFactory factory = new ExpressionFactory()
+
+        and: "a selection of expression"
+        final List<Expression> expressions = [
+                factory.nonnull(LocalDate.parse("2018-10-20")),
+                factory.nullable((LocalDate) null)
+        ]
+
+        when: "we visit the given expressions"
+        final StringBuilder output = new StringBuilder()
+        final Iterator<Expression> iterator = expressions.iterator()
+
+        while (iterator.hasNext()) {
+            compiler.setExpression(iterator.next())
+            compiler.compile(output)
+            if (iterator.hasNext()) output.append(", ")
+        }
+
+        then: "we expect that the compiler successfully render the given expressions"
+        output.toString() == "\"2018-10-20\", NULL"
     }
 
     def "#compile successfully render byte constants"() {
@@ -436,5 +524,60 @@ class ExpressionToSQLCompilerSpecification
 
         then: "we expect that the compiler successfully rendered the expression"
         output.toString() == "\"te\\\"st\" REGEXP \"t(.*?)\\\\d+\""
+    }
+
+    def "#compile successfully render identifiers"() {
+        given: "an SQL expression compiler"
+        final ExpressionToSQLCompiler compiler = new ExpressionToSQLCompiler()
+
+        when: "we render an identifier"
+        final StringBuilder output = new StringBuilder()
+
+        compiler.setExpression(new Identifier("pwee_tZQsd"))
+        compiler.compile(output)
+
+        then: "we expect that the compiler successfully rendered the identifier"
+        output.toString() == "pwee_tZQsd"
+    }
+
+    def "#compile successfully render functions"() {
+        given: "an SQL expression compiler"
+        final ExpressionToSQLCompiler compiler = new ExpressionToSQLCompiler()
+
+        and: "an expression factory"
+        final ExpressionFactory factory = new ExpressionFactory()
+
+        and: "an expression"
+        final Expression expression = factory.function(
+                Primitives.STRING,
+                "CONCAT",
+                Arrays.asList(
+                        factory.function(
+                                Primitives.STRING,
+                                "TO_STRING",
+                                Arrays.asList(factory.nonnull(5))
+                        ),
+                        factory.nonnull("text"),
+                        factory.function(
+                                Primitives.STRING,
+                                "FORMAT",
+                                Arrays.asList(
+                                        factory.nonnull("yyyy-MM-dd"),
+                                        factory.nonnull(ZonedDateTime.parse("2018-12-01T20:30:10Z"))
+                                )
+                        )
+                )
+        )
+
+        when: "we compile the expression"
+        final StringBuilder output = new StringBuilder()
+
+        compiler.setExpression(expression)
+        compiler.compile(output)
+
+        then: "we expect that the compiler successfully rendered the expression"
+        output.toString() == (
+                "CONCAT(TO_STRING(5), \"text\", FORMAT(\"yyyy-MM-dd\", \"2018-12-01T20:30:10Z\"))"
+        )
     }
 }

@@ -6,7 +6,7 @@ import org.checkerframework.checker.index.qual.NonNegative;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-public class ListView<T> implements View<T> {
+public class ListView<T> extends BaseView<T> {
 
   @NonNull
   private final Class<T> _valueClass;
