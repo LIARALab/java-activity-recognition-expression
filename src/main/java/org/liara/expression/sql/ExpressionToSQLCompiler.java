@@ -3,6 +3,8 @@ package org.liara.expression.sql;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -341,7 +343,9 @@ public class ExpressionToSQLCompiler {
       output.append("NULL");
     } else {
       output.append('\"');
-      output.append(DateTimeFormatter.ISO_ZONED_DATE_TIME.format(value));
+      output.append(DateTimeFormatter.ISO_LOCAL_DATE_TIME.format(
+          value.withZoneSameInstant(ZoneOffset.UTC)
+      ));
       output.append('\"');
     }
   }

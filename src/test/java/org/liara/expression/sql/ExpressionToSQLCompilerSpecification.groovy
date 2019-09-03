@@ -9,7 +9,9 @@ import spock.lang.Specification
 import java.lang.reflect.Array
 import java.time.LocalDate
 import java.time.LocalTime
+import java.time.ZoneOffset
 import java.time.ZonedDateTime
+import java.time.format.DateTimeFormatter
 
 class ExpressionToSQLCompilerSpecification
         extends Specification {
@@ -52,7 +54,7 @@ class ExpressionToSQLCompilerSpecification
 
         and: "a selection of expression"
         final List<Expression> expressions = [
-                factory.nonnull(ZonedDateTime.parse("2018-10-20T20:10:30Z")),
+                factory.nonnull(ZonedDateTime.parse("2018-10-20T20:10:30Z[Europe/Paris]")),
                 factory.nullable((ZonedDateTime) null)
         ]
 
@@ -67,7 +69,7 @@ class ExpressionToSQLCompilerSpecification
         }
 
         then: "we expect that the compiler successfully render the given expressions"
-        output.toString() == "\"2018-10-20T20:10:30Z\", NULL"
+        output.toString() == "\"${DateTimeFormatter.ISO_LOCAL_DATE_TIME.format(ZonedDateTime.parse("2018-10-20T20:10:30Z[Europe/Paris]").withZoneSameInstant(ZoneOffset.UTC))}\", NULL"
     }
 
     def "#compile successfully render time constants"() {
