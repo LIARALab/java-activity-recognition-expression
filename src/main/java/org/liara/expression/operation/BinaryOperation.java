@@ -31,6 +31,7 @@ public interface BinaryOperation {
       case EQUAL:
       case REGEXP:
       case GREATER_THAN:
+      case LESS_THAN:
       case LESS_THAN_OR_EQUAL:
       case GREATER_THAN_OR_EQUAL:
         return true;

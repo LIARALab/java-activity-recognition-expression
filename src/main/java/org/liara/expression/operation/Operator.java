@@ -35,7 +35,7 @@ public enum Operator {
   AND(14),
   XOR(15),
   OR(16),
-  FUNCTION(17);
+  FUNCTION(0);
 
   @NonNegative
   private final int _priority;

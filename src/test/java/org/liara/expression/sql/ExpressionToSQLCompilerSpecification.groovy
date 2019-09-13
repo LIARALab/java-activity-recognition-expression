@@ -579,7 +579,7 @@ class ExpressionToSQLCompilerSpecification
 
         then: "we expect that the compiler successfully rendered the expression"
         output.toString() == (
-                "CONCAT(TO_STRING(5), \"text\", FORMAT(\"yyyy-MM-dd\", \"2018-12-01T20:30:10Z\"))"
+                "CONCAT(TO_STRING(5), \"text\", FORMAT(\"yyyy-MM-dd\", \"2018-12-01T20:30:10\"))"
         )
     }
 }
