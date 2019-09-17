@@ -12,7 +12,9 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import org.checkerframework.common.value.qual.MinLen;
 import org.liara.data.primitive.Primitive;
 import org.liara.data.primitive.Primitives;
+import org.liara.expression.operation.Operation;
 import org.liara.expression.operation.Operator;
+import org.liara.expression.operation.StaticOperation;
 import org.liara.expression.operation.StaticOperationBuilder;
 
 public class ExpressionFactory {
@@ -619,5 +621,40 @@ public class ExpressionFactory {
     _staticOperationBuilder.setOperator(Operator.XOR);
 
     return _staticOperationBuilder.build(Primitives.BOOLEAN);
+  }
+
+  public Expression<?> rewrite (
+      @NonNull final Expression<?> expression,
+      @NonNull final Expression<?>[] children
+  ) {
+    if (expression instanceof Identity) {
+      return rewriteIdentity((Identity<?>) expression, children);
+    } else if (expression instanceof StaticOperation) {
+      return rewriteOperation((StaticOperation<?>) expression, children);
+    } else {
+      throw new Error("Unable to rewrite expression : " + expression.getClass().getName());
+    }
+  }
+
+  private @NonNull Expression<?> rewriteOperation(
+      @NonNull final StaticOperation<?> expression,
+      @NonNull final Expression<?>[] children
+  ) {
+    return new StaticOperation<>(
+        expression.getResultType(),
+        expression.getOperator(),
+        children
+    );
+  }
+
+  private @NonNull Identity<?> rewriteIdentity (
+      @NonNull final Identity<?> expression,
+      @NonNull final Expression<?>[] children
+  ) {
+    if (children.length == 1) {
+      return new Identity<>(children[0]);
+    } else {
+      throw new Error("Unable to rewrite identity.");
+    }
   }
 }
