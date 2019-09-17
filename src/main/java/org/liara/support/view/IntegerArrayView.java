@@ -1,5 +1,7 @@
 package org.liara.support.view;
 
+import java.util.Arrays;
+import java.util.stream.Stream;
 import org.checkerframework.checker.index.qual.LessThan;
 import org.checkerframework.checker.index.qual.NonNegative;
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -33,5 +35,10 @@ public class IntegerArrayView extends BaseView<Integer> {
   @Override
   public @NonNull Class<Integer> getValueClass() {
     return int.class;
+  }
+
+  @Override
+  public @NonNull Stream<Integer> stream() {
+    return Arrays.stream(_wrapped).boxed();
   }
 }

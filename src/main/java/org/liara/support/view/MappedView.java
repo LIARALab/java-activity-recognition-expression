@@ -1,6 +1,7 @@
 package org.liara.support.view;
 
 import java.util.function.Function;
+import java.util.stream.Stream;
 import org.checkerframework.checker.index.qual.LessThan;
 import org.checkerframework.checker.index.qual.NonNegative;
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -42,6 +43,11 @@ public class MappedView<From, To> extends BaseView<To> {
   @Override
   public @NonNull Class<To> getValueClass() {
     return _valueClass;
+  }
+
+  @Override
+  public @NonNull Stream<To> stream() {
+    return _source.stream().map(_mapper);
   }
 
   public @NonNull View<From> getSource() {

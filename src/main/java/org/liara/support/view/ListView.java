@@ -1,6 +1,7 @@
 package org.liara.support.view;
 
 import java.util.List;
+import java.util.stream.Stream;
 import org.checkerframework.checker.index.qual.LessThan;
 import org.checkerframework.checker.index.qual.NonNegative;
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -40,5 +41,10 @@ public class ListView<T> extends BaseView<T> {
   @Override
   public @NonNull Class<T> getValueClass() {
     return _valueClass;
+  }
+
+  @Override
+  public @NonNull Stream<T> stream() {
+    return _wrapped.stream().map(x -> (T) x);
   }
 }

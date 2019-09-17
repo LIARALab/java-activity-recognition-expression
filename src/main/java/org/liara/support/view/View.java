@@ -6,6 +6,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.function.Function;
+import java.util.stream.Stream;
 import org.checkerframework.checker.index.qual.LessThan;
 import org.checkerframework.checker.index.qual.NonNegative;
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -96,6 +97,8 @@ public interface View<T> extends Iterable<T> {
    * @return The type of value that this view currently store.
    */
   @NonNull Class<T> getValueClass();
+
+  @NonNull Stream<T> stream();
 
   /**
    * @return This view as a java collection.
