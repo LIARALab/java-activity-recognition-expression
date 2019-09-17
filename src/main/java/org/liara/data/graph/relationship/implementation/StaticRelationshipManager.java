@@ -1,8 +1,6 @@
 package org.liara.data.graph.relationship.implementation;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Objects;
@@ -13,53 +11,12 @@ import org.liara.data.graph.Graph;
 import org.liara.data.graph.Table;
 import org.liara.data.graph.relationship.Relationship;
 import org.liara.data.graph.relationship.RelationshipManager;
-import org.liara.expression.Expression;
 import org.liara.support.BaseComparators;
+import org.liara.support.Index;
+import org.liara.support.ListIndex;
 import org.liara.support.view.View;
 
 public class StaticRelationshipManager implements RelationshipManager {
-  private class SearchedRelationship implements Relationship {
-    @NonNull
-    private String _name = "";
-
-    @Override
-    public @NonNull RelationshipManager getManager() {
-      return null;
-    }
-
-    @Override
-    public @NonNegative int getIdentifier() {
-      return 0;
-    }
-
-    @Override
-    public @NonNull String getName() {
-      return _name;
-    }
-
-    public void setName(@NonNull final String name) {
-      _name = name;
-    }
-
-    @Override
-    public @NonNull Table getOriginTable() {
-      return null;
-    }
-
-    @Override
-    public @NonNull Table getDestinationTable() {
-      return null;
-    }
-
-    @Override
-    public @NonNull Expression<@NonNull Boolean> resolve() {
-      return null;
-    }
-  }
-
-  @NonNull
-  private final SearchedRelationship _searchedRelationship = new SearchedRelationship();
-
   @NonNull
   private final Graph _graph;
 
@@ -67,7 +24,7 @@ public class StaticRelationshipManager implements RelationshipManager {
   private final View<@NonNull Relationship> _relationships;
 
   @NonNull
-  private final List<@NonNull List<@NonNull Relationship>> _relationshipsByTable;
+  private final List<? extends @NonNull Index<@NonNull String, @NonNull Relationship>> _relationshipsByTable;
 
   @NonNull
   private final List<@NonNull View<@NonNull Relationship>> _relationshipsByTableViews;
@@ -77,32 +34,28 @@ public class StaticRelationshipManager implements RelationshipManager {
     _relationships = buildRelationshipsViewFromBuilder(builder);
     _relationshipsByTable = buildRelationshipsByTableFromBuilder(builder);
     _relationshipsByTableViews = _relationshipsByTable.stream().map(
-        (@NonNull final List<@NonNull Relationship> relationships) -> View.readonly(
-            Relationship.class, relationships
+        (@NonNull final Index<@NonNull String, @NonNull Relationship> index) -> View.readonly(
+            Relationship.class, index.getValues()
         )
     ).collect(Collectors.toList());
   }
 
-  private @NonNull List<@NonNull List<@NonNull Relationship>> buildRelationshipsByTableFromBuilder(
+  private @NonNull List<? extends @NonNull Index<@NonNull String, @NonNull Relationship>> buildRelationshipsByTableFromBuilder(
       @NonNull final StaticRelationshipManagerBuilder builder
   ) {
-    @NonNull final List<@NonNull List<@NonNull Relationship>> relationshipsByTable = (
+    @NonNull final List<@NonNull ListIndex<@NonNull String, @NonNull Relationship>> relationshipsByTable = (
         new ArrayList<>(_graph.getTables().getSize())
     );
 
     for (int index = 0, size = _graph.getTables().getSize(); index < size; ++index) {
-      relationshipsByTable.add(new ArrayList<>(8));
+      relationshipsByTable.add(new ListIndex<>(8, BaseComparators.STRING_COMPARATOR));
     }
 
     for (int index = 0, size = _relationships.getSize(); index < size; ++index) {
       @NonNull final Relationship relationship = _relationships.get(index);
 
-      relationshipsByTable.get(relationship.getOriginTable().getIdentifier()).add(relationship);
-    }
-
-    for (int index = 0, size = _graph.getTables().getSize(); index < size; ++index) {
-      relationshipsByTable.get(index).sort(
-          Comparator.comparing(Relationship::getName, BaseComparators.STRING_COMPARATOR)
+      relationshipsByTable.get(relationship.getOriginTable().getIdentifier()).put(
+          relationship.getName(), relationship
       );
     }
 
@@ -148,21 +101,13 @@ public class StaticRelationshipManager implements RelationshipManager {
       @NonNull final Table table,
       @NonNull final String name
   ) {
-    _searchedRelationship.setName(name);
-
-    final int index = Collections.binarySearch(
-        _relationshipsByTable.get(table.getIdentifier()),
-        _searchedRelationship,
-        Comparator.comparing(Relationship::getName, BaseComparators.STRING_COMPARATOR)
-    );
-
-    if (index < 0) {
+    if (hasRelationship(table, name)) {
+      return _relationshipsByTable.get(table.getIdentifier()).getValue(name);
+    } else {
       throw new NoSuchElementException(
           "No relationship " + name + "@" + table + " found into this relationship manager."
       );
     }
-
-    return _relationshipsByTable.get(table.getIdentifier()).get(index);
   }
 
   @Override
@@ -177,12 +122,6 @@ public class StaticRelationshipManager implements RelationshipManager {
 
   @Override
   public boolean hasRelationship(@NonNull final Table table, @NonNull final String name) {
-    _searchedRelationship.setName(name);
-
-    return Collections.binarySearch(
-        _relationshipsByTable.get(table.getIdentifier()),
-        _searchedRelationship,
-        Comparator.comparing(Relationship::getName, BaseComparators.STRING_COMPARATOR)
-    ) >= 0;
+    return _relationshipsByTable.get(table.getIdentifier()).containsKey(name);
   }
 }
