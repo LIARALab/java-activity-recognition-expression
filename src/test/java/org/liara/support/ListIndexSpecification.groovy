@@ -1,6 +1,7 @@
 package org.liara.support
 
 import org.liara.support.index.ListIndex
+import org.liara.support.view.View
 import spock.lang.Specification
 
 class ListIndexSpecification extends Specification {
@@ -30,8 +31,8 @@ class ListIndexSpecification extends Specification {
         }
 
         then: "we expect the index to have been updated"
-        index.keys == keys
-        index.values == [0, 1, 2, 3, 4]
+        index.keys == View.readonly(keys)
+        index.values == View.readonly([0, 1, 2, 3, 4])
     }
 
     def "#put update existing pair if the key is already used"() {
@@ -53,8 +54,8 @@ class ListIndexSpecification extends Specification {
         }
 
         then: "we expect the index to have been updated"
-        index.keys == keys
-        index.values == [4, 3, 2, 1, 0]
+        index.keys == View.readonly(keys)
+        index.values == View.readonly([4, 3, 2, 1, 0])
     }
 
     def "#setValue update an existing pair value"() {
@@ -76,8 +77,8 @@ class ListIndexSpecification extends Specification {
         }
 
         then: "we expect the index to have been updated"
-        index.keys == keys
-        index.values == [4, 3, 2, 1, 0]
+        index.keys == View.readonly(keys)
+        index.values == View.readonly([4, 3, 2, 1, 0])
     }
 
     def "#setValue update an existing pair value by using their key"() {
@@ -99,8 +100,8 @@ class ListIndexSpecification extends Specification {
         }
 
         then: "we expect the index to have been updated"
-        index.keys == keys
-        index.values == [4, 3, 2, 1, 0]
+        index.keys == View.readonly(keys)
+        index.values == View.readonly([4, 3, 2, 1, 0])
     }
 
     def "#setKey update an existing pair key"() {
@@ -122,8 +123,8 @@ class ListIndexSpecification extends Specification {
         index.setKey(4, "cat")
 
         then: "we expect the index to have been updated"
-        index.keys == ["first", "bird", "cow", "fourth", "cat"]
-        index.values == [0, 1, 2, 3, 4]
+        index.keys == View.readonly(["first", "bird", "cow", "fourth", "cat"])
+        index.values == View.readonly([0, 1, 2, 3, 4])
     }
 
     def "#setKey update an existing pair key by using its original key"() {
@@ -145,8 +146,8 @@ class ListIndexSpecification extends Specification {
         index.setKey("last", "cat")
 
         then: "we expect the index to have been updated"
-        index.keys == ["first", "bird", "cow", "fourth", "cat"]
-        index.values == [0, 1, 2, 3, 4]
+        index.keys == View.readonly(["first", "bird", "cow", "fourth", "cat"])
+        index.values == View.readonly([0, 1, 2, 3, 4])
     }
 
     def "#setKey throw an error if the given key to update does not exists"() {
@@ -227,8 +228,8 @@ class ListIndexSpecification extends Specification {
         index.remove(3)
 
         then: "we expect the index to have been updated"
-        index.keys == ["first", "second", "fourth"]
-        index.values == [0, 1, 3]
+        index.keys == View.readonly(["first", "second", "fourth"])
+        index.values == View.readonly([0, 1, 3])
     }
 
     def "#remove does not break #getIndexOfKey"() {
@@ -272,8 +273,8 @@ class ListIndexSpecification extends Specification {
         index.remove("last")
 
         then: "we expect the index to have been updated"
-        index.keys == ["first", "second", "fourth"]
-        index.values == [0, 1, 3]
+        index.keys == View.readonly(["first", "second", "fourth"])
+        index.values == View.readonly([0, 1, 3])
     }
 
     def "#remove throws if the given key does not exists"() {
@@ -313,8 +314,8 @@ class ListIndexSpecification extends Specification {
         index.clear()
 
         then: "we expect the index to have been updated"
-        index.keys == []
-        index.values == []
+        index.keys == View.readonly([])
+        index.values == View.readonly([])
     }
 
     def "#getIndexOfKey return the index of the given key"() {

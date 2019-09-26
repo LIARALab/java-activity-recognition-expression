@@ -3,6 +3,7 @@ package org.liara.support.view;
 import java.lang.reflect.Array;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.IntFunction;
 import java.util.function.Supplier;
@@ -43,6 +44,20 @@ public interface View<T> extends Iterable<T> {
       builder.append(']');
 
       return builder.toString();
+  }
+
+  static boolean equals (@NonNull final View<?> left, @NonNull final View<?> right) {
+    if (left.getSize() != right.getSize()) {
+      return false;
+    }
+
+    for (@NonNegative int index = 0; index < left.getSize(); ++index) {
+      if (!Objects.equals(left.get(index), right.get(index))) {
+        return false;
+      }
+    }
+
+    return true;
   }
 
   /**

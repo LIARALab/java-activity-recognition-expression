@@ -2,7 +2,6 @@ package org.liara.data.type
 
 import org.apache.commons.lang3.mutable.Mutable
 import org.apache.commons.lang3.mutable.MutableObject
-import org.liara.support.generic.Generic
 import spock.lang.Specification
 
 import java.nio.ByteBuffer
@@ -35,18 +34,11 @@ abstract class DataTypeSpecification<T> extends Specification {
         }
     }
 
-    def "#getGeneric return a valid generic type"() {
-        expect: "#getGeneric to return a valid generic type"
-        type.generic == expextedGeneric
-    }
-
     Random getRandom() {
         return _random
     }
 
     abstract DataType<T> getType()
-
-    abstract Generic<T> getExpextedGeneric();
 
     abstract T getRandomValue()
 

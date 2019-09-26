@@ -1,80 +1,130 @@
 package org.liara.expression.operation;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.liara.data.primitive.Primitive;
 import org.liara.expression.Expression;
-import org.liara.expression.Identifier;
+import org.liara.support.view.View;
 
 /**
  * A functional expression.
  */
-public interface Function {
-  /**
-   * @return The operator that describe a functional operation.
-   */
-  static @NonNull Operator getOperator() {
-    return Operator.FUNCTION;
+public final class Function<Result> implements Expression<Result> {
+  @NonNull
+  private final String _name;
+
+  @NonNull
+  private final Primitive<Result> _type;
+
+  @NonNull
+  private final View<@NonNull ? extends Expression<?>> _operands;
+
+  public Function (
+      @NonNull final Primitive<Result> type,
+      @NonNull final String name,
+      @NonNull final Expression<?> ...operands
+  ) {
+    _type = type;
+    _name = name;
+    _operands = View.readonly(operands);
   }
 
-  /**
-   * Returns true if the given operation is a functional operation.
-   *
-   * @param operation An operation to validate.
-   *
-   * @return True if the given operation is a functional operation.
-   */
-  static boolean isFunction (@Nullable final Operation<?> operation) {
-    return Objects.nonNull(operation) &&
-           operation.getOperator().equals(getOperator()) &&
-           operation.getChildren().getSize() > 0 &&
-           operation.getOperand(0) instanceof Identifier;
+  public Function (
+      @NonNull final Primitive<Result> type,
+      @NonNull final String name,
+      @NonNull final Collection<@NonNull ? extends Expression<?>> operands
+  ) {
+    _type = type;
+    _name = name;
+    _operands = View.readonly(new ArrayList<>(operands));
   }
 
-  /**
-   * Returns true if the given operation is a functional operation.
-   *
-   * @param operation An operation to validate.
-   *
-   * @return True if the given operation is a functional operation.
-   */
-  static <Value extends Operation<?>> @NonNull Value assertThatIsFunction(final Value operation) {
-    if (Objects.isNull(operation)) {
-      throw new IllegalArgumentException("Null operations are not functional operation.");
+  public Function (
+      @NonNull final Primitive<Result> type,
+      @NonNull final String name,
+      @NonNull final Iterator<@NonNull ? extends Expression<?>> operands
+  ) {
+    @NonNull final List<@NonNull Expression<?>> buffer = new LinkedList<>();
+    operands.forEachRemaining(buffer::add);
+
+    _type = type;
+    _name = name;
+    _operands = View.readonly(new ArrayList<>(buffer));
+  }
+
+  public Function (
+      @NonNull final Primitive<Result> type,
+      @NonNull final String name,
+      @NonNull final View<@NonNull ? extends Expression<?>> operands
+  ) {
+    _type = type;
+    _name = name;
+    _operands = View.readonly(operands.stream().collect(Collectors.toList()));
+  }
+
+  public Function (@NonNull final Function<Result> toCopy) {
+    _type = toCopy.getResultType();
+    _name = toCopy.getName();
+    _operands = toCopy.getChildren();
+  }
+
+  public @NonNull String getName() {
+    return _name;
+  }
+
+  @Override
+  public @NonNull Primitive<Result> getResultType() {
+    return _type;
+  }
+
+  @Override
+  public @NonNull View<? extends Expression<?>> getChildren() {
+    return _operands;
+  }
+
+  @Override
+  public boolean equals(@Nullable final Object other) {
+    if (this == other) {
+      return true;
     }
 
-    if (!operation.getOperator().equals(getOperator())) {
-      throw new IllegalArgumentException(
-          "The given operation is not a functional operation because its operator is " +
-              operation.getOperator().toString() + " instead of " + getOperator().toString()
+    if (other == null) {
+      return false;
+    }
+
+    if (other instanceof Function) {
+      @NonNull final  Function<?> otherFunction = (Function<?>) other;
+
+      return Objects.equals(
+          _name, otherFunction.getName()
+      ) && Objects.equals(
+          _type, otherFunction.getResultType()
+      ) && Objects.equals(
+          _operands, otherFunction.getChildren()
       );
     }
 
-    if (operation.getChildren().isEmpty()) {
-      throw new IllegalArgumentException(
-          "The given operation is not a functional operation because it does not have any  " +
-              "operands, and as a consequence, does not declare the identifier of the " +
-              "function to call."
-      );
-    }
+    return false;
+  }
 
-    if (!(operation.getOperand(0) instanceof Identifier)) {
-      throw new IllegalArgumentException(
-          "The given operation is not a functional operation because its first operand is not " +
-              "an identifier."
-      );
-    }
-
-    return operation;
+  @Override
+  public int hashCode() {
+    return Objects.hash(_name, _type, _operands);
   }
 
   /**
-   * @param operation A functional operation.
-   *
-   * @return The identifier of the function to call.
+   * @see Object#toString()
    */
-  static @NonNull Identifier getIdentifier(@NonNull final Operation<?> operation) {
-    return (Identifier) operation.getOperand(0);
+  @Override
+  public @NonNull String toString() {
+    return super.toString() + "{ " + _type.getName() + " " + _name + " " +
+        _operands.toString() + " }";
   }
 }

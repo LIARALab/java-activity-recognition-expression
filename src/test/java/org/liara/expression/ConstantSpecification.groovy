@@ -6,7 +6,7 @@ import spock.lang.Specification
 class ConstantSpecification extends Specification {
     def "#Constant allows to instantiate a new constant value of a given type"() {
         expect: "to instantiate a new constant value of a given type"
-        new Constant<>(Primitives.BOOLEAN, true).value == true
+        new Constant<>(Primitives.BOOLEAN, true).value
         new Constant<>(Primitives.BOOLEAN, true).resultType == Primitives.BOOLEAN
 
         new Constant<>(Primitives.NULLABLE_INTEGER, null).value == null

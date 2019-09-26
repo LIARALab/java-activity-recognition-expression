@@ -3,8 +3,6 @@ package org.liara.data.type.common
 import org.liara.data.type.DataType
 import org.liara.data.type.DataTypeSpecification
 import org.liara.data.type.DataTypes
-import org.liara.support.generic.Generic
-import org.liara.support.generic.Generics
 
 class StringDataTypeSpecification
         extends DataTypeSpecification<String> {
@@ -12,12 +10,6 @@ class StringDataTypeSpecification
     DataType<String> getType() {
         return DataTypes.string(100)
     }
-
-    @Override
-    Generic<String> getExpextedGeneric() {
-        return Generics.STRING
-    }
-
 
     @Override
     String getRandomValue() {

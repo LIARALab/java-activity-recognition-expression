@@ -4,8 +4,9 @@ import java.util.function.Function;
 import java.util.stream.Stream;
 import org.checkerframework.checker.index.qual.NonNegative;
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
-public class MappedView<From, To> implements View<To> {
+public final class MappedView<From, To> implements View<To> {
   @NonNull
   private final View<? extends From> _source;
 
@@ -52,5 +53,22 @@ public class MappedView<From, To> implements View<To> {
   @Override
   public @NonNull String toString() {
     return View.toString(this);
+  }
+
+  @Override
+  public boolean equals (@Nullable final Object other) {
+    if (other == null) {
+      return false;
+    }
+
+    if (other == this) {
+      return true;
+    }
+
+    if (other instanceof View<?>) {
+      return View.equals(this, (View<?>) other);
+    }
+
+    return false;
   }
 }

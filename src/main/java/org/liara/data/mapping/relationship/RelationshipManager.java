@@ -15,7 +15,7 @@ public interface RelationshipManager {
   /**
    * @return A view over all registered relationships.
    */
-  @NonNull View<@NonNull Relationship> getRelationships();
+  @NonNull View<@NonNull ? extends Relationship> getRelationships();
 
   /**
    * Return all registered relationships of the given table.
@@ -24,7 +24,7 @@ public interface RelationshipManager {
    *
    * @return All registered relationships of the given table.
    */
-  @NonNull View<@NonNull Relationship> getRelationshipsOfTable (@NonNull final Structure structure);
+  @NonNull View<@NonNull ? extends Relationship> getRelationshipsOfTable (@NonNull final Structure structure);
 
   /**
    * Return a relationship of the given table.

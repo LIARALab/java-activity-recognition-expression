@@ -14,11 +14,8 @@ import org.liara.data.type.common.LongDataType;
 import org.liara.data.type.common.NullableDataType;
 import org.liara.data.type.common.ShortDataType;
 import org.liara.data.type.common.StringDataType;
-import org.liara.support.generic.Generics;
-import org.liara.support.generic.StaticGeneric;
 
 public final class DataTypes {
-
   @NonNull
   public static final DataType<@NonNull Boolean> BOOLEAN = new BooleanDataType();
 
@@ -45,50 +42,42 @@ public final class DataTypes {
 
   @NonNull
   public static final DataType<@Nullable Boolean> NULLABLE_BOOLEAN = (
-      new NullableDataType<>(new StaticGeneric<@Nullable Boolean>() {
-      }, BOOLEAN)
+      new NullableDataType<>(BOOLEAN)
   );
 
   @NonNull
   public static final DataType<@Nullable Byte> NULLABLE_BYTE = (
-      new NullableDataType<>(new StaticGeneric<@Nullable Byte>() {
-      }, BYTE)
+      new NullableDataType<>(BYTE)
   );
 
   @NonNull
   public static final DataType<@Nullable Character> NULLABLE_CHARACTER = (
-      new NullableDataType<>(new StaticGeneric<@Nullable Character>() {
-      }, CHARACTER)
+      new NullableDataType<>(CHARACTER)
   );
 
   @NonNull
   public static final DataType<@Nullable Double> NULLABLE_DOUBLE = (
-      new NullableDataType<>(new StaticGeneric<@Nullable Double>() {
-      }, DOUBLE)
+      new NullableDataType<>(DOUBLE)
   );
 
   @NonNull
   public static final DataType<@Nullable Float> NULLABLE_FLOAT = (
-      new NullableDataType<>(new StaticGeneric<@Nullable Float>() {
-      }, FLOAT)
+      new NullableDataType<>(FLOAT)
   );
 
   @NonNull
   public static final DataType<@Nullable Integer> NULLABLE_INTEGER = (
-      new NullableDataType<>(new StaticGeneric<@Nullable Integer>() {
-      }, INTEGER)
+      new NullableDataType<>(INTEGER)
   );
 
   @NonNull
   public static final DataType<@Nullable Long> NULLABLE_LONG = (
-      new NullableDataType<>(new StaticGeneric<@Nullable Long>() {
-      }, LONG)
+      new NullableDataType<>(LONG)
   );
 
   @NonNull
   public static final DataType<@Nullable Short> NULLABLE_SHORT = (
-      new NullableDataType<>(new StaticGeneric<@Nullable Short>() {
-      }, SHORT)
+      new NullableDataType<>(SHORT)
   );
 
   /**
@@ -100,7 +89,7 @@ public final class DataTypes {
   public static @NonNull DataType<@Nullable String> nullable(
       @NonNull final DataType<@NonNull String> string
   ) {
-    return new NullableDataType<>(Generics.NULLABLE_STRING, string);
+    return new NullableDataType<>(string);
   }
 
   /**

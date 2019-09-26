@@ -6,8 +6,6 @@ import org.checkerframework.checker.index.qual.NonNegative;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.liara.data.type.ComparableDataType;
 import org.liara.data.type.DataType;
-import org.liara.support.generic.Generic;
-import org.liara.support.generic.Generics;
 
 public class ShortDataType
     implements DataType<@NonNull Short>, ComparableDataType {
@@ -23,14 +21,6 @@ public class ShortDataType
       @NonNegative final int rightOffset
   ) {
     return Short.compare(leftBuffer.getShort(leftOffset), rightBuffer.getShort(rightOffset));
-  }
-
-  /**
-   * @see DataType#getGeneric()
-   */
-  @Override
-  public @NonNull Generic<@NonNull Short> getGeneric() {
-    return Generics.SHORT;
   }
 
   /**

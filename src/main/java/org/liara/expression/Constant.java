@@ -13,7 +13,7 @@ import org.liara.support.view.View;
  */
 public final class Constant<Result> implements Expression<Result> {
   @NonNull
-  private final static View<@NonNull Expression> CHILDREN = View.readonly(Expression.class);
+  private final static View<@NonNull ? extends Expression<?>> CHILDREN = View.empty();
 
   private final Result _value;
 
@@ -60,7 +60,7 @@ public final class Constant<Result> implements Expression<Result> {
    * @see Expression#getChildren()
    */
   @Override
-  public @NonNull View<@NonNull Expression> getChildren() {
+  public @NonNull View<@NonNull ? extends Expression<?>> getChildren() {
     return CHILDREN;
   }
 
@@ -103,6 +103,6 @@ public final class Constant<Result> implements Expression<Result> {
    */
   @Override
   public @NonNull String toString() {
-    return super.toString() + "{ " + _type.getName() + " " + Objects.toString(_value) + " }";
+    return super.toString() + "{ " + _type.getName() + " " + _value + " }";
   }
 }

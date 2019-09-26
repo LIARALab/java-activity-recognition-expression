@@ -7,8 +7,10 @@ import java.util.stream.Stream;
 import org.checkerframework.checker.index.qual.LessThan;
 import org.checkerframework.checker.index.qual.NonNegative;
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
+import org.liara.support.view.View;
 
-public class IntegerBufferView implements PrimitiveView<Integer> {
+public final class IntegerBufferView implements PrimitiveView<Integer> {
   @NonNull
   private final IntBuffer _buffer;
 
@@ -50,5 +52,22 @@ public class IntegerBufferView implements PrimitiveView<Integer> {
   @Override
   public @NonNull Object[] toArray() {
     return stream().toArray();
+  }
+
+  @Override
+  public boolean equals (@Nullable final Object other) {
+    if (other == null) {
+      return false;
+    }
+
+    if (other == this) {
+      return true;
+    }
+
+    if (other instanceof View<?>) {
+      return View.equals(this, (View<?>) other);
+    }
+
+    return false;
   }
 }

@@ -14,8 +14,6 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.liara.data.type.ComparableDataType;
 import org.liara.data.type.DataType;
-import org.liara.support.generic.Generic;
-import org.liara.support.generic.Generics;
 
 public class StringDataType implements DataType<@NonNull String>, ComparableDataType {
 
@@ -67,14 +65,6 @@ public class StringDataType implements DataType<@NonNull String>, ComparableData
     read(rightBuffer, rightOffset, _right);
 
     return _left.getValue().compareTo(_right.getValue());
-  }
-
-  /**
-   * @see DataType#getGeneric()
-   */
-  @Override
-  public @NonNull Generic<@NonNull String> getGeneric() {
-    return Generics.STRING;
   }
 
   /**

@@ -6,8 +6,6 @@ import org.checkerframework.checker.index.qual.NonNegative;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.liara.data.type.ComparableDataType;
 import org.liara.data.type.DataType;
-import org.liara.support.generic.Generic;
-import org.liara.support.generic.Generics;
 
 public class LongDataType implements DataType<@NonNull Long>, ComparableDataType {
 
@@ -22,14 +20,6 @@ public class LongDataType implements DataType<@NonNull Long>, ComparableDataType
       @NonNegative final int rightOffset
   ) {
     return Long.compare(leftBuffer.getLong(leftOffset), rightBuffer.getLong(rightOffset));
-  }
-
-  /**
-   * @see DataType#getGeneric()
-   */
-  @Override
-  public @NonNull Generic<@NonNull Long> getGeneric() {
-    return Generics.LONG;
   }
 
   /**

@@ -8,14 +8,16 @@ class TreeWalkerSpecification
         extends Specification {
     TreeElement makeNode() {
         final TreeElement result = Mockito.mock(TreeElement.class)
-        Mockito.when(result.getChildren()).thenReturn(View.readonly(TreeElement.class, new TreeElement[0]))
+        Mockito.when(result.getChildren()).thenReturn(View.empty())
 
         return result
     }
 
-    TreeElement makeNode(final List<TreeElement> children) {
+    TreeElement makeNode(final List<? extends TreeElement> children) {
+        final View<? extends TreeElement> view = View.readonly(children)
+
         final TreeElement result = Mockito.mock(TreeElement.class)
-        Mockito.when(result.getChildren()).thenReturn(View.readonly(TreeElement.class, children))
+        Mockito.when(result.getChildren()).thenReturn(view)
 
         return result
     }

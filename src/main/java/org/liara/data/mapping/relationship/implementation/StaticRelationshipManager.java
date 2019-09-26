@@ -21,33 +21,29 @@ public class StaticRelationshipManager implements RelationshipManager {
   private final Mapping _mapping;
 
   @NonNull
-  private final View<@NonNull Relationship> _relationships;
+  private final View<@NonNull ? extends Relationship> _relationships;
 
   @NonNull
   private final List<? extends @NonNull Index<@NonNull String, @NonNull Relationship>> _relationshipsByTable;
 
   @NonNull
-  private final List<@NonNull View<@NonNull Relationship>> _relationshipsByTableViews;
+  private final List<@NonNull View<@NonNull ? extends Relationship>> _relationshipsByTableViews;
 
   public StaticRelationshipManager (@NonNull final StaticRelationshipManagerBuilder builder) {
     _mapping = Objects.requireNonNull(builder.getMapping());
     _relationships = buildRelationshipsViewFromBuilder(builder);
     _relationshipsByTable = buildRelationshipsByTableFromBuilder(builder);
-    _relationshipsByTableViews = _relationshipsByTable.stream().map(
-        (@NonNull final Index<@NonNull String, @NonNull Relationship> index) -> View.readonly(
-            Relationship.class, index.getValues()
-        )
-    ).collect(Collectors.toList());
+    _relationshipsByTableViews = _relationshipsByTable.stream().map(Index::getValues).collect(Collectors.toList());
   }
 
   private @NonNull List<? extends @NonNull Index<@NonNull String, @NonNull Relationship>> buildRelationshipsByTableFromBuilder(
       @NonNull final StaticRelationshipManagerBuilder builder
   ) {
     @NonNull final List<@NonNull ListIndex<@NonNull String, @NonNull Relationship>> relationshipsByTable = (
-        new ArrayList<>(_mapping.getTables().getSize())
+        new ArrayList<>(_mapping.getStructures().getSize())
     );
 
-    for (int index = 0, size = _mapping.getTables().getSize(); index < size; ++index) {
+    for (int index = 0, size = _mapping.getStructures().getSize(); index < size; ++index) {
       relationshipsByTable.add(new ListIndex<>(8, BaseComparators.STRING_COMPARATOR));
     }
 
@@ -62,7 +58,7 @@ public class StaticRelationshipManager implements RelationshipManager {
     return relationshipsByTable;
   }
 
-  private @NonNull View<@NonNull Relationship> buildRelationshipsViewFromBuilder(
+  private @NonNull View<@NonNull ? extends Relationship> buildRelationshipsViewFromBuilder(
       @NonNull final StaticRelationshipManagerBuilder builder
   ) {
     @NonNull final List<@NonNull StaticRelationshipBuilder> relationshipBuilders = (
@@ -77,7 +73,7 @@ public class StaticRelationshipManager implements RelationshipManager {
       relationships.add(relationshipBuilders.get(index).build(this, index));
     }
 
-    return View.readonly(Relationship.class, relationships);
+    return View.readonly(relationships);
   }
 
 
@@ -87,12 +83,12 @@ public class StaticRelationshipManager implements RelationshipManager {
   }
 
   @Override
-  public @NonNull View<@NonNull Relationship> getRelationships() {
+  public @NonNull View<@NonNull ? extends Relationship> getRelationships() {
     return _relationships;
   }
 
   @Override
-  public @NonNull View<@NonNull Relationship> getRelationshipsOfTable(@NonNull final Structure structure) {
+  public @NonNull View<@NonNull ? extends Relationship> getRelationshipsOfTable(@NonNull final Structure structure) {
     return _relationshipsByTableViews.get(structure.getIdentifier());
   }
 

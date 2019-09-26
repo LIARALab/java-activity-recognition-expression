@@ -4,6 +4,7 @@ import java.util.stream.IntStream;
 import java.util.stream.Stream;
 import org.checkerframework.checker.index.qual.NonNegative;
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.liara.support.view.View;
 
 public final class CharArrayView implements PrimitiveView<@NonNull Character> {
@@ -40,5 +41,22 @@ public final class CharArrayView implements PrimitiveView<@NonNull Character> {
   @Override
   public @NonNull String toString() {
     return View.toString(this);
+  }
+
+  @Override
+  public boolean equals (@Nullable final Object other) {
+    if (other == null) {
+      return false;
+    }
+
+    if (other == this) {
+      return true;
+    }
+
+    if (other instanceof View<?>) {
+      return View.equals(this, (View<?>) other);
+    }
+
+    return false;
   }
 }

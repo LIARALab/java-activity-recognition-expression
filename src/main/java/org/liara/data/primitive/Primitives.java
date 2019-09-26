@@ -16,7 +16,7 @@ public final class Primitives {
   private final static ArrayList<@NonNull Primitive> PRIMITIVES = new ArrayList<>();
 
   @NonNull
-  private final static View<@NonNull Primitive> VIEW = View.readonly(Primitive.class, PRIMITIVES);
+  private final static View<@NonNull ? extends Primitive> VIEW = View.readonly(PRIMITIVES);
 
   @NonNull
   public final static Primitive<@NonNull Boolean> BOOLEAN = new Primitive<>(Boolean.class,
@@ -131,7 +131,7 @@ public final class Primitives {
   /**
    * @return A view over each registered primitive.
    */
-  public static @NonNull View<@NonNull Primitive> getPrimitives() {
+  public static @NonNull View<@NonNull ? extends Primitive> getPrimitives() {
     return VIEW;
   }
 }

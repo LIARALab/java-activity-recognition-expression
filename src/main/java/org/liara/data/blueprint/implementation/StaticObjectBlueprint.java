@@ -1,6 +1,7 @@
 package org.liara.data.blueprint.implementation;
 
 import java.util.Arrays;
+import java.util.stream.Collectors;
 import org.checkerframework.checker.index.qual.NonNegative;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.liara.data.blueprint.BlueprintElement;
@@ -50,7 +51,7 @@ public class StaticObjectBlueprint
     }
 
     _childrenView = PrimitiveView.readonly(_children).map(getBlueprint().getElements()::get);
-    _keys = View.readonly((String[]) builder.getKeys().toArray());
+    _keys = View.readonly(builder.getKeys().stream().collect(Collectors.toList()));
 
     @NonNegative final int[] boundaries = computeChildrenBoundaries();
 
@@ -59,7 +60,7 @@ public class StaticObjectBlueprint
 
     computeFieldsOfChildren();
 
-    _orderedKeys = (String[]) _keys.toArray();
+    _orderedKeys = _keys.stream().toArray(String[]::new);
     _fieldsOfKeys = new int[_orderedKeys.length];
 
     computeFieldsOfKey();

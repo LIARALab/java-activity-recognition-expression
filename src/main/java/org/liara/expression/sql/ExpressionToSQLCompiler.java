@@ -1,9 +1,7 @@
 package org.liara.expression.sql;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
@@ -15,12 +13,14 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.liara.expression.Constant;
 import org.liara.expression.Expression;
-import org.liara.expression.Identifier;
+import org.liara.expression.Placeholder;
+import org.liara.expression.Variable;
 import org.liara.expression.operation.BinaryOperation;
 import org.liara.expression.operation.Function;
 import org.liara.expression.operation.Operation;
 import org.liara.expression.operation.Operator;
 import org.liara.expression.operation.Range;
+import org.liara.expression.operation.SequentialOperation;
 import org.liara.expression.operation.UnaryOperation;
 import org.liara.support.tree.TreeWalker;
 
@@ -123,7 +123,34 @@ public class ExpressionToSQLCompiler {
       enterOperation((Operation<?>) expression, output);
     }
 
+    if (expression instanceof Range) {
+      enterRange((Range<?>) expression, output);
+    }
+
+    if (expression instanceof Function) {
+      enterFunction((Function<?>) expression, output);
+    }
+
     return expression;
+  }
+
+  private void enterFunction(final Function<?> expression, final StringBuilder output) {
+    _operators.add(Operator.FUNCTION);
+
+    if (doViolatePrecedence()) {
+      output.append('(');
+    }
+
+    output.append(expression.getName());
+    output.append('(');
+  }
+
+  private void enterRange(final Range<?> expression, final StringBuilder output) {
+    _operators.add(Operator.BETWEEN);
+
+    if (doViolatePrecedence()) {
+      output.append('(');
+    }
   }
 
   /**
@@ -143,7 +170,7 @@ public class ExpressionToSQLCompiler {
       output.append('(');
     }
 
-    if (UnaryOperation.isUnaryOperation(operation)) {
+    if (operation instanceof UnaryOperation) {
       output.append(SYMBOLS.get(operation.getOperator().ordinal()));
       output.append(' ');
     }
@@ -186,51 +213,71 @@ public class ExpressionToSQLCompiler {
   public @NonNull Expression<?> exit (@NonNull final StringBuilder output) {
     @NonNull final Expression<?> exited = _walker.exit();
 
-    if (exited instanceof Constant) {
+    if (exited instanceof Constant<?>) {
       exitConstant((Constant<?>) exited, output);
-    } else if (exited instanceof Operation) {
+    } else if (exited instanceof Operation<?>) {
       exitOperation((Operation<?>) exited, output);
-    } else if (exited instanceof Identifier) {
-      exitIdentifier((Identifier) exited, output);
+    } else if (exited instanceof Variable<?>) {
+      exitVariable((Variable<?>) exited, output);
+    } else if (exited instanceof Function<?>) {
+      exitFunction((Function<?>) exited, output);
+    } else if (exited instanceof Range<?>) {
+      exitRange((Range<?>) exited, output);
+    } else if (exited instanceof Placeholder<?>) {
+      exitPlaceholder((Placeholder<?>) exited, output);
     }
 
-    if (_walker.hasCurrent() && _walker.current() instanceof Operation<?>) {
-      @NonNull final Operation<?> operation = (Operation<?>) _walker.current();
-
-      if (operation.getOperator().equals(Range.getOperator())) {
-        if (exited == Range.getValue(operation)) {
-          output.append(" BETWEEN ");
-        } else if (exited == Range.getMinimum(operation)) {
-          output.append(" AND ");
-        }
-      }
-
-      if (Function.isFunction(operation)) {
-        if (exited == Function.getIdentifier(operation)) {
-          output.append('(');
-        } else if (exited != operation.getChildren().get(operation.getChildren().getSize() - 1)) {
-          output.append(", ");
-        } else {
-          output.append(')');
-        }
-      }
+    if (_walker.hasCurrent() && _walker.current() instanceof Range<?>) {
+      exitBackToRange((Range<?>) _walker.current(), exited, output);
     }
 
     return exited;
   }
 
+  private void exitBackToRange(
+      @NonNull final Range<?> range,
+      @NonNull final Expression<?> exited,
+      @NonNull final StringBuilder output
+  ) {
+    if (exited == range.getValue()) {
+      output.append(" BETWEEN ");
+    } else if (exited == range.getMinimum()) {
+      output.append(" AND ");
+    }
+  }
+
+  private void exitPlaceholder(final Placeholder<?> exited, final StringBuilder output) {
+    output.append('?');
+  }
+
+  private void exitRange(final Range<?> exited, final StringBuilder output) {
+    if (doViolatePrecedence()) {
+      output.append(')');
+    }
+
+    _operators.remove(_operators.size() - 1);
+  }
+
+  private void exitFunction(final Function<?> exited, final StringBuilder output) {
+    output.append(')');
+
+    if (doViolatePrecedence()) {
+      output.append(')');
+    }
+
+    _operators.remove(_operators.size() - 1);
+  }
+
   /**
    * Called when this compiler exit an identifier.
    *
-   * @param identifier The identifier that was exited.
+   * @param variable The identifier that was exited.
    * @param output The string builder to fill with the compiled content.
    */
-  private void exitIdentifier(
-      @NonNull final Identifier identifier,
+  private void exitVariable(
+      @NonNull final Variable variable,
       @NonNull final StringBuilder output
-  ) {
-    output.append(identifier.getName());
-  }
+  ) { output.append(variable.getName()); }
 
   /**
    * Called when this compiler exit an operation.
@@ -390,11 +437,22 @@ public class ExpressionToSQLCompiler {
   public @NonNull Expression<?> back (@NonNull final StringBuilder output) {
     @NonNull final Expression<?> expression = _walker.current();
 
-    if (expression instanceof Operation) {
+    if (expression instanceof Operation<?>) {
       backOperation((Operation<?>) expression, output);
+    } else if (expression instanceof Function<?>) {
+      backFunction((Function<?>) expression, output);
     }
 
     return expression;
+  }
+
+  private void backFunction(
+      @NonNull final Function<?> expression,
+      @NonNull final StringBuilder output
+  ) {
+    if (_walker.canEnter()) {
+      output.append(", ");
+    }
   }
 
   /**
@@ -407,7 +465,7 @@ public class ExpressionToSQLCompiler {
       @NonNull final Operation<T> operation,
       @NonNull final StringBuilder output
   ) {
-    if (BinaryOperation.isBinaryOperation(operation)) {
+    if (operation instanceof BinaryOperation || operation instanceof SequentialOperation) {
       if (_walker.canEnter()) {
         output.append(' ');
         output.append(SYMBOLS.get(operation.getOperator().ordinal()));

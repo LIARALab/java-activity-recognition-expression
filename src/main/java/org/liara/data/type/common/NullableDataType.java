@@ -7,21 +7,14 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.liara.data.type.ComparableDataType;
 import org.liara.data.type.DataType;
-import org.liara.support.generic.Generic;
 
 public class NullableDataType<T> implements DataType<@Nullable T>, ComparableDataType {
 
   @NonNull
   private final DataType<T> _wrapped;
 
-  @NonNull
-  private final Generic<@Nullable T> _generic;
 
-  public NullableDataType(
-      @NonNull final Generic<@Nullable T> generic,
-      @NonNull final DataType<T> wrapped
-  ) {
-    _generic = generic;
+  public NullableDataType(@NonNull final DataType<T> wrapped) {
     _wrapped = wrapped;
   }
 
@@ -70,14 +63,6 @@ public class NullableDataType<T> implements DataType<@Nullable T>, ComparableDat
    */
   public boolean isNull(@NonNull final ByteBuffer buffer, @NonNegative final int offset) {
     return buffer.get(offset) <= 0;
-  }
-
-  /**
-   * @see DataType#getGeneric()
-   */
-  @Override
-  public @NonNull Generic<@Nullable T> getGeneric() {
-    return _generic;
   }
 
   /**

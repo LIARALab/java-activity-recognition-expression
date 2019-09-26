@@ -4,15 +4,8 @@ import java.nio.ByteBuffer;
 import org.apache.commons.lang3.mutable.Mutable;
 import org.checkerframework.checker.index.qual.NonNegative;
 import org.checkerframework.checker.nullness.qual.NonNull;
-import org.liara.support.generic.Generic;
 
 public interface DataType<T> {
-
-  /**
-   * @return The Java type represented by this data type.
-   */
-  @NonNull Generic<T> getGeneric();
-
   /**
    * @return The number of bytes required to store this data type.
    */

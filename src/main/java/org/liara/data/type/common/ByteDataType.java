@@ -6,8 +6,6 @@ import org.checkerframework.checker.index.qual.NonNegative;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.liara.data.type.ComparableDataType;
 import org.liara.data.type.DataType;
-import org.liara.support.generic.Generic;
-import org.liara.support.generic.Generics;
 
 public class ByteDataType implements DataType<@NonNull Byte>, ComparableDataType {
 
@@ -22,14 +20,6 @@ public class ByteDataType implements DataType<@NonNull Byte>, ComparableDataType
       @NonNegative final int rightOffset
   ) {
     return Byte.compare(leftBuffer.get(leftOffset), rightBuffer.get(rightOffset));
-  }
-
-  /**
-   * @see DataType#getGeneric()
-   */
-  @Override
-  public @NonNull Generic<@NonNull Byte> getGeneric() {
-    return Generics.BYTE;
   }
 
   /**

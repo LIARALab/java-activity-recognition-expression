@@ -10,12 +10,11 @@ import org.liara.support.view.View;
  * An identity expression.
  */
 public final class Identity<Result> implements Expression<Result> {
-
   @NonNull
   private final Expression<Result> _child;
 
   @NonNull
-  private final View<@NonNull Expression> _children;
+  private final View<@NonNull ? extends Expression<?>> _children;
 
   /**
    * Create a new identity expression of another one.
@@ -24,7 +23,7 @@ public final class Identity<Result> implements Expression<Result> {
    */
   public Identity (@NonNull final Expression<Result> expression) {
     _child = expression;
-    _children = View.readonly(Expression.class, new Expression[]{expression});
+    _children = View.readonly(new Expression<?>[] { expression });
   }
 
   /**
@@ -34,14 +33,14 @@ public final class Identity<Result> implements Expression<Result> {
    */
   public Identity (@NonNull final Identity<Result> toCopy) {
     _child = toCopy._child;
-    _children = View.readonly(Expression.class, new Expression[]{_child});
+    _children = View.readonly(new Expression<?>[]{_child});
   }
 
   /**
    * @see Expression#getChildren()
    */
   @Override
-  public @NonNull View<@NonNull Expression> getChildren() {
+  public @NonNull View<@NonNull ? extends Expression<?>> getChildren() {
     return _children;
   }
 

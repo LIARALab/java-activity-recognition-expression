@@ -3,10 +3,9 @@ package org.liara.expression.sql
 import org.liara.data.primitive.Primitives
 import org.liara.expression.Expression
 import org.liara.expression.ExpressionFactory
-import org.liara.expression.Identifier
+import org.liara.expression.Variable
 import spock.lang.Specification
 
-import java.lang.reflect.Array
 import java.time.LocalDate
 import java.time.LocalTime
 import java.time.ZoneOffset
@@ -528,14 +527,14 @@ class ExpressionToSQLCompilerSpecification
         output.toString() == "\"te\\\"st\" REGEXP \"t(.*?)\\\\d+\""
     }
 
-    def "#compile successfully render identifiers"() {
+    def "#compile successfully render variable"() {
         given: "an SQL expression compiler"
         final ExpressionToSQLCompiler compiler = new ExpressionToSQLCompiler()
 
         when: "we render an identifier"
         final StringBuilder output = new StringBuilder()
 
-        compiler.setExpression(new Identifier("pwee_tZQsd"))
+        compiler.setExpression(new Variable(Primitives.STRING, "pwee_tZQsd"))
         compiler.compile(output)
 
         then: "we expect that the compiler successfully rendered the identifier"

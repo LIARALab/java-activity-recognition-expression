@@ -1,15 +1,20 @@
 package org.liara.expression.operation;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.liara.data.primitive.Primitive;
 import org.liara.expression.Expression;
-import org.liara.expression.Identity;
 import org.liara.support.view.View;
 
-public final class BinaryOperation<Result> implements Operation<Result> {
+public final class SequentialOperation<Result> implements Operation<Result> {
   @NonNull
   private final View<@NonNull ? extends Expression<?>> _operands;
 
@@ -19,48 +24,53 @@ public final class BinaryOperation<Result> implements Operation<Result> {
   @NonNull
   private final Primitive<Result> _type;
 
-  public BinaryOperation (
+  public SequentialOperation(
       @NonNull final Primitive<Result> type,
       @NonNull final Operator operator,
-      @NonNull final Expression<?> leftOperand,
-      @NonNull final Expression<?> rightOperand
+      @NonNull final Expression<?> ...operands
   ) {
     _type = type;
     _operator = operator;
-    _operands = View.readonly(new Expression<?>[] {leftOperand, rightOperand});
+    _operands = View.readonly(Arrays.copyOf(operands, operands.length));
   }
 
-  public BinaryOperation (
+  public SequentialOperation(
       @NonNull final Primitive<Result> type,
       @NonNull final Operator operator,
-      @NonNull final Expression<?>[] operands
+      @NonNull final Collection<@NonNull ? extends Expression<?>> operands
   ) {
-    this(type, operator, operands[0], operands[1]);
+    _type = type;
+    _operator = operator;
+    _operands = View.readonly(new ArrayList<>(operands));
   }
 
-  public BinaryOperation (
+  public SequentialOperation(
       @NonNull final Primitive<Result> type,
       @NonNull final Operator operator,
-      @NonNull final List<@NonNull ? extends Expression<?>> operands
+      @NonNull final Iterator<@NonNull ? extends Expression<?>> operands
   ) {
-    this(type, operator, operands.get(0), operands.get(1));
+    @NonNull final List<@NonNull Expression<?>> operandsBuffer = new LinkedList<>();
+    operands.forEachRemaining(operandsBuffer::add);
+
+    _type = type;
+    _operator = operator;
+    _operands = View.readonly(new ArrayList<>(operandsBuffer));
   }
 
-  public BinaryOperation (@NonNull final BinaryOperation<Result> toCopy) {
-    this(
-        toCopy.getResultType(),
-        toCopy.getOperator(),
-        toCopy.getLeftOperand(),
-        toCopy.getRightOperand()
-    );
+  public SequentialOperation(
+      @NonNull final Primitive<Result> type,
+      @NonNull final Operator operator,
+      @NonNull final View<@NonNull ? extends Expression<?>> operands
+  ) {
+    _type = type;
+    _operator = operator;
+    _operands = View.readonly(operands.stream().collect(Collectors.toList()));
   }
 
-  public @NonNull Expression<?> getLeftOperand () {
-    return _operands.get(0);
-  }
-
-  public @NonNull Expression<?> getRightOperand () {
-    return _operands.get(1);
+  public SequentialOperation(@NonNull final SequentialOperation<Result> toCopy) {
+    _type = toCopy.getResultType();
+    _operator = toCopy.getOperator();
+    _operands = toCopy.getChildren();
   }
 
   public @NonNull Operator getOperator () {
@@ -89,18 +99,18 @@ public final class BinaryOperation<Result> implements Operation<Result> {
       return true;
     }
 
-    if (other instanceof BinaryOperation) {
-      @NonNull final BinaryOperation otherBinaryOperation = (BinaryOperation) other;
+    if (other instanceof SequentialOperation) {
+      @NonNull final SequentialOperation otherOperation = (SequentialOperation) other;
 
       return Objects.equals(
           _operands,
-          otherBinaryOperation.getChildren()
+          otherOperation.getChildren()
       ) && Objects.equals(
           _operator,
-          otherBinaryOperation.getOperator()
+          otherOperation.getOperator()
       ) && Objects.equals(
           _type,
-          otherBinaryOperation.getResultType()
+          otherOperation.getResultType()
       );
     }
 

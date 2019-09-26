@@ -6,8 +6,6 @@ import org.checkerframework.checker.index.qual.NonNegative;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.liara.data.type.ComparableDataType;
 import org.liara.data.type.DataType;
-import org.liara.support.generic.Generic;
-import org.liara.support.generic.Generics;
 
 public class FloatDataType implements DataType<@NonNull Float>, ComparableDataType {
 
@@ -22,14 +20,6 @@ public class FloatDataType implements DataType<@NonNull Float>, ComparableDataTy
       @NonNegative final int rightOffset
   ) {
     return Float.compare(leftBuffer.getFloat(leftOffset), rightBuffer.getFloat(rightOffset));
-  }
-
-  /**
-   * @see DataType#getGeneric()
-   */
-  @Override
-  public @NonNull Generic<@NonNull Float> getGeneric() {
-    return Generics.FLOAT;
   }
 
   /**

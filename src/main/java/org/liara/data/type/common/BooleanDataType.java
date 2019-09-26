@@ -6,8 +6,6 @@ import org.checkerframework.checker.index.qual.NonNegative;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.liara.data.type.ComparableDataType;
 import org.liara.data.type.DataType;
-import org.liara.support.generic.Generic;
-import org.liara.support.generic.Generics;
 
 public class BooleanDataType implements DataType<@NonNull Boolean>, ComparableDataType {
 
@@ -22,14 +20,6 @@ public class BooleanDataType implements DataType<@NonNull Boolean>, ComparableDa
       @NonNegative final int rightOffset
   ) {
     return Boolean.compare(leftBuffer.get(leftOffset) > 0, rightBuffer.get(rightOffset) > 0);
-  }
-
-  /**
-   * @see DataType#getGeneric()
-   */
-  @Override
-  public @NonNull Generic<@NonNull Boolean> getGeneric() {
-    return Generics.BOOLEAN;
   }
 
   /**

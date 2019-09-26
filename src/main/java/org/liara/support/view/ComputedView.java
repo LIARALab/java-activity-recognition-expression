@@ -54,4 +54,21 @@ public final class ComputedView<T> implements View<T> {
   public @NonNull String toString() {
     return View.toString(this);
   }
+
+  @Override
+  public boolean equals (@Nullable final Object other) {
+    if (other == null) {
+      return false;
+    }
+
+    if (other == this) {
+      return true;
+    }
+
+    if (other instanceof View<?>) {
+      return View.equals(this, (View<?>) other);
+    }
+
+    return false;
+  }
 }
