@@ -2,29 +2,27 @@ package org.liara.support.view;
 
 import java.util.function.Function;
 import java.util.stream.Stream;
-import org.checkerframework.checker.index.qual.LessThan;
 import org.checkerframework.checker.index.qual.NonNegative;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-public class MappedView<From, To> extends BaseView<To> {
+public class MappedView<From, To> implements View<To> {
+  @NonNull
+  private final View<? extends From> _source;
 
   @NonNull
-  private final Class<To> _valueClass;
-
-  @NonNull
-  private final View<From> _source;
-
-  @NonNull
-  private final Function<From, To> _mapper;
+  private final Function<? super From, ? extends To> _mapper;
 
   public MappedView(
-      @NonNull final Class<To> valueClass,
-      @NonNull final View<From> source,
-      @NonNull final Function<From, To> mapper
+      @NonNull final View<? extends From> source,
+      @NonNull final Function<? super From, ? extends To> mapper
   ) {
     _source = source;
     _mapper = mapper;
-    _valueClass = valueClass;
+  }
+
+  public MappedView(@NonNull final MappedView<From, To> toCopy) {
+    _source = toCopy._source;
+    _mapper = toCopy._mapper;
   }
 
   @Override
@@ -33,16 +31,8 @@ public class MappedView<From, To> extends BaseView<To> {
   }
 
   @Override
-  public To get(
-      @NonNegative @LessThan("getSize()") final int index
-  )
-      throws IndexOutOfBoundsException {
+  public To get(@NonNegative final int index) throws IndexOutOfBoundsException {
     return _mapper.apply(_source.get(index));
-  }
-
-  @Override
-  public @NonNull Class<To> getValueClass() {
-    return _valueClass;
   }
 
   @Override
@@ -50,7 +40,17 @@ public class MappedView<From, To> extends BaseView<To> {
     return _source.stream().map(_mapper);
   }
 
-  public @NonNull View<From> getSource() {
+  @Override
+  public Object[] toArray() {
+    return stream().toArray();
+  }
+
+  public @NonNull View<? extends From> getSource() {
     return _source;
+  }
+
+  @Override
+  public @NonNull String toString() {
+    return View.toString(this);
   }
 }

@@ -1,138 +1,143 @@
 package org.liara.support.view;
 
 import java.lang.reflect.Array;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.function.Function;
+import java.util.function.IntFunction;
+import java.util.function.Supplier;
 import java.util.stream.Stream;
 import org.checkerframework.checker.index.qual.LessThan;
 import org.checkerframework.checker.index.qual.NonNegative;
 import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import org.liara.support.view.primitive.PrimitiveView;
 
+/**
+ * A read-only finished and sequential collection of elements.
+ *
+ * @param <T> Elements stored into the collection.
+ */
 public interface View<T> extends Iterable<T> {
+  /**
+   * Create a string that describe an existing view instance.
+   *
+   * @param view A view instance to describe.
+   * @param <T> Type of element stored into the view to describe.
+   *
+   * @return A string that describe an existing view instance.
+   */
+  static <T> @NonNull String toString (@NonNull final View<T> view) {
+      @NonNull final StringBuilder builder = new StringBuilder();
+      builder.append(view.getClass().getName());
+      builder.append('@');
+      builder.append(Integer.toHexString(System.identityHashCode(view)));
+      builder.append('[');
 
-  @SuppressWarnings("unchecked")
-  static <T> @NonNull View<T> readonly(@NonNull final Class<T> valueClass) {
-    return readonly(valueClass, (T[]) Array.newInstance(valueClass, 0));
+      for (int index = 0, size = view.getSize(); index < size; ++index) {
+        builder.append(view.get(index).toString());
+        if (index < size - 1) {
+          builder.append(", ");
+        }
+      }
+
+      builder.append(']');
+
+      return builder.toString();
   }
 
   /**
-   * Wrap a view into a readonly instance.
+   * @param <T> Type of element stored into the empty view.
    *
-   * @param view A view to wrap.
-   * @param <T> DataType of value stored into the view to wrap.
-   * @return A readonly view instance.
+   * @return An empty view.
    */
-  static <T> @NonNull View<T> readonly(@NonNull final View<T> view) {
-    return view instanceof StaticView ? (StaticView<T>) view : new StaticView<>(view);
+  static <T> @NonNull View<T> empty() {
+    return new EmptyView<>();
   }
 
   /**
    * Wrap an array into a readonly instance.
    *
-   * @param valueClass DataType of value stored into the given array.
    * @param array An array to wrap.
-   * @param <T> DataType of value stored into the array to wrap.
+   *
+   * @param <T> Type of value stored into the array to wrap.
+   *
    * @return A readonly view instance.
    */
-  static <T> @NonNull View<T> readonly(
-      @NonNull final Class<T> valueClass,
-      @NonNull final T[] array
-  ) {
-    return new ArrayView<>(valueClass, array);
+  static <T> @NonNull View<T> readonly (final T[] array) {
+    return new ArrayView<>(array);
   }
 
   /**
-   * Wrap an array into a readonly instance.
+   * Wrap a list into a view instance.
    *
-   * @param valueClass DataType of value stored into the given list.
    * @param list A list to wrap.
-   * @param <T> DataType of value stored into the array to wrap.
-   * @return A readonly view instance.
-   */
-  static <T> @NonNull View<T> readonly(
-      @NonNull final Class<T> valueClass,
-      @NonNull final List<? extends T> list
-  ) {
-    return new ListView<>(valueClass, list);
-  }
-
-  /**
-   * Wrap an array into a readonly instance.
    *
-   * @param array An array to wrap.
+   * @param <T> DataType of value stored into the list to wrap.
+   *
    * @return A readonly view instance.
    */
-  static @NonNull View<Integer> readonly(final int[] array) {
-    return new IntegerArrayView(array);
+  static <T> @NonNull View<T> readonly(@NonNull final List<? extends T> list) {
+    return new ListView<>(list);
+  }
+
+  static <T> @NonNull View<T> readonly(
+      @NonNull final IntFunction<T> mapper,
+      @NonNull final Supplier<@NonNegative Integer> size
+  ) {
+    return new ComputedView<>(mapper, size);
   }
 
   /**
-   * @return The total number of values that this view currently store.
+   * @return The number of elements stored into the view.
    */
   @NonNegative int getSize();
 
   /**
-   * Read a value of this view.
+   * Return an element stored into this view.
    *
-   * @param index Index of the value to get.
+   * @param index Index of the element to get from 0 (included) to the size of the view (excluded).
+   *
    * @return The value at the given index.
-   * @throws IndexOutOfBoundsException If the given index is not between 0 and the size of the
-   * view.
+   *
+   * @throws IndexOutOfBoundsException If the given index is not between 0 (included) and the size of the view (excluded).
    */
-  T get(@NonNegative @LessThan("getSize()") final int index)
-      throws IndexOutOfBoundsException;
+  T get(@NonNegative @LessThan("getSize()") final int index) throws IndexOutOfBoundsException;
 
   /**
-   * @return True if this view does not have any element in it.
+   * @return True if no element are stored into this view.
    */
   default boolean isEmpty() {
     return getSize() <= 0;
   }
 
   /**
-   * @return The type of value that this view currently store.
+   * @return A stream of each elements stored into this view.
    */
-  @NonNull Class<T> getValueClass();
-
   @NonNull Stream<T> stream();
 
   /**
-   * @return This view as a java collection.
+   * @return The content of this view as an array of elements.
    */
-  default @NonNull Collection<T> toCollection() {
-    @NonNull final List<T> list = new ArrayList<>(getSize());
+  Object[] toArray();
 
-    for (int index = 0, size = getSize(); index < size; ++index) {
-      list.add(get(index));
-    }
-
-    return list;
-  }
-
-  default @NonNull T[] toArray() {
-    @SuppressWarnings("unchecked")
-    @NonNull final T[] result = (T[]) Array.newInstance(getValueClass(), getSize());
-
-    for (int index = 0, size = getSize(); index < size; ++index) {
-      result[index] = get(index);
-    }
-
-    return result;
-  }
-
+  /**
+   * @see Iterable#iterator()
+   */
   @Override
   default @NonNull Iterator<T> iterator() {
     return new ViewIterator<>(this);
   }
 
-  default <To> @NonNull View<To> map(
-      @NonNull final Class<To> valueClass,
-      @NonNull final Function<T, To> mapper
-  ) {
-    return new MappedView<>(valueClass, this, mapper);
+  /**
+   * Return a view that is a mapping of the elements of this one.
+   *
+   * @param mapper A mapping function.
+   *
+   * @param <To> Type of elements stored into the resulting view.
+   *
+   * @return A view that is a mapping of the elements of this one.
+   */
+  default <To> @NonNull View<To> map(@NonNull final Function<? super T, To> mapper) {
+    return new MappedView<>(this, mapper);
   }
 }

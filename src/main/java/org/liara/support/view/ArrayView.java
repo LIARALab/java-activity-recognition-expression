@@ -7,44 +7,45 @@ import org.checkerframework.checker.index.qual.NonNegative;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-public class ArrayView<T> extends BaseView<T> {
-
+/**
+ * A readonly view over an existing array.
+ *
+ * @param <T> Type of element stored into the view.
+ */
+public final class ArrayView<T> implements View<T> {
   @NonNull
-  private final Class<T> _valueClass;
+  private final T[] _array;
 
-  @NonNull
-  private final T[] _wrapped;
-
-  public ArrayView(@NonNull final Class<T> valueClass, @NonNull final T[] wrapped) {
-    _wrapped = wrapped;
-    _valueClass = valueClass;
+  public ArrayView(@NonNull final T[] array) {
+    _array = array;
   }
 
   public ArrayView(@NonNull final ArrayView<T> toCopy) {
-    _wrapped = toCopy._wrapped;
-    _valueClass = toCopy.getValueClass();
+    _array = toCopy._array;
   }
 
   @Override
   public @NonNegative int getSize() {
-    return _wrapped.length;
+    return _array.length;
   }
 
   @Override
-  public @Nullable T get(
-      @NonNegative @LessThan("getBytes()") final int index
-  )
-      throws IndexOutOfBoundsException {
-    return _wrapped[index];
-  }
-
-  @Override
-  public @NonNull Class<T> getValueClass() {
-    return _valueClass;
+  public @Nullable T get(@NonNegative final int index) throws IndexOutOfBoundsException {
+    return _array[index];
   }
 
   @Override
   public @NonNull Stream<T> stream() {
-    return Arrays.stream(_wrapped);
+    return Arrays.stream(_array);
+  }
+
+  @Override
+  public T[] toArray() {
+    return Arrays.copyOf(_array, _array.length);
+  }
+
+  @Override
+  public @NonNull String toString() {
+    return View.toString(this);
   }
 }

@@ -4,7 +4,7 @@ import java.util.Comparator;
 import org.checkerframework.checker.index.qual.NonNegative;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.liara.data.blueprint.implementation.StaticObjectBlueprint;
-import org.liara.support.ListIndex;
+import org.liara.support.index.ListIndex;
 import org.liara.support.view.View;
 
 public class StaticObjectBlueprintBuilder
@@ -113,10 +113,10 @@ public class StaticObjectBlueprintBuilder
   }
 
   /**
-   * @see ListIndex#containsKey(Object)
+   * @see ListIndex#containsValueWithKey(Object)
    */
   public boolean containsKey(@NonNull final String name) {
-    return _index.containsKey(name);
+    return _index.containsValueWithKey(name);
   }
 
   /**
@@ -127,19 +127,19 @@ public class StaticObjectBlueprintBuilder
   }
 
   /**
-   * @see ListIndex#getValue(int)
+   * @see ListIndex#getValueWithIndex(int)
    */
   public @NonNull BlueprintElementBuilder getValue(
       @NonNegative final int index
   ) {
-    return _index.getValue(index);
+    return _index.getValueWithIndex(index);
   }
 
   /**
-   * @see ListIndex#getValue(Object)
+   * @see ListIndex#getValueWithKey(Object)
    */
   public @NonNull BlueprintElementBuilder getValue(@NonNull final String name) {
-    return _index.getValue(name);
+    return _index.getValueWithKey(name);
   }
 
   /**

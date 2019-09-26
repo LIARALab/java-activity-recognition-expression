@@ -1,5 +1,6 @@
 package org.liara.support
 
+import org.liara.support.index.ListIndex
 import spock.lang.Specification
 
 class ListIndexSpecification extends Specification {
@@ -350,10 +351,10 @@ class ListIndexSpecification extends Specification {
 
         expect: "#containsKey to return true if the key exists into the index"
         for (int ith = 0; ith < keys.size(); ++ith) {
-            index.containsKey(keys.get(ith))
+            index.containsValueWithKey(keys.get(ith))
         }
 
-        !index.containsKey("patapwe")
+        !index.containsValueWithKey("patapwe")
     }
 
     def "#getValue return the value of a key"() {
@@ -371,7 +372,7 @@ class ListIndexSpecification extends Specification {
 
         expect: "#getValue to return the value of a key"
         for (int ith = 0; ith < keys.size(); ++ith) {
-            index.getValue(keys.get(ith)) == ith
+            index.getValueWithKey(keys.get(ith)) == ith
         }
     }
 }
