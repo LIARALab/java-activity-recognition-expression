@@ -15,7 +15,7 @@ public class StaticBlueprint implements Blueprint {
   private final StaticBlueprintContent _content;
 
   @NonNull
-  private final View<@NonNull BlueprintElement> _elements;
+  private final View<@NonNull ? extends BlueprintElement> _elements;
 
   /**
    * Create a new static blueprint with a given content.
@@ -24,14 +24,14 @@ public class StaticBlueprint implements Blueprint {
    */
   public StaticBlueprint(@NonNull final StaticBlueprintContent content) {
     _content = content;
-    _elements = View.readonly(BlueprintElement.class, _content.getElements());
+    _elements = View.readonly(_content.getElements());
   }
 
   /**
    * @see Blueprint#getElements()
    */
   @Override
-  public @NonNull View<@NonNull BlueprintElement> getElements() {
+  public @NonNull View<@NonNull ? extends BlueprintElement> getElements() {
     return _elements;
   }
 

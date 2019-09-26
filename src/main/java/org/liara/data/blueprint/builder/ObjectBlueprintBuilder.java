@@ -9,5 +9,5 @@ public interface ObjectBlueprintBuilder
   /**
    * @return A view over each keys of the object to build in their apparition order.
    */
-  @NonNull View<@NonNull String> getKeys();
+  @NonNull View<@NonNull ? extends String> getKeys();
 }

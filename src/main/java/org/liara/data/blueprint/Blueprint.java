@@ -20,7 +20,7 @@ public interface Blueprint {
   /**
    * @return A view over each elements of this model.
    */
-  @NonNull View<@NonNull BlueprintElement> getElements();
+  @NonNull View<@NonNull ? extends BlueprintElement> getElements();
 
   /**
    * Return the parent element of a given model element if any.
@@ -28,7 +28,7 @@ public interface Blueprint {
    * @param element The element to check.
    * @return The parent element of the given model element if any, null otherwise.
    */
-  @Nullable BlueprintElement getParentOf(@NonNull BlueprintElement element);
+  @Nullable BlueprintElement getParentOf(@NonNull final BlueprintElement element);
 
   /**
    * @return The root element of this model.

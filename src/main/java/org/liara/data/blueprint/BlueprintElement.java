@@ -31,5 +31,5 @@ public interface BlueprintElement extends TreeElement {
   /**
    * @return A view over each child element of this element.
    */
-  @NonNull View<@NonNull BlueprintElement> getChildren();
+  @NonNull View<@NonNull ? extends BlueprintElement> getChildren();
 }

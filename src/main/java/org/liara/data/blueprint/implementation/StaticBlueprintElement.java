@@ -13,8 +13,8 @@ public class StaticBlueprintElement
     implements BlueprintElement {
 
   @NonNull
-  private static final View<@NonNull BlueprintElement> EMPTY_VIEW = View.readonly(
-      BlueprintElement.class, new BlueprintElement[0]
+  private static final View<@NonNull ? extends BlueprintElement> EMPTY_VIEW = View.readonly(
+      new BlueprintElement[0]
   );
 
   @NonNull
@@ -57,7 +57,7 @@ public class StaticBlueprintElement
    * @see BlueprintElement#getChildren()
    */
   @Override
-  public @NonNull View<@NonNull BlueprintElement> getChildren() {
+  public @NonNull View<@NonNull ? extends BlueprintElement> getChildren() {
     return EMPTY_VIEW;
   }
 }

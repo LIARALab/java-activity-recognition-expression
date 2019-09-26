@@ -15,7 +15,7 @@ public class StaticTupleBlueprintBuilder implements BlueprintElementBuilder {
   private final List<@NonNull BlueprintElementBuilder> _children;
 
   @NonNull
-  private final View<@NonNull BlueprintElementBuilder> _view;
+  private final View<@NonNull ? extends BlueprintElementBuilder> _view;
 
   /**
    * Create a new instance of tuple builder.
@@ -31,7 +31,7 @@ public class StaticTupleBlueprintBuilder implements BlueprintElementBuilder {
    */
   public StaticTupleBlueprintBuilder(@NonNegative final int capacity) {
     _children = new ArrayList<>(capacity);
-    _view = View.readonly(BlueprintElementBuilder.class, _children);
+    _view = View.readonly(_children);
   }
 
   /**
@@ -46,7 +46,7 @@ public class StaticTupleBlueprintBuilder implements BlueprintElementBuilder {
    * @see BlueprintElementBuilder#getChildren()
    */
   @Override
-  public @NonNull View<@NonNull BlueprintElementBuilder> getChildren() {
+  public @NonNull View<@NonNull ? extends BlueprintElementBuilder> getChildren() {
     return _view;
   }
 

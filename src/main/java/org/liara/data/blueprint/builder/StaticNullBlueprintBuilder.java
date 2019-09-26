@@ -7,8 +7,8 @@ import org.liara.support.view.View;
 public class StaticNullBlueprintBuilder implements BlueprintElementBuilder {
 
   @NonNull
-  private static final View<@NonNull BlueprintElementBuilder> EMPTY_VIEW = View.readonly(
-      BlueprintElementBuilder.class, new BlueprintElementBuilder[0]
+  private static final View<@NonNull ? extends BlueprintElementBuilder> EMPTY_VIEW = View.readonly(
+      new BlueprintElementBuilder[0]
   );
 
   /**
@@ -23,7 +23,7 @@ public class StaticNullBlueprintBuilder implements BlueprintElementBuilder {
    * @see BlueprintElementBuilder#getChildren()
    */
   @Override
-  public @NonNull View<@NonNull BlueprintElementBuilder> getChildren() {
+  public @NonNull View<@NonNull ? extends BlueprintElementBuilder> getChildren() {
     return EMPTY_VIEW;
   }
 }

@@ -13,12 +13,6 @@ public class StaticObjectBlueprintBuilder
   @NonNull
   private final ListIndex<@NonNull String, @NonNull BlueprintElementBuilder> _index;
 
-  @NonNull
-  private final View<@NonNull BlueprintElementBuilder> _children;
-
-  @NonNull
-  private final View<@NonNull String> _keys;
-
   /**
    * Create a new static object blueprint builder.
    */
@@ -28,8 +22,6 @@ public class StaticObjectBlueprintBuilder
 
   public StaticObjectBlueprintBuilder(@NonNegative final int capacity) {
     _index = new ListIndex<>(capacity, Comparator.comparing((@NonNull String x) -> x));
-    _children = View.readonly(BlueprintElementBuilder.class, _index.getValues());
-    _keys = View.readonly(String.class, _index.getKeys());
   }
 
   /**
@@ -153,15 +145,15 @@ public class StaticObjectBlueprintBuilder
    * @see BlueprintElementBuilder#getChildren()
    */
   @Override
-  public @NonNull View<@NonNull BlueprintElementBuilder> getChildren() {
-    return _children;
+  public @NonNull View<@NonNull ? extends BlueprintElementBuilder> getChildren() {
+    return _index.getValues();
   }
 
   /**
    * @see ObjectBlueprintBuilder#getKeys()
    */
   @Override
-  public @NonNull View<@NonNull String> getKeys() {
-    return _keys;
+  public @NonNull View<@NonNull ? extends String> getKeys() {
+    return _index.getKeys();
   }
 }

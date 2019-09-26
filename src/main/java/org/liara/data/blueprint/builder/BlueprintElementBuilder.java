@@ -21,5 +21,5 @@ public interface BlueprintElementBuilder extends TreeElement {
   /**
    * @return A view over each child builder of this builder.
    */
-  @NonNull View<@NonNull BlueprintElementBuilder> getChildren();
+  @NonNull View<@NonNull ? extends BlueprintElementBuilder> getChildren();
 }

@@ -35,8 +35,7 @@ public class UndefinedBlueprintElement implements BlueprintElement {
         "Unable to get the identifier of this blueprint element instance because this " +
             "blueprint element instance was not defined. This error may occur if you trying to " +
             "manipulate a blueprint instance during its creation or if the blueprint instance was "
-            +
-            "malformed."
+            + "malformed."
     );
   }
 }

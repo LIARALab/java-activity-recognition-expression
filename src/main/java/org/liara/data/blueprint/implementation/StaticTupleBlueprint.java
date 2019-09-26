@@ -7,7 +7,9 @@ import org.liara.data.blueprint.BlueprintElement;
 import org.liara.data.blueprint.TupleBlueprint;
 import org.liara.data.blueprint.builder.BlueprintBuildingContext;
 import org.liara.data.blueprint.builder.BlueprintElementBuilder;
+import org.liara.data.primitive.Primitive;
 import org.liara.support.view.View;
+import org.liara.support.view.primitive.PrimitiveView;
 
 public class StaticTupleBlueprint
     extends StaticBlueprintElement
@@ -16,7 +18,7 @@ public class StaticTupleBlueprint
   private final int[] _children;
 
   @NonNull
-  private final View<@NonNull BlueprintElement> _view;
+  private final View<@NonNull ? extends BlueprintElement> _view;
 
   @NonNegative
   private final int _offset;
@@ -36,9 +38,7 @@ public class StaticTupleBlueprint
     super(context, builder);
 
     _children = new int[builder.getChildren().getSize()];
-    _view = View.readonly(_children).map(
-        BlueprintElement.class, getBlueprint().getElements()::get
-    );
+    _view = PrimitiveView.readonly(_children).map(getBlueprint().getElements()::get);
 
     for (int index = 0, size = builder.getChildren().getSize(); index < size; ++index) {
       _children[index] = context.getIdentifier(builder.getChildren().get(index));
@@ -94,7 +94,7 @@ public class StaticTupleBlueprint
    * @see BlueprintElement#getChildren()
    */
   @Override
-  public @NonNull View<@NonNull BlueprintElement> getChildren() {
+  public @NonNull View<@NonNull ? extends BlueprintElement> getChildren() {
     return _view;
   }
 }

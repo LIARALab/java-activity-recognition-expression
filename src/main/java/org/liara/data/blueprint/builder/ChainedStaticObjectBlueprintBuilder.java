@@ -149,12 +149,12 @@ public class ChainedStaticObjectBlueprintBuilder<Parent>
   }
 
   @Override
-  public @NonNull View<@NonNull String> getKeys() {
+  public @NonNull View<@NonNull ? extends String> getKeys() {
     return _builder.getKeys();
   }
 
   @Override
-  public @NonNull View<@NonNull BlueprintElementBuilder> getChildren() {
+  public @NonNull View<@NonNull ? extends BlueprintElementBuilder> getChildren() {
     return _builder.getChildren();
   }
 

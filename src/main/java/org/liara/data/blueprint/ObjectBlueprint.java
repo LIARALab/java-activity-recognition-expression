@@ -6,7 +6,7 @@ import org.liara.support.view.View;
 public interface ObjectBlueprint
     extends BlueprintElement {
 
-  @NonNull View<@NonNull String> getKeys();
+  @NonNull View<@NonNull ? extends String> getKeys();
 
   int getFieldOf(@NonNull final BlueprintElement value);
 

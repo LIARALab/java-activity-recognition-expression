@@ -110,7 +110,7 @@ public class ChainedStaticTupleBlueprintBuilder<Parent>
   }
 
   @Override
-  public @NonNull View<@NonNull BlueprintElementBuilder> getChildren() {
+  public @NonNull View<@NonNull ? extends BlueprintElementBuilder> getChildren() {
     return _builder.getChildren();
   }
 }

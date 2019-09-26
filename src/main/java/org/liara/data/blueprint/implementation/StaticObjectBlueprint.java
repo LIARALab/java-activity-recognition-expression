@@ -8,6 +8,7 @@ import org.liara.data.blueprint.ObjectBlueprint;
 import org.liara.data.blueprint.builder.BlueprintBuildingContext;
 import org.liara.data.blueprint.builder.ObjectBlueprintBuilder;
 import org.liara.support.view.View;
+import org.liara.support.view.primitive.PrimitiveView;
 
 public class StaticObjectBlueprint
     extends StaticBlueprintElement
@@ -16,10 +17,10 @@ public class StaticObjectBlueprint
   private final int[] _children;
 
   @NonNull
-  private final View<@NonNull BlueprintElement> _childrenView;
+  private final View<@NonNull ? extends BlueprintElement> _childrenView;
 
   @NonNull
-  private final View<@NonNull String> _keys;
+  private final View<@NonNull ? extends String> _keys;
 
   @NonNegative
   private final int _offset;
@@ -48,10 +49,8 @@ public class StaticObjectBlueprint
       _children[index] = context.getIdentifier(builder.getChildren().get(index));
     }
 
-    _childrenView = View.readonly(_children).map(
-        BlueprintElement.class, getBlueprint().getElements()::get
-    );
-    _keys = View.readonly(String.class, builder.getKeys().toArray());
+    _childrenView = PrimitiveView.readonly(_children).map(getBlueprint().getElements()::get);
+    _keys = View.readonly((String[]) builder.getKeys().toArray());
 
     @NonNegative final int[] boundaries = computeChildrenBoundaries();
 
@@ -60,7 +59,7 @@ public class StaticObjectBlueprint
 
     computeFieldsOfChildren();
 
-    _orderedKeys = _keys.toArray();
+    _orderedKeys = (String[]) _keys.toArray();
     _fieldsOfKeys = new int[_orderedKeys.length];
 
     computeFieldsOfKey();
@@ -105,7 +104,7 @@ public class StaticObjectBlueprint
    * @see ObjectBlueprint#getKeys()
    */
   @Override
-  public @NonNull View<@NonNull String> getKeys() {
+  public @NonNull View<@NonNull ? extends String> getKeys() {
     return _keys;
   }
 
@@ -137,7 +136,7 @@ public class StaticObjectBlueprint
    * @see BlueprintElement#getChildren()
    */
   @Override
-  public @NonNull View<@NonNull BlueprintElement> getChildren() {
+  public @NonNull View<@NonNull ? extends BlueprintElement> getChildren() {
     return _childrenView;
   }
 }
