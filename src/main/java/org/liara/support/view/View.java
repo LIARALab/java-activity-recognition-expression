@@ -1,6 +1,6 @@
 package org.liara.support.view;
 
-import java.lang.reflect.Array;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
@@ -11,7 +11,6 @@ import java.util.stream.Stream;
 import org.checkerframework.checker.index.qual.LessThan;
 import org.checkerframework.checker.index.qual.NonNegative;
 import org.checkerframework.checker.nullness.qual.NonNull;
-import org.liara.support.view.primitive.PrimitiveView;
 
 /**
  * A read-only finished and sequential collection of elements.
@@ -80,6 +79,32 @@ public interface View<T> extends Iterable<T> {
    */
   static <T> @NonNull View<T> readonly (final T[] array) {
     return new ArrayView<>(array);
+  }
+
+  /**
+   * Concatenate views.
+   *
+   * @param views An array of views to concatenate.
+   *
+   * @param <T> Type of value stored into the views to concatenate.
+   *
+   * @return A readonly view instance.
+   */
+  static <T> @NonNull View<T> concatenate (@NonNull final View<T> ...views) {
+    return new ConcatenatedView<>(views);
+  }
+
+  /**
+   * Concatenate views.
+   *
+   * @param views An array of views to concatenate.
+   *
+   * @param <T> Type of value stored into the views to concatenate.
+   *
+   * @return A readonly view instance.
+   */
+  static <T> @NonNull View<T> concatenate (@NonNull final Collection<? extends View<T>> views) {
+    return new ConcatenatedView<>(views);
   }
 
   /**

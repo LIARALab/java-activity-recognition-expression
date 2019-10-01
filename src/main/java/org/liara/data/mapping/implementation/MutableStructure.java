@@ -32,7 +32,10 @@ public class MutableStructure implements Structure {
     _identifier = _mapping.registerStructure(this);
   }
 
-  public @NonNull MutableField createField (@NonNull final String name, @NonNull final Primitive<?> type) {
+  public <T> @NonNull MutableField createField (
+      @NonNull final Primitive<T> type,
+      @NonNull final String name
+  ) {
     @NonNull final MutableFieldBuilder builder = new MutableFieldBuilder();
     builder.setName(name);
     builder.setType(type);
