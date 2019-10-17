@@ -40,7 +40,7 @@ public class SparseSet implements Iterable<@NonNegative Integer> {
    * @return The maximum number of elements that this set can store.
    */
   public @NonNegative int getCapacity () {
-    return _dense.length;
+    return _sparse.length;
   }
 
   /**
@@ -167,7 +167,6 @@ public class SparseSet implements Iterable<@NonNegative Integer> {
    */
   public void reallocate (@NonNegative final int capacity) {
     @NonNegative final int[] oldDense = _dense;
-    @NonNegative final int[] oldSparse = _sparse;
     @NonNegative final int oldSize = _size;
 
     _dense = new int[capacity];

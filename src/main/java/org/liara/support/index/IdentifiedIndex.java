@@ -28,8 +28,8 @@ public class IdentifiedIndex<T> implements Index<@NonNegative Integer, T> {
 
   public void put (@NonNegative final int key, final T value) {
     if (key >= _set.getCapacity()) {
-      int nextCapacity = _set.getCapacity();
-      while (nextCapacity < key) nextCapacity *= 2;
+      int nextCapacity = Math.max(_set.getCapacity(), 1);
+      while (nextCapacity <= key) nextCapacity *= 2;
       _set.reallocate(nextCapacity);
     }
 

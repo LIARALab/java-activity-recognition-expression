@@ -56,7 +56,8 @@ class StaticObjectBlueprintSpecification
         Mockito.when(builder.getChildren().getSize()).thenReturn(elements.size())
         Mockito.when(builder.getKeys().getSize()).thenReturn(keys.size())
         Mockito.when(builder.getKeys().toArray()).thenReturn((String[]) keys.toArray())
-
+        Mockito.when(builder.getKeys().stream()).thenReturn(keys.stream())
+        
         for (final int index = 0; index < elements.size(); ++index) {
             Mockito.when(builder.getChildren().get(index)).thenReturn(elements.get(index))
             Mockito.when(builder.getKeys().get(index)).thenReturn(keys.get(index))
